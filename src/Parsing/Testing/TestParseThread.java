@@ -24,6 +24,7 @@ class TestParseThread extends Thread {
 
     @Override
     public void run() {
+        
         ArrayList<Word> words = new ArrayList<>();
         ArrayList<Sentence> sentences = new ArrayList<>();
 
@@ -61,7 +62,12 @@ class TestParseThread extends Thread {
             try {
                 Thread.sleep(MILLIS_DELAY_WORDS);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                return;
+            }
+
+            if(Thread.interrupted()) {
+                Thread.currentThread().interrupt();
+                return;
             }
         }
 
@@ -70,7 +76,12 @@ class TestParseThread extends Thread {
             try {
                 Thread.sleep(MILLIS_DELAY_SENTENCES);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                return;
+            }
+
+            if(Thread.interrupted()) {
+                Thread.currentThread().interrupt();
+                return;
             }
         }
 

@@ -2,6 +2,7 @@ package Parsing;
 
 /**
  * Contains information about a sentence. It contains the text and an array of Word objects that compose the sentence.
+ * 
  * @author Eli Pardalis
  * @version 1.0.0
  */

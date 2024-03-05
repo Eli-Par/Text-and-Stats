@@ -2,27 +2,45 @@ package Parsing.Testing;
 
 import java.util.*;
 
-import javax.swing.SwingWorker;
-
+import Parsing.ParseObserver;
 import Parsing.Parser;
 import Parsing.Sentence;
 import Parsing.Word;
 
 public class TestParser implements Parser {
 
-    private LinkedList<SwingWorker<?, ?>> workers = new LinkedList<>();
+    private static final boolean ENABLE_PRINT = false;
+
+    private LinkedList<ParseObserver<?, ?>> observers = new LinkedList<>();
 
     private ArrayList<Word> words = new ArrayList<>();
     private ArrayList<Sentence> sentences = new ArrayList<>();
 
     private String text;
 
+    private TestParseThread parseThread;
+
     @Override
     public void parse(String text) {
 
         this.text = text;
 
-        TestParseThread parseThread = new TestParseThread(text, this);
+        if(ENABLE_PRINT) System.out.println("Parse started");
+
+        for(ParseObserver<?, ?> observer : observers) {
+            observer.stopThread();
+        }
+
+        if(parseThread != null) {
+            if(ENABLE_PRINT) System.out.println("Parse thread stopped");
+            parseThread.interrupt();
+        }
+
+        for(ParseObserver<?, ?> observer : observers) {
+            observer.parseStarted();
+        }
+
+        parseThread = new TestParseThread(text, this);
 
         parseThread.start();
 
@@ -32,10 +50,9 @@ public class TestParser implements Parser {
         this.words = words;
         this.sentences = sentences;
 
-        for(SwingWorker<?, ?> worker : workers) {
-            System.out.println("Done parsing, starting workers, num words: " + words.size());
-            worker.execute();
-            System.out.println("Worker is " + worker.isCancelled());
+        for(ParseObserver<?, ?> observer : observers) {
+            if(ENABLE_PRINT) System.out.println("Done parsing, starting observers, num words: " + words.size());
+            observer.startThread();
         }
     }
 
@@ -50,13 +67,13 @@ public class TestParser implements Parser {
     }
 
     @Override
-    public void addParseListener(SwingWorker<?, ?> worker) {
-        workers.add(worker);
+    public void addParseObserver(ParseObserver<?, ?> observer) {
+        observers.add(observer);
     }
 
     @Override
-    public void removeParseListener(SwingWorker<?, ?> worker) {
-        workers.remove(worker);
+    public void removeParseObserver(ParseObserver<?, ?> observer) {
+        observers.remove(observer);
     }
 
     @Override

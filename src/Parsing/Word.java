@@ -3,6 +3,7 @@ package Parsing;
 /**
  * Contains data about the word. It contains the text for the word, if it is the last word of a sentence, 
  * if it is a number and if it is a symbol that isn't a part of a word (such as &).
+ * 
  * @author Eli Pardalis
  * @version 1.0.0
  */

@@ -1,13 +1,13 @@
 package Parsing;
 
 import java.util.ArrayList;
-import javax.swing.SwingWorker;
 
 /**
  * Interface for a parser that provides methods to register a SwingWorker to be started when the parsing is done, 
  * a method to begin parsing a text file and methods to get the data from the last parse.
+ * 
  * @author Eli Pardalis
- * @version 1.0.0
+ * @version 1.1.0
  */
 
 public interface Parser {
@@ -15,7 +15,7 @@ public interface Parser {
     public String getText();
     
     /**
-     * Begin parsing the text that is specified, calling all registered SwingWorkers once done. 
+     * Begin parsing the text that is specified, calling all registered ParseObserver once done. 
      * Changes the parsers text to the parameter text.
      * @param text
      */
@@ -26,11 +26,15 @@ public interface Parser {
     public ArrayList<Sentence> getSentences();
 
     /**
-     * Add a SwingWorker that will be executed once the parser is finished parsing
-     * @param worker
+     * Add a ParseObserver that will be executed once the parser is finished parsing
+     * @param observer
      */
-    public void addParseListener(SwingWorker<?, ?> worker);
+    public void addParseObserver(ParseObserver<?, ?> observer);
 
-    public void removeParseListener(SwingWorker<?, ?> worker);
+    /**
+     * Remove a ParseObserver from the parser
+     * @param observer
+     */
+    public void removeParseObserver(ParseObserver<?, ?> observer);
     
 }
