@@ -1,11 +1,11 @@
-package Parsing.Testing;
+package parsing.testing;
 
 import java.util.*;
 
-import Parsing.ParseObserver;
-import Parsing.Parser;
-import Parsing.Sentence;
-import Parsing.Word;
+import parsing.ParseObserver;
+import parsing.Parser;
+import parsing.Sentence;
+import parsing.Word;
 
 public class TestParser implements Parser {
 

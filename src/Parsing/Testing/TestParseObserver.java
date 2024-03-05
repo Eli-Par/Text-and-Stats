@@ -1,4 +1,4 @@
-package Parsing.Testing;
+package parsing.testing;
 import java.util.*;
 
 import javax.swing.JButton;
@@ -6,7 +6,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
-import Parsing.*;
+import parsing.*;
 
 public class TestParseObserver extends ParseObserver<String, String> {
 

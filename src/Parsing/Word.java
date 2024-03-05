@@ -1,4 +1,4 @@
-package Parsing;
+package parsing;
 
 /**
  * Contains data about the word. It contains the text for the word, if it is the last word of a sentence, 

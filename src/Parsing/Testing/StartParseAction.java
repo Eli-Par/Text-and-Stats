@@ -1,8 +1,8 @@
-package Parsing.Testing;
+package parsing.testing;
 
 import java.awt.event.*;
 
-import Parsing.*;
+import parsing.*;
 
 
 public class StartParseAction implements ActionListener {
