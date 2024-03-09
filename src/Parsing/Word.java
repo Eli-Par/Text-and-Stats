@@ -38,4 +38,21 @@ public class Word {
         return isLastOfSentence;
     }
 
+    //Two words are equal if they have the same text and are both the same type of word (normal, numeric, symbol) and are both 
+    //at the end of a sentence or not at the end
+    @Override
+    public boolean equals(Object o) {
+        if(o instanceof Word) {
+            Word otherWord = (Word) o;
+            return text.equals(otherWord.text) && isNumeric == otherWord.isNumeric && isSymbol == otherWord.isSymbol && isLastOfSentence == otherWord.isLastOfSentence;
+        }
+
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        return text + " Number: " + isNumeric + " Symbol: " + isSymbol + " Ends sentence: " + isLastOfSentence;
+    }
+
 }
