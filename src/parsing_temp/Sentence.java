@@ -1,4 +1,4 @@
-package parsing;
+package parsing_temp;
 
 /**
  * Contains information about a sentence. It contains the text and an array of Word objects that compose the sentence.

@@ -1,11 +1,11 @@
-package parsing.testing;
+package parsing_temp.testing_temp;
 
 import java.util.*;
 
-import parsing.ParseObserver;
-import parsing.Parser;
-import parsing.Sentence;
-import parsing.Word;
+import parsing_temp.ParseObserver;
+import parsing_temp.Parser;
+import parsing_temp.Sentence;
+import parsing_temp.Word;
 
 public class TestParser implements Parser {
 
