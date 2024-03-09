@@ -1,8 +1,8 @@
-package parsing_temp.testing_temp;
+package parsing.testing;
 
 import java.awt.event.*;
 
-import parsing_temp.*;
+import parsing.*;
 
 
 public class StartParseAction implements ActionListener {

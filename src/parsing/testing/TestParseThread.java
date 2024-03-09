@@ -1,10 +1,10 @@
-package parsing_temp.testing_temp;
+package parsing.testing;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import parsing_temp.Sentence;
-import parsing_temp.Word;
+import parsing.Sentence;
+import parsing.Word;
 
 class TestParseThread extends Thread {
 
