@@ -20,6 +20,16 @@ class ParseToken {
     protected Type getType() {
         return type;
     }
+    
+    protected boolean matchesAType(Type[] types) {
+        for(Type t : types) {
+            if(getType() == t) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     @Override
     public String toString() {
