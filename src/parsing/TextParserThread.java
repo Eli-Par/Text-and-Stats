@@ -8,6 +8,12 @@ class TextParserThread extends Thread {
 
     private TextParser parser;
 
+    private TokenMatcher[] sectionMatchers = {
+        new TokenMatcher("\"[^\"]+\"", ParseToken.Type.QUOTE),
+        new TokenMatcher("'[^']+'", ParseToken.Type.SINGLE_QUOTE),
+        new TokenMatcher("\\([^\"]+\\)", ParseToken.Type.BRACKET)
+    };
+
     //TokenMatchers that will check for the various types of tokens, ordered by priority
     private TokenMatcher[] matchers = {
         new TokenMatcher("[\\w\\-]+(\\.[\\w\\-]+)*@[\\w\\-]+(\\.[\\w\\-]+)*(\\.[\\w\\-]{2,4})", ParseToken.Type.EMAIL),
@@ -23,11 +29,6 @@ class TextParserThread extends Thread {
     public TextParserThread(String text, TextParser parser) {
         this.text = text;
         this.parser = parser;
-
-        //Setup the input for all the TokenMatchers
-        for(TokenMatcher matcher : matchers) {
-            matcher.setInput(text);
-        }
     }
 
     @Override
@@ -145,13 +146,68 @@ class TextParserThread extends Thread {
         //Array list of tokens
         ArrayList<ParseToken> tokens = new ArrayList<>();
 
+        //Get all the tokens from the parse string, with punctuation enabled since this isn't an internal recursive call
+        getTokens(tokens, text, true);
+
+        //Add an ending punctuation token to the string to ensure an end is found
+        tokens.add(new ParseToken("", ParseToken.Type.PUNCTUATION));
+
+        //Return all tokens found
+        return tokens;
+    }
+
+    private void getTokens(ArrayList<ParseToken> tokens, String input, boolean usePunctuation) {
+
         //Loop through the entire string and keep track of where it is in the parse
         int startIndex = 0;
-        while(startIndex < text.length()) {
+        while(startIndex < input.length()) {
 
             //Loop through all the TokenMatchers until a valid match is found
             boolean matchFound = false;
+
+            //Check if it is an interior section
+            for(TokenMatcher sectionMatcher : sectionMatchers) {
+                sectionMatcher.setInput(input);
+                sectionMatcher.setStart(startIndex);
+
+                //Get the size of the interior match if there is one
+                int matchSize = sectionMatcher.prefixMatch();
+
+                //If there is an interior match, get the tokens inside
+                if(matchSize > 0) {
+                    //Recursively get the tokens inside the section, applying the correct tokens to surround it
+                    if(sectionMatcher.getTokenType() == ParseToken.Type.QUOTE) {
+                        tokens.add(new ParseToken("\"", ParseToken.Type.SYMBOL));
+                        getTokens(tokens, input.substring(startIndex+1, startIndex + matchSize - 1), false);
+                        tokens.add(new ParseToken("\"", ParseToken.Type.SYMBOL));
+                    }
+                    else if(sectionMatcher.getTokenType() == ParseToken.Type.SINGLE_QUOTE) {
+                        tokens.add(new ParseToken("'", ParseToken.Type.SYMBOL));
+                        getTokens(tokens, input.substring(startIndex+1, startIndex + matchSize - 1), false);
+                        tokens.add(new ParseToken("'", ParseToken.Type.SYMBOL));
+                    }
+                    else if(sectionMatcher.getTokenType() == ParseToken.Type.BRACKET) {
+                        tokens.add(new ParseToken("(", ParseToken.Type.SYMBOL));
+                        getTokens(tokens, input.substring(startIndex+1, startIndex + matchSize - 1), false);
+                        tokens.add(new ParseToken(")", ParseToken.Type.SYMBOL));
+                    }
+                    
+                    //Move the start index to the end of the section
+                    startIndex += matchSize;
+
+                    //Note that a match was found
+                    matchFound = true;
+
+                    break;
+                }
+            }
+
+            //Continue since a match was already found
+            if(matchFound) continue;
+
             for(TokenMatcher matcher : matchers) {
+
+                matcher.setInput(input);
 
                 //Update the matchers start position to the current start
                 matcher.setStart(startIndex);
@@ -161,9 +217,21 @@ class TextParserThread extends Thread {
 
                 //If there is more than 0 characters in the match, it is a valid match so add that matched substring to the tokens
                 if(matchSize > 0) {
-                    tokens.add(new ParseToken(text.substring(startIndex, startIndex + matchSize), matcher.getTokenType()));
+                    //Make a new token of the type of the matcher with the text of the match
+                    ParseToken newToken = new ParseToken(input.substring(startIndex, startIndex + matchSize), matcher.getTokenType());
+                    
+                    //If the token is for punctuation and usePunctuation is false, switch the type to INNER_PUNCTUATION which isn't counted as
+                    //real punctuation, and thus doesn't end a sentence.
+                    if(newToken.getType() == ParseToken.Type.PUNCTUATION && !usePunctuation) {
+                        newToken.setType(ParseToken.Type.INNER_PUNCTUATION);
+                        
+                    }
+
+                    //Add the token to the list and move the start index to the end of the token in the input
+                    tokens.add(newToken);
                     startIndex += matchSize;
 
+                    //Mark that a match was found
                     matchFound = true;
 
                     break;
@@ -176,16 +244,12 @@ class TextParserThread extends Thread {
             //If no match was found, output an unmatched err without crashing and go to the next character
             //This ensures it is possible to debug without a bizzare input causing an exception
             if(!matchFound) {
-                if(startIndex < text.length()) System.err.println("Unmatched input: '" + text.charAt(startIndex) + "' value: " + ((int)text.charAt(startIndex)) + " at index: " + startIndex);
+                if(startIndex < input.length()) System.err.println("Unmatched input: '" + input.charAt(startIndex) + "' value: " + ((int)input.charAt(startIndex)) + " at index: " + startIndex);
                 startIndex++;
             }
             
         }
 
-        //Add an ending punctuation token to the string to ensure an end is found
-        tokens.add(new ParseToken("", ParseToken.Type.PUNCTUATION));
-
-        //Return all tokens found
-        return tokens;
+        
     }
 }
