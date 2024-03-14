@@ -135,9 +135,16 @@ class TextParserThread extends Thread {
             ParseToken token = tokens.get(i);
 
             if(token.matchesAType(new ParseToken.Type[] {ParseToken.Type.WORD, ParseToken.Type.NUMBER, ParseToken.Type.SYMBOL, ParseToken.Type.EMAIL, ParseToken.Type.ACRONYM})) {
-                newWords.add(new Word(token.getText(), token.getType() == ParseToken.Type.NUMBER, token.getType() == ParseToken.Type.SYMBOL, i == tokens.size() - 2));
+                newWords.add(new Word(token.getText(), token.getType() == ParseToken.Type.NUMBER, token.getType() == ParseToken.Type.SYMBOL, i == tokens.size() - 2, token.matchesAType(new ParseToken.Type[] {ParseToken.Type.WORD, ParseToken.Type.EMAIL, ParseToken.Type.ACRONYM})));
             }
         }
+
+        //Find the last word within the sentence and flag it as the last
+        int index = newWords.size() - 2;
+        while(index >= 0 && !newWords.get(index).isSymbol() && !newWords.get(index).isNumeric()) {
+            index--;
+        }
+        if(index >= 0) newWords.get(index).setIsLastWordOfSentence(true);
 
         return newWords;
     }
