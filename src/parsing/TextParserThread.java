@@ -49,17 +49,15 @@ class TextParserThread extends Thread {
             ParseToken currToken = tokens.get(i);
             tokenBuffer.add(currToken);
 
-            //System.out.println("> " + currToken);
+            //System.out.println("Curr: " + currToken);
 
             //If the token is a punctuation mark, it might be the end of the sentence
             if(currToken.getType() == ParseToken.Type.PUNCTUATION) {
 
-                if(i - 1 >= 0 && tokens.get(i-1).getType() == ParseToken.Type.WORD && tokens.get(i-1).getText().length() == 1) {
-                    tokenBuffer.remove(tokenBuffer.size() - 1);
-                    ParseToken prevToken = tokenBuffer.remove(tokenBuffer.size() - 1);
-
-                    ParseToken newToken = new ParseToken(prevToken.getText() + currToken.getText(), ParseToken.Type.WORD);
-                    tokenBuffer.add(newToken);
+                //If the current token is a '.', there are 2 or more tokens in the buffer, the second most recent token is a 1 letter word or an acrynym, then merge the punctuation into the acrynym
+                if(currToken.getText().equals(".") && tokenBuffer.size() > 1 && ((tokenBuffer.get(tokenBuffer.size()-2).getType() == ParseToken.Type.WORD && tokenBuffer.get(tokenBuffer.size()-2).getText().length() == 1) || tokenBuffer.get(tokenBuffer.size()-2).getType() == ParseToken.Type.ACRONYM)) {
+                    //System.out.print("Merge punct: ");
+                    mergeAbbreviation(tokenBuffer);
 
                 }
                 else { //It is the end of the sentence
@@ -84,6 +82,14 @@ class TextParserThread extends Thread {
                 }
 
             }
+            else if(currToken.getType() == ParseToken.Type.WORD ) { //If the token is a word, check if it is included in an acrynym
+
+                //If there is 2 or more tokens in the buffer, the second most recent is an acrynym and the current is 1 letter, add it to the acrynym
+                if(tokenBuffer.size() > 1 && tokenBuffer.get(tokenBuffer.size()-2).getType() == ParseToken.Type.ACRONYM  && tokenBuffer.get(tokenBuffer.size()-1).getText().length() == 1) {
+                    //System.out.print("Merge word: ");
+                    mergeAbbreviation(tokenBuffer);
+                }
+            }
 
         }
 
@@ -104,6 +110,22 @@ class TextParserThread extends Thread {
         parser.parseDone(words, sentences);
     }
 
+    //Joins the last 2 tokens in the buffer into a single acrynym token
+    private void mergeAbbreviation(ArrayList<ParseToken> tokenBuffer) {
+        //Get and remove the current and previous token from the buffer
+        ParseToken currToken = tokenBuffer.remove(tokenBuffer.size() - 1);
+        ParseToken prevToken = tokenBuffer.remove(tokenBuffer.size() - 1);
+
+        //Combine the tokens text together
+        String tokenString = prevToken.getText() + currToken.getText();
+
+        //Create and add a new token to the buffer with the combined text as an acrynym
+        ParseToken newToken = new ParseToken(tokenString, ParseToken.Type.ACRONYM);
+        tokenBuffer.add(newToken);
+
+        //System.out.println("New: " + newToken);
+    }
+
     //Takes an ArrayList of tokens and returns a converted ArrayList of Words
     private ArrayList<Word> tokenBufferToWordList(ArrayList<ParseToken> tokens) {
         ArrayList<Word> newWords = new ArrayList<>();
@@ -112,7 +134,7 @@ class TextParserThread extends Thread {
         for(int i = 0; i < tokens.size(); i++) {
             ParseToken token = tokens.get(i);
 
-            if(token.matchesAType(new ParseToken.Type[] {ParseToken.Type.WORD, ParseToken.Type.NUMBER, ParseToken.Type.SYMBOL, ParseToken.Type.EMAIL})) {
+            if(token.matchesAType(new ParseToken.Type[] {ParseToken.Type.WORD, ParseToken.Type.NUMBER, ParseToken.Type.SYMBOL, ParseToken.Type.EMAIL, ParseToken.Type.ACRONYM})) {
                 newWords.add(new Word(token.getText(), token.getType() == ParseToken.Type.NUMBER, token.getType() == ParseToken.Type.SYMBOL, i == tokens.size() - 2));
             }
         }
