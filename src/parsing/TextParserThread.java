@@ -1,6 +1,9 @@
 package parsing;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 class TextParserThread extends Thread {
     
@@ -134,7 +137,7 @@ class TextParserThread extends Thread {
         for(int i = 0; i < tokens.size(); i++) {
             ParseToken token = tokens.get(i);
 
-            if(token.matchesAType(new ParseToken.Type[] {ParseToken.Type.WORD, ParseToken.Type.NUMBER, ParseToken.Type.SYMBOL, ParseToken.Type.EMAIL, ParseToken.Type.ACRONYM})) {
+            if(token.matchesAType(new ParseToken.Type[] {ParseToken.Type.WORD, ParseToken.Type.NUMBER, ParseToken.Type.SYMBOL, ParseToken.Type.EMAIL, ParseToken.Type.ACRONYM, ParseToken.Type.ABBREVIATION})) {
                 newWords.add(new Word(token.getText(), token.getType() == ParseToken.Type.NUMBER, token.getType() == ParseToken.Type.SYMBOL, i == tokens.size() - 2, token.matchesAType(new ParseToken.Type[] {ParseToken.Type.WORD, ParseToken.Type.EMAIL, ParseToken.Type.ACRONYM})));
             }
         }
@@ -185,7 +188,26 @@ class TextParserThread extends Thread {
         return tokens;
     }
 
+    //Returns an array list of abbreviation strings
+    private ArrayList<String> loadAbbreviations() {
+        //Load the file and put each line without whitespace into the array list
+        try(Scanner fsc = new Scanner(new File("src//parsing//abbreviations.txt"))) {
+            ArrayList<String> abbreviations = new ArrayList<>();
+            while(fsc.hasNextLine()) {
+                String abbrev = fsc.nextLine().trim();
+                if(!abbrev.isBlank()) abbreviations.add(abbrev);
+            }
+            return abbreviations;
+        }
+        catch(FileNotFoundException exception) {
+            return null;
+        }
+    }
+
     private void getTokens(ArrayList<ParseToken> tokens, String input, boolean usePunctuation) {
+
+        //Load all abbreviations
+        ArrayList<String> abbreviations = loadAbbreviations();
 
         //Loop through the entire string and keep track of where it is in the parse
         int startIndex = 0;
@@ -193,6 +215,24 @@ class TextParserThread extends Thread {
 
             //Loop through all the TokenMatchers until a valid match is found
             boolean matchFound = false;
+
+            //Check all abbreviations for a match
+            if(abbreviations != null) {
+                for(String abbreviation : abbreviations) {
+                    //If an abbreviation match is found, add it as a token and move to the next index
+                    if(isAbbreviationMatch(input, abbreviation, startIndex)) {
+                        tokens.add(new ParseToken(input.substring(startIndex, startIndex + abbreviation.length() + 1), ParseToken.Type.ABBREVIATION));
+                        startIndex += abbreviation.length() + 1;
+                        matchFound = true;
+                        break;
+                    }
+                }
+            }
+
+            //If an abbreviation match is found, continue
+            if(matchFound) {
+                continue;
+            }
 
             //Check if it is an interior section
             for(TokenMatcher sectionMatcher : sectionMatchers) {
@@ -281,4 +321,28 @@ class TextParserThread extends Thread {
 
         
     }
+
+    //Check if the input at the start index matches the abbreviation
+    private boolean isAbbreviationMatch(String input, String abbreviation, int startIndex) {
+        
+        //The abbreviation must be proceeded by either the start of the string or whitespace
+        if(startIndex != 0 && !Character.isWhitespace(input.charAt(startIndex - 1))) {
+            return false;
+        }
+
+        //All letters in the input from the start index must be in bounds and match the abbreviation
+        for(int i = 0; i < abbreviation.length(); i++) {
+            if(i + startIndex >= input.length() || Character.toLowerCase(input.charAt(startIndex + i)) != Character.toLowerCase(abbreviation.charAt(i))) {
+                return false;
+            }
+        }
+
+        //The found abbreviation match must end in a .
+        if(startIndex + abbreviation.length() >= input.length() || input.charAt(startIndex + abbreviation.length()) != '.') {
+            return false;
+        }
+        
+        return true;
+    }
+
 }
