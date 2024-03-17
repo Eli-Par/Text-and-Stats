@@ -29,25 +29,25 @@ class TestParseThread extends Thread {
         ArrayList<Sentence> sentences = new ArrayList<>();
 
         Word[] localWords = {
-            new Word("It", false, false, false),
-            new Word("was", false, false,false),
-            new Word("a", false, false,false),
-            new Word("lovely", false, false,false),
-            new Word("day", false, false,true),
-            new Word("Birds", false, false,false),
-            new Word("chirping", false, false,false),
-            new Word("and", false, false, false),
-            new Word("the", false, false,false),
-            new Word("sun", false, false,false),
-            new Word("shining", false, false,true),
-            new Word("The", false, false,false),
-            new Word("temperature", false, false,false),
-            new Word("is", false, false, false),
-            new Word("a", false, false, false),
-            new Word("hot", false, false, false),
-            new Word("30.5", true, false, false),
-            new Word("degrees", false, false, false),
-            new Word("celsius", false, false, true)
+            new Word("It", false, false, false, false),
+            new Word("was", false, false,false, false),
+            new Word("a", false, false,false, false),
+            new Word("lovely", false, false,false, false),
+            new Word("day", false, false,true, true),
+            new Word("Birds", false, false,false, false),
+            new Word("chirping", false, false,false, false),
+            new Word("and", false, false, false, false),
+            new Word("the", false, false,false, false),
+            new Word("sun", false, false,false, false),
+            new Word("shining", false, false,true, true),
+            new Word("The", false, false,false, false),
+            new Word("temperature", false, false,false, false),
+            new Word("is", false, false, false, false),
+            new Word("a", false, false, false, false),
+            new Word("hot", false, false, false, false),
+            new Word("30.5", true, false, false, false),
+            new Word("degrees", false, false, false, false),
+            new Word("celsius", false, false, true, true)
 
         };
 
