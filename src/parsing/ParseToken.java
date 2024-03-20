@@ -3,7 +3,7 @@ package parsing;
 class ParseToken {
 
     //Enum for all ParseToken types
-    protected static enum Type {WORD, NUMBER, SYMBOL, PUNCTUATION, WHITESPACE, EMAIL, ACRONYM, ABBREVIATION, INVALID, QUOTE, SINGLE_QUOTE, INNER_PUNCTUATION, BRACKET};
+    protected static enum Type {WORD, NUMBER, SYMBOL, PUNCTUATION, WHITESPACE, EMAIL, URL, ACRONYM, ABBREVIATION, INVALID, QUOTE, SINGLE_QUOTE, INNER_PUNCTUATION, BRACKET};
 
     private Type type;
     private String text;
