@@ -1,5 +1,8 @@
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 
 public class App {
 
@@ -22,8 +25,9 @@ public class App {
             JFileChooser chooser = new JFileChooser();
             JFrame frame = new JFrame("Select File");
 
-            chooser.showOpenDialog(frame);
-            System.out.println(chooser.getSelectedFile());
+            int act = chooser.showOpenDialog(frame);
+            if (act == JFileChooser.APPROVE_OPTION)
+                loadFile(chooser.getSelectedFile());
 
         });
 
@@ -38,6 +42,32 @@ public class App {
         editors = new JTabbedPane();
     }
 
+    public void loadFile(File f) {
+
+        JTextArea area = new JTextArea();
+
+        try {
+
+            FileInputStream in = new FileInputStream(f);
+            StringBuilder sBuilder = new StringBuilder();
+            byte[]fileData = new byte[1024];
+            int cnt;
+
+            while ((cnt = in.read(fileData)) > 0)
+                sBuilder.append(new String(fileData, 0, cnt));
+
+            area.setText(sBuilder.toString());
+            in.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        area.setSize(editors.getSize());
+        editors.add(area);
+
+    }
+
     public void init() {
 
         JFrame frame = new JFrame(TITLE);
@@ -46,6 +76,7 @@ public class App {
         Dimension screenSize = tk.getScreenSize();
 
         JMenuBar topMenu = new JMenuBar();
+        editors.setSize(panel.getSize());
 
         addMenuItems(topMenu);
         panel.add(topMenu);
