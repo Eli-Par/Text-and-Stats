@@ -11,6 +11,9 @@ class TextParserThread extends Thread {
 
     private TextParser parser;
 
+    private ParseToken.Type[] convertToWordTypes = {ParseToken.Type.WORD, ParseToken.Type.NUMBER, ParseToken.Type.SYMBOL, ParseToken.Type.EMAIL, ParseToken.Type.URL, ParseToken.Type.ACRONYM, ParseToken.Type.ABBREVIATION};
+    //private ParseToken.Type[] validEndingWordTypes = {ParseToken.Type.WORD, ParseToken.Type.EMAIL, ParseToken.Type.URL, ParseToken.Type.ACRONYM, ParseToken.Type.ABBREVIATION};
+
     private TokenMatcher[] sectionMatchers = {
         new TokenMatcher("\"[^\"]+\"", ParseToken.Type.QUOTE),
         new TokenMatcher("'[^']+'", ParseToken.Type.SINGLE_QUOTE),
@@ -20,6 +23,7 @@ class TextParserThread extends Thread {
     //TokenMatchers that will check for the various types of tokens, ordered by priority
     private TokenMatcher[] matchers = {
         new TokenMatcher("[\\w\\-]+(\\.[\\w\\-]+)*@[\\w\\-]+(\\.[\\w\\-]+)*(\\.[\\w\\-]{2,4})", ParseToken.Type.EMAIL),
+        new TokenMatcher("(http(s)?:\\/\\/.)?(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+\\.~#?&//=]*[-a-zA-Z0-9@:%_\\+~#?&//=])", ParseToken.Type.URL),
         new TokenMatcher("[+\\-]?[0-9]+(\\.[0-9]+)?", ParseToken.Type.NUMBER),
         new TokenMatcher( "([a-zA-Z_']+-?|-?[a-zA-Z_']+)+", ParseToken.Type.WORD),
         new TokenMatcher("\\s+", ParseToken.Type.WHITESPACE),
@@ -137,18 +141,17 @@ class TextParserThread extends Thread {
         for(int i = 0; i < tokens.size(); i++) {
             ParseToken token = tokens.get(i);
 
-            if(token.matchesAType(new ParseToken.Type[] {ParseToken.Type.WORD, ParseToken.Type.NUMBER, ParseToken.Type.SYMBOL, ParseToken.Type.EMAIL, ParseToken.Type.ACRONYM, ParseToken.Type.ABBREVIATION})) {
-                newWords.add(new Word(token.getText(), token.getType() == ParseToken.Type.NUMBER, token.getType() == ParseToken.Type.SYMBOL, i == tokens.size() - 2, token.matchesAType(new ParseToken.Type[] {ParseToken.Type.WORD, ParseToken.Type.EMAIL, ParseToken.Type.ACRONYM})));
+            if(token.matchesAType(convertToWordTypes)) {
+                newWords.add(new Word(token.getText(), token.getType() == ParseToken.Type.NUMBER, token.getType() == ParseToken.Type.SYMBOL, i == tokens.size() - 2, false));
             }
         }
 
         //Find the last word within the sentence and flag it as the last
-        int index = newWords.size() - 2;
-        while(index >= 0 && !newWords.get(index).isSymbol() && !newWords.get(index).isNumeric()) {
+        int index = newWords.size() - 1;
+        while(index >= 0 && (newWords.get(index).isSymbol() || newWords.get(index).isNumeric())) {
             index--;
         }
         if(index >= 0) newWords.get(index).setIsLastWordOfSentence(true);
-
         return newWords;
     }
 
