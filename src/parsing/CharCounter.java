@@ -34,6 +34,7 @@ public class CharCounter extends ParseObserver <String, String>{
             charCount += sentance.length();
 
         }
+        if(isCancelled()) return null;
         for(Word w: words){
             String finWord = w.getText();
             char [] charArray = finWord.toCharArray();
@@ -47,6 +48,7 @@ public class CharCounter extends ParseObserver <String, String>{
                 
             }
         }
+        if(isCancelled()) return null;
         for(char c: chars.keySet()){
             if(chars.get(c) >= mostFreqChar){
                 thirdMost = secMost;
@@ -65,6 +67,7 @@ public class CharCounter extends ParseObserver <String, String>{
                 thirdMostFrequent = c;
             }
         }
+        if(isCancelled()) return null;
 
         String statOutput = "Character Count: " + charCount;
         statOutput += "\n\nMost Frequent Char: '" + frequentChar+ "' occurs " + mostFreqChar +" times";
