@@ -16,6 +16,22 @@ public class App {
 
     public static Font MENU_FONT = new Font("Tahoma", Font.PLAIN, 30);
 
+    public JToolBar createCardToolBar() {
+        JToolBar toolBar = new JToolBar();
+        toolBar.setFloatable(false);
+
+        JPanel barPanel = new JPanel();
+        barPanel.setLayout(new BoxLayout(barPanel, BoxLayout.X_AXIS));
+
+        barPanel.add(new PageSwitchButton(tabList, "Editor", "Editor"));
+        barPanel.add(Box.createHorizontalStrut(5));
+        barPanel.add(new PageSwitchButton(tabList, "Label", "TestLabel"));
+
+        toolBar.add(barPanel);
+
+        return toolBar;
+    }
+
     public void addMenuItems(JMenuBar bar) {
 
         JMenu fileMenu = new JMenu("File");
@@ -90,7 +106,16 @@ public class App {
         JMenuBar topMenu = new JMenuBar();
 
         addMenuItems(topMenu);
-        frame.add(topMenu, BorderLayout.NORTH);
+
+        JToolBar toolBar = createCardToolBar();
+
+        JPanel topPanel = new JPanel();
+        topPanel.setLayout(new BorderLayout());
+
+        topPanel.add(topMenu, BorderLayout.NORTH);
+        topPanel.add(toolBar, BorderLayout.SOUTH);
+
+        frame.add(topPanel, BorderLayout.NORTH);
         frame.add(tabList);
 
         // panel.setSize(WIDTH, HEIGHT);

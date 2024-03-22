@@ -8,8 +8,8 @@ public class TabPanel extends JPanel {
 
     private String title;
 
-    JPanel panels[] = new JPanel[1];
-    String panelNames[] = new String[1];
+    JPanel panels[] = new JPanel[2];
+    String panelNames[] = new String[2];
 
     private JPanel windowPanel;
     private CardLayout cardLayout;
@@ -22,6 +22,11 @@ public class TabPanel extends JPanel {
         //Setup window panels
         panels[0] = new EditorPanel(this, path, text);
         panelNames[0] = "Editor";
+
+        //@Debug Setup window with just a label for testing
+        panels[1] = new JPanel();
+        panels[1].add(new JLabel("A screen just for testing"));
+        panelNames[1] = "TestLabel";
 
         windowPanel = new JPanel();
         cardLayout = new CardLayout();
