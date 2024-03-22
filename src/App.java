@@ -3,15 +3,15 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.nio.charset.Charset;
+import java.util.Scanner;
 
 public class App implements KeyListener {
 
     public static final String TITLE = "Editor";
+
+    public static final String SETTINGS_PATH = System.getProperty("user.home") + "/.comp2800-settings";
 
     public static final int WIDTH = 800, HEIGHT = 450;
 
@@ -41,7 +41,7 @@ public class App implements KeyListener {
 
     public void onOpen(ActionEvent e) {
 
-        JFileChooser chooser = new JFileChooser();
+        JFileChooser chooser = new JFileChooser(getLastOpenPath());
         JFrame frame = new JFrame("Select File");
 
         int act = chooser.showOpenDialog(frame);
@@ -60,10 +60,42 @@ public class App implements KeyListener {
 
     }
 
+    public void setLastOpenPath(String s) {
+
+        try {
+
+            PrintStream out = new PrintStream(new FileOutputStream(SETTINGS_PATH));
+            out.println(s);
+            out.close();
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public String getLastOpenPath() {
+
+        String s = System.getProperty("user.home");
+        try {
+
+            Scanner scanner = new Scanner(new File(SETTINGS_PATH));
+            s = scanner.nextLine();
+            scanner.close();
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return s;
+
+    }
+
     public void loadFile(File f) {
 
         String title = f.getName();
         StringBuilder sBuilder = new StringBuilder();
+        setLastOpenPath(f.getParent());
 
         try {
 

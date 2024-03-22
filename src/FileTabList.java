@@ -22,9 +22,13 @@ public class FileTabList extends JPanel{
     }
 
     public void addTab(TabPanel tab) {
+
+        tab.setParent(tabbedPane);
+        tab.addKeyListener(app);
         tabs.add(tab);
         tabbedPane.addTab(tab.getTitle(), tab);
         tabbedPane.setSelectedComponent(tab);
+
     }
 
     public void save(int index) throws IOException {
