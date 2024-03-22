@@ -45,4 +45,8 @@ public class TabPanel extends JPanel {
         //Parsing can go here
     }
 
+    public EditorPanel getEditor() {
+        return (EditorPanel) panels[0];
+    }
+
 }
