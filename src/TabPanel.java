@@ -9,10 +9,11 @@ public class TabPanel extends JPanel {
 
     private String title;
 
-    JPanel panels[] = new JPanel[1];
-    String panelNames[] = new String[1];
+    JPanel panels[] = new JPanel[2];
+    String panelNames[] = new String[2];
 
     private JPanel windowPanel;
+    private CardLayout cardLayout;
 
     private JTabbedPane parent;
 
@@ -26,8 +27,14 @@ public class TabPanel extends JPanel {
         panels[0] = new EditorPanel(this, path, text);
         panelNames[0] = "Editor";
 
+        //@Debug Setup window with just a label for testing
+        panels[1] = new JPanel();
+        panels[1].add(new JLabel("A screen just for testing"));
+        panelNames[1] = "TestLabel";
+
         windowPanel = new JPanel();
-        windowPanel.setLayout(new CardLayout());
+        cardLayout = new CardLayout();
+        windowPanel.setLayout(cardLayout);
 
         this.setLayout(new BorderLayout());
         for(int i = 0; i < panelNames.length; i++) {
@@ -82,6 +89,11 @@ public class TabPanel extends JPanel {
 
     public EditorPanel getEditor() {
         return (EditorPanel) panels[0];
+    }
+
+    //Change the tab to show the screen with the specified name
+    public void changeCard(String name) {
+        cardLayout.show(windowPanel, name);
     }
 
 }
