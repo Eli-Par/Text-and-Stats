@@ -10,9 +10,11 @@ public class App {
 
     public static final String TITLE = "Editor";
 
-    public static final int WIDTH = 1600, HEIGHT = 900;
+    public static final int WIDTH = 800, HEIGHT = 450;
 
     private static FileTabList tabList;
+
+    public static Font MENU_FONT = new Font("Tahoma", Font.PLAIN, 30);
 
     public void addMenuItems(JMenuBar bar) {
 
@@ -21,6 +23,7 @@ public class App {
         JMenuItem open = new JMenuItem("Open");
 
         bar.add(fileMenu);
+        fileMenu.setFont(MENU_FONT);
         fileMenu.add(save);
         fileMenu.add(open);
 
@@ -36,6 +39,12 @@ public class App {
         });
 
         save.addActionListener(e -> {
+
+            try {
+                tabList.save();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
 
         });
 
@@ -65,7 +74,7 @@ public class App {
             e.printStackTrace();
         }
 
-        TabPanel tabPanel = new TabPanel(sBuilder.toString(), title);
+        TabPanel tabPanel = new TabPanel(f, sBuilder.toString(), title);
         tabList.addTab(tabPanel);
 
     }
@@ -73,6 +82,7 @@ public class App {
     public void init() {
 
         JFrame frame = new JFrame(TITLE);
+        // JPanel panel = new JPanel();
 
         Toolkit tk = Toolkit.getDefaultToolkit();
         Dimension screenSize = tk.getScreenSize();
@@ -89,7 +99,7 @@ public class App {
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         //frame.pack();
-        frame.setSize(600, 400);
+        frame.setSize(WIDTH, HEIGHT);
         frame.setLocation((screenSize.width - frame.getWidth()) / 2, 0);
         frame.setVisible(true);
 

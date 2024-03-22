@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.io.*;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -10,10 +11,14 @@ public class EditorPanel extends JPanel implements DocumentListener{
 
     private JTextArea area;
 
-    public EditorPanel(TabPanel tab, String text) {
+    private File path;
+
+    public EditorPanel(TabPanel tab, File p, String text) {
+
         super();
 
         this.tab = tab;
+        path = p;
 
         this.setLayout(new BorderLayout());
 
@@ -31,6 +36,16 @@ public class EditorPanel extends JPanel implements DocumentListener{
         this.add(scroll);
 
         area.getDocument().addDocumentListener(this);
+
+    }
+
+    public void save() throws IOException {
+
+        PrintStream out = new PrintStream(new BufferedOutputStream(new FileOutputStream(path)));
+
+        out.print(area.getText());
+        out.close();
+
     }
 
     @Override
