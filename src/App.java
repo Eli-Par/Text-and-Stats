@@ -46,12 +46,18 @@ public class App implements KeyListener {
         JMenuItem font = new JMenuItem("Font");
 
         bar.add(fileMenu);
+        bar.add(vMenu);
+
         fileMenu.setFont(MENU_FONT);
         fileMenu.add(save);
         fileMenu.add(open);
 
+        vMenu.setFont(MENU_FONT);
+        vMenu.add(font);
+
         open.addActionListener(this::onOpen);
         save.addActionListener(this::onSave);
+        font.addActionListener(this::fontSetter);
 
     }
 
@@ -71,7 +77,7 @@ public class App implements KeyListener {
     }
 
     public void fontSetter(ActionEvent e) {
-
+        new FontSetter(tabList);
     }
 
     public void onSave(ActionEvent e) {
