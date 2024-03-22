@@ -10,6 +10,8 @@ public class FileTabList extends JPanel{
     
     private ArrayList<TabPanel> tabs = new ArrayList<>();
 
+    private String currentCardName = "Editor";
+
     public FileTabList() {
         this.setLayout(new BorderLayout());
         this.add(tabbedPane);
@@ -19,6 +21,8 @@ public class FileTabList extends JPanel{
         tabs.add(tab);
         tabbedPane.addTab(tab.getTitle(), tab);
         tabbedPane.setSelectedComponent(tab);
+
+        tab.changeCard(currentCardName);
     }
 
     public void save(int index) throws IOException {
@@ -47,6 +51,15 @@ public class FileTabList extends JPanel{
 
         System.err.println("Tab list contained non TabPanel component");
         return null;
+    }
+
+    //Change all tabs to show the screen with the specified name
+    public void changeCards(String name) {
+        for(TabPanel tabPanel : tabs) {
+            tabPanel.changeCard(name);
+        }
+
+        currentCardName = name;
     }
 
 }

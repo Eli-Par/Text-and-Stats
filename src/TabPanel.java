@@ -12,6 +12,7 @@ public class TabPanel extends JPanel {
     String panelNames[] = new String[1];
 
     private JPanel windowPanel;
+    private CardLayout cardLayout;
 
     public TabPanel(File path, String text, String title) {
         super();
@@ -23,7 +24,8 @@ public class TabPanel extends JPanel {
         panelNames[0] = "Editor";
 
         windowPanel = new JPanel();
-        windowPanel.setLayout(new CardLayout());
+        cardLayout = new CardLayout();
+        windowPanel.setLayout(cardLayout);
 
         this.setLayout(new BorderLayout());
         for(int i = 0; i < panelNames.length; i++) {
@@ -47,6 +49,11 @@ public class TabPanel extends JPanel {
 
     public EditorPanel getEditor() {
         return (EditorPanel) panels[0];
+    }
+
+    //Change the tab to show the screen with the specified name
+    public void changeCard(String name) {
+        cardLayout.show(windowPanel, name);
     }
 
 }
