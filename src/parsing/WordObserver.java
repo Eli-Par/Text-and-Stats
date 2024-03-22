@@ -19,16 +19,9 @@ public class WordObserver extends ParseObserver <String, String>{
 
         ArrayList<Word> words = parser.getWords();
         ArrayList<Sentence> sents = parser.getSentences();
-        int totalLength =0;
-        for(Word w: words){
-            String finWord = w.getText();
-            totalLength += finWord.length();
-        }
-
 
         String statOutput = "Words: " + words.size() +"\n";
         statOutput += "Sentences: " + sents.size();
-        statOutput += "\nThe Average Word Length is " + totalLength/words.size();
 
         // Throughout the background task, isCancelled should be called to check if the task has been stopped
         // If it has, simply returning null is fine since the observer will not allow this result to reach the

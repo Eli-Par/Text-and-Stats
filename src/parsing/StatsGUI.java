@@ -3,6 +3,8 @@ package parsing;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import java.awt.*;
 
@@ -14,18 +16,28 @@ public class StatsGUI {
      private static JTextArea stats = new JTextArea(5,30);
      private static JTextArea wordFrequencies = new JTextArea(5,30);
      private static JTextArea charCount = new JTextArea(5,30);
+     private static JTextArea totChars = new JTextArea(5, 10);
 
     public static void main(String[] args) {
         JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
+        frame.setLayout(new BorderLayout());
 
 
-        JPanel panel = new JPanel(new GridBagLayout());
+        JPanel wordPanel = new JPanel(new GridBagLayout());
+        JPanel charPanel = new JPanel(new GridBagLayout());
+        JPanel sentPanel = new JPanel(new GridBagLayout());
+        JPanel pButton = new JPanel();
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
 
-        frame.add(panel);
+        JTabbedPane tabs = new JTabbedPane();
+
+        
+        tabs.addTab("Word Statistics", wordPanel);
+        tabs.addTab("Character Statistics", charPanel);
+        tabs.addTab("Sentence Statistics", sentPanel);
 
         //Create the parser
         Parser parser = new TextParser();  
@@ -43,7 +55,8 @@ public class StatsGUI {
         JButton startButton = new JButton("Start Parse");
         gbc.gridx = 0;
         gbc.anchor = GridBagConstraints.NORTH;
-        panel.add(startButton, gbc);
+        pButton.add(startButton);
+
         startButton.addActionListener(parseAction);
 
         gbc.gridx = 1;
@@ -51,11 +64,18 @@ public class StatsGUI {
         stats.setEditable(false);
         wordFrequencies.setEditable(false);
         charCount.setEditable(false);
-        panel.add(stats, gbc);
-        gbc.gridy = 1;
-        panel.add(wordFrequencies, gbc);
-        gbc.gridy = 2;
-        panel.add(charCount, gbc);
+        wordPanel.add(wordFrequencies, gbc);
+
+        charPanel.add(totChars);
+        gbc.gridx = 1;
+        
+        JScrollPane scrollPane = new JScrollPane(charCount);
+        charPanel.add(scrollPane, gbc);
+        gbc.gridx = 0;
+        sentPanel.add(stats, gbc);
+
+        frame.add(pButton, BorderLayout.NORTH);
+        frame.add(tabs, BorderLayout.CENTER);
 
         frame.setSize(600, 400); 
         frame.setVisible(true);
@@ -68,6 +88,8 @@ public class StatsGUI {
     }
     public static void setChars(String s){
         charCount.setText(s);
-
+    }
+    public static void setTotChars(String s){
+        totChars.setText(s);
     }
 }

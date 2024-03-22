@@ -64,6 +64,11 @@ public class WordFrequency extends ParseObserver <String, String>{
         // If it has, simply returning null is fine since the observer will not allow this result to reach the
         // other methods on the swing event disbatch thread
         if(isCancelled()) return null;
+        int totalLength =0;
+        for(Word w: words){
+            String finWord = w.getText();
+            totalLength += finWord.length();
+        }
 
         System.out.println("Background task returning");
         
@@ -71,6 +76,7 @@ public class WordFrequency extends ParseObserver <String, String>{
         statOutput += "2nd most Frequent Word: '" + secMostFrequent + "' appears " +secMost +" times\n";
         statOutput += "3rd most Frequent Word: '" + thirdMostFrequent + "' appears " +thirdMost +" times\n";
         statOutput += "\nThere are "+ totWords +" unique Words";
+        statOutput += "\nThe Average Word Length is " + totalLength/words.size();
         return statOutput;
     }
 

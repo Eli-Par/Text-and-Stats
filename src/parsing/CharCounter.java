@@ -2,7 +2,10 @@ package parsing;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 public class CharCounter extends ParseObserver <String, String>{
     
     private Parser parser;
@@ -22,12 +25,6 @@ public class CharCounter extends ParseObserver <String, String>{
         ArrayList<Sentence> sents = parser.getSentences();
         ArrayList<Word> words = parser.getWords();
         HashMap<Character, Integer> chars = new HashMap<Character, Integer>();
-        int mostFreqChar = 0;
-        int secMost = 0;
-        int thirdMost = 0;
-        char frequentChar = ' ';
-        char secMostFrequent = ' ';
-        char thirdMostFrequent = ' ';
 
         for(Sentence s : sents){
             String sentance = s.getText();
@@ -41,7 +38,7 @@ public class CharCounter extends ParseObserver <String, String>{
             for(char c: charArray){
                 c = Character.toLowerCase(c);
                 if(!chars.containsKey(c)){
-                    chars.put(c, 0);
+                    chars.put(c, 1);
                 }else{
                     chars.put(c, chars.get(c)+1);
                 }
@@ -49,31 +46,19 @@ public class CharCounter extends ParseObserver <String, String>{
             }
         }
         if(isCancelled()) return null;
-        for(char c: chars.keySet()){
-            if(chars.get(c) >= mostFreqChar){
-                thirdMost = secMost;
-                thirdMostFrequent = secMostFrequent;
-                secMost = mostFreqChar;
-                secMostFrequent = frequentChar;
-                mostFreqChar = chars.get(c);
-                frequentChar = c;
-            }else if(chars.get(c)>= secMost){
-                thirdMost = secMost;
-                thirdMostFrequent = secMostFrequent;
-                secMost = chars.get(c);
-                secMostFrequent = c;
-            }else if(chars.get(c)>= thirdMost){
-                thirdMost = chars.get(c);
-                thirdMostFrequent = c;
-            }
-        }
-        if(isCancelled()) return null;
+        
 
-        String statOutput = "Character Count: " + charCount;
-        statOutput += "\n\nMost Frequent Char: '" + frequentChar+ "' occurs " + mostFreqChar +" times";
-        statOutput += "\n2nd most Frequent Char: '" + secMostFrequent+ "' occurs " + secMost +" times";
-        statOutput += "\n3rd most Frequent Char: '" + thirdMostFrequent+ "' occurs " + thirdMost +" times";
-        return statOutput;
+        
+        StatsGUI.setTotChars("Character Count: " + charCount + "\n");
+        LinkedHashMap<Character, Integer> sortedChars = chars.entrySet().stream()
+                .sorted(Map.Entry.<Character, Integer>comparingByValue().reversed())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+
+        // Construct statOutput with sorted characters
+        StringBuilder statOutput = new StringBuilder();
+        sortedChars.forEach((c, count) -> statOutput.append(c).append(" appears ").append(count).append(" times\n"));
+        if(isCancelled()) return null;
+        return statOutput.toString();
     }
 
     @Override
