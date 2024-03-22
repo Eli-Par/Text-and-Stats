@@ -45,6 +45,7 @@ public class App {
     public void loadFile(File f) {
 
         JTextArea area = new JTextArea();
+        String title = f.getName();
 
         try {
 
@@ -64,30 +65,31 @@ public class App {
         }
 
         area.setSize(editors.getSize());
-        editors.add(area);
+        editors.addTab(title, area);
 
     }
 
     public void init() {
 
         JFrame frame = new JFrame(TITLE);
-        JPanel panel = new JPanel();
+        // JPanel panel = new JPanel();
         Toolkit tk = Toolkit.getDefaultToolkit();
         Dimension screenSize = tk.getScreenSize();
 
         JMenuBar topMenu = new JMenuBar();
-        editors.setSize(panel.getSize());
+        // editors.setSize(panel.getSize());
 
         addMenuItems(topMenu);
-        panel.add(topMenu);
-        panel.add(editors);
+        frame.add(topMenu, BorderLayout.NORTH);
+        frame.add(editors);
 
-        panel.setSize(WIDTH, HEIGHT);
-        panel.setPreferredSize(panel.getSize());
-        frame.add(panel);
+        // panel.setSize(WIDTH, HEIGHT);
+        // panel.setPreferredSize(panel.getSize());
+        // //frame.add(panel);
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.pack();
+        //frame.pack();
+        frame.setSize(600, 400);
         frame.setLocation((screenSize.width - frame.getWidth()) / 2, 0);
         frame.setVisible(true);
 
