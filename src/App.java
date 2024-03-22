@@ -3,12 +3,16 @@ import java.awt.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 
 public class App {
 
     public static final String TITLE = "Editor";
 
     public static final int WIDTH = 1600, HEIGHT = 900;
+
+    private static FileTabList tabList;
 
     public void addMenuItems(JMenuBar bar) {
 
@@ -37,52 +41,47 @@ public class App {
 
     }
 
-    private JTabbedPane editors;
     public App() {
-        editors = new JTabbedPane();
+        tabList = new FileTabList();
     }
 
     public void loadFile(File f) {
 
-        JTextArea area = new JTextArea();
         String title = f.getName();
+        StringBuilder sBuilder = new StringBuilder();
 
         try {
 
-            FileInputStream in = new FileInputStream(f);
-            StringBuilder sBuilder = new StringBuilder();
-            byte[]fileData = new byte[1024];
+            InputStreamReader  in = new InputStreamReader (new FileInputStream(f), Charset.forName("UTF-8"));
+            char[]fileData = new char[1024];
             int cnt;
 
             while ((cnt = in.read(fileData)) > 0)
                 sBuilder.append(new String(fileData, 0, cnt));
 
-            area.setText(sBuilder.toString());
             in.close();
 
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        JScrollPane scroll = new JScrollPane(area);
-        scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-        editors.addTab(title, scroll);
+        TabPanel tabPanel = new TabPanel(sBuilder.toString(), title);
+        tabList.addTab(tabPanel);
 
     }
 
     public void init() {
 
         JFrame frame = new JFrame(TITLE);
-        // JPanel panel = new JPanel();
+
         Toolkit tk = Toolkit.getDefaultToolkit();
         Dimension screenSize = tk.getScreenSize();
 
         JMenuBar topMenu = new JMenuBar();
-        // editors.setSize(panel.getSize());
 
         addMenuItems(topMenu);
         frame.add(topMenu, BorderLayout.NORTH);
-        frame.add(editors);
+        frame.add(tabList);
 
         // panel.setSize(WIDTH, HEIGHT);
         // panel.setPreferredSize(panel.getSize());
