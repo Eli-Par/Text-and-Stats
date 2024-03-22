@@ -20,4 +20,14 @@ public class FileTabList extends JPanel{
         tabbedPane.setSelectedComponent(tab);
     }
 
+    public EditorPanel getCurrentEditor() {
+        Component component = tabbedPane.getSelectedComponent();
+        if(component instanceof TabPanel) {
+            return ((TabPanel) component).getEditor();
+        }
+
+        System.err.println("Tab list contained non TabPanel component");
+        return null;
+    }
+
 }
