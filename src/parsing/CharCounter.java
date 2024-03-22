@@ -9,9 +9,11 @@ import java.util.LinkedHashMap;
 public class CharCounter extends ParseObserver <String, String>{
     
     private Parser parser;
+    private TextStatsPanel panel;
 
-    public CharCounter(Parser parser) {
+    public CharCounter(Parser parser, TextStatsPanel textPanel) {
         this.parser = parser;
+        this.panel = textPanel;
     }
 
     @Override
@@ -49,14 +51,14 @@ public class CharCounter extends ParseObserver <String, String>{
         
 
         
-        StatsGUI.setTotChars("Character Count: " + charCount + "\n");
+        panel.setTotChars("Character Count: " + charCount + "\n");
         LinkedHashMap<Character, Integer> sortedChars = chars.entrySet().stream()
                 .sorted(Map.Entry.<Character, Integer>comparingByValue().reversed())
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
 
         // Construct statOutput with sorted characters
         StringBuilder statOutput = new StringBuilder();
-        sortedChars.forEach((c, count) -> statOutput.append(c).append(" appears ").append(count).append(" times\n"));
+        sortedChars.forEach((c, count) -> statOutput.append("'" + c + "'").append(" appears ").append(count).append(" times\n"));
         if(isCancelled()) return null;
         return statOutput.toString();
     }
@@ -68,12 +70,12 @@ public class CharCounter extends ParseObserver <String, String>{
     @Override
     protected void doneTask(String output) {
         System.out.println("!!>>Done run<<!!");
-        StatsGUI.setChars(output);
+        panel.setChars(output);
 
     }
 
     @Override
     public void parseStarted() {
-        StatsGUI.setChars("Parse started...");
+        panel.setChars("Parse started...");
     }
 }

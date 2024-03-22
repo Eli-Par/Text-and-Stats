@@ -3,12 +3,14 @@ package parsing;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WordObserver extends ParseObserver <String, String>{
+public class SentObserver extends ParseObserver <String, String>{
     
     private Parser parser;
+    private TextStatsPanel panel;
 
-    public WordObserver(Parser parser) {
+    public SentObserver(Parser parser, TextStatsPanel textPanel) {
         this.parser = parser;
+        this.panel = textPanel;
     }
 
     @Override
@@ -20,8 +22,7 @@ public class WordObserver extends ParseObserver <String, String>{
         ArrayList<Word> words = parser.getWords();
         ArrayList<Sentence> sents = parser.getSentences();
 
-        String statOutput = "Words: " + words.size() +"\n";
-        statOutput += "Sentences: " + sents.size();
+        String statOutput = "Sentences: " + sents.size();
 
         // Throughout the background task, isCancelled should be called to check if the task has been stopped
         // If it has, simply returning null is fine since the observer will not allow this result to reach the
@@ -35,18 +36,18 @@ public class WordObserver extends ParseObserver <String, String>{
 
     @Override
     protected void processTask(List<String> textList) {
-        StatsGUI.setStats("Processing tokens...");
+        panel.setStats("Processing tokens...");
     }
 
     @Override
     protected void doneTask(String output) {
         System.out.println("!!>>Done run<<!!");
 
-        StatsGUI.setStats(output);
+        panel.setStats(output);
     }
 
     @Override
     public void parseStarted() {
-        StatsGUI.setStats("Parse started...");
+        panel.setStats("Parse started...");
     }
 }

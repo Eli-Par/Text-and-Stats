@@ -7,9 +7,11 @@ import java.util.HashMap;
 public class WordFrequency extends ParseObserver <String, String>{
     
     private Parser parser;
+    private TextStatsPanel panel;
 
-    public WordFrequency(Parser parser) {
+    public WordFrequency(Parser parser, TextStatsPanel textPanel) {
         this.parser = parser;
+        this.panel = textPanel;
     }
 
     @Override
@@ -21,12 +23,6 @@ public class WordFrequency extends ParseObserver <String, String>{
         ArrayList<Word> words = parser.getWords();
         HashMap<String, Integer> wFrequencies = new HashMap<String, Integer>();
         String wordStr;
-        int most = 0;
-        int secMost = 0;
-        int thirdMost = 0;
-        String mostFrequent = "";
-        String secMostFrequent = "";
-        String thirdMostFrequent = "";
         int totWords = 0;
         
         if(isCancelled()) return null;
@@ -39,23 +35,13 @@ public class WordFrequency extends ParseObserver <String, String>{
             wFrequencies.put(wordStr, wFrequencies.get(wordStr) + 1);
         }
         if(isCancelled()) return null;
-        for(String word : wFrequencies.keySet()){
+
+        StringBuilder aboveOneFrequencyWords = new StringBuilder();
+
+        for (String word : wFrequencies.keySet()) {
             int f = wFrequencies.get(word);
-            if(f>=most){
-                thirdMost = secMost;
-                thirdMostFrequent = secMostFrequent;
-                secMost = most;
-                secMostFrequent = mostFrequent;
-                most = f;
-                mostFrequent = word;
-            }else if(f>=secMost){
-                thirdMost = secMost;
-                thirdMostFrequent = secMostFrequent;
-                secMost = f;
-                secMostFrequent = word;
-            }else if(f>= thirdMost){
-                thirdMost = f;
-                thirdMostFrequent = word;
+            if (f > 1) {
+                aboveOneFrequencyWords.append("'" + word+ "'").append(" appears ").append(f).append(" times\n");
             }
             totWords++;
         }
@@ -70,13 +56,15 @@ public class WordFrequency extends ParseObserver <String, String>{
             totalLength += finWord.length();
         }
 
+        String tWordString = "";
+        tWordString = "Words: " + words.size();
+        tWordString += "\nThere are "+ totWords +" unique Words";
+        tWordString += "\nThe Average Word Length is " + totalLength/words.size();
+        panel.setTotWords(tWordString);
+
+        String statOutput = aboveOneFrequencyWords.toString().trim();
+
         System.out.println("Background task returning");
-        
-        String statOutput = "Most Frequent Word: '" + mostFrequent + "' appears " + most +" times\n";
-        statOutput += "2nd most Frequent Word: '" + secMostFrequent + "' appears " +secMost +" times\n";
-        statOutput += "3rd most Frequent Word: '" + thirdMostFrequent + "' appears " +thirdMost +" times\n";
-        statOutput += "\nThere are "+ totWords +" unique Words";
-        statOutput += "\nThe Average Word Length is " + totalLength/words.size();
         return statOutput;
     }
 
@@ -87,13 +75,13 @@ public class WordFrequency extends ParseObserver <String, String>{
     @Override
     protected void doneTask(String output) {
         System.out.println("!!>>Done run<<!!");
-        StatsGUI.setFrequencies(output);
+        panel.setFrequencies(output);
 
     }
 
     @Override
     public void parseStarted() {
-        StatsGUI.setFrequencies("Parse started...");
+        panel.setFrequencies("Parse started...");
     }
 }
 
