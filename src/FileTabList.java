@@ -39,6 +39,9 @@ public class FileTabList extends JPanel{
     public void setEditorFont(Font font) {
 
         setFont(font);
+        app.opts.fontFamily = font.getFamily();
+        app.opts.fontSize = font.getSize();
+
         for(Component c : tabbedPane.getComponents()) {
             TabPanel t = (TabPanel)c;
             t.getEditor().getTextArea().setFont(font);

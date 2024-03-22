@@ -26,9 +26,10 @@ public class FontSetter {
         frame = new JFrame("Set Font");
         JPanel panel = new JPanel();
         Font f = new Font("Tahoma", Font.PLAIN, 36);
+        Font current = tabList.getFont();
 
         sizeBox = new JComboBox<>(FONT_SIZES);
-        familyField = new JTextField(20);
+        familyField = new JTextField(current.getFamily(), 20);
         JButton setButton = new JButton("Change Font");
 
         sizeBox.setFont(f);
@@ -36,6 +37,7 @@ public class FontSetter {
         setButton.setFont(f);
 
         sizeBox.setEditable(true);
+        sizeBox.setSelectedItem(current.getSize());
         setButton.addActionListener(this::updateFont);
 
         panel.add(familyField);

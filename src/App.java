@@ -1,13 +1,11 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.*;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.util.Scanner;
 
-public class App implements KeyListener {
+public class App implements KeyListener, WindowListener {
 
     public static final String TITLE = "Editor";
 
@@ -18,6 +16,8 @@ public class App implements KeyListener {
     private static FileTabList tabList;
 
     public static Font MENU_FONT = new Font("Tahoma", Font.PLAIN, 30);
+
+    UserOptions opts;
 
     public JToolBar createCardToolBar() {
         JToolBar toolBar = new JToolBar();
@@ -42,6 +42,7 @@ public class App implements KeyListener {
 
         JMenuItem save = new JMenuItem("Save");
         JMenuItem open = new JMenuItem("Open");
+        JMenuItem saveAll = new JMenuItem("Save All");
 
         JMenuItem font = new JMenuItem("Font");
 
@@ -50,6 +51,7 @@ public class App implements KeyListener {
 
         fileMenu.setFont(MENU_FONT);
         fileMenu.add(save);
+        fileMenu.add(saveAll);
         fileMenu.add(open);
 
         vMenu.setFont(MENU_FONT);
@@ -57,17 +59,24 @@ public class App implements KeyListener {
 
         open.addActionListener(this::onOpen);
         save.addActionListener(this::onSave);
+        saveAll.addActionListener(this::onSaveAll);
         font.addActionListener(this::fontSetter);
 
     }
 
     public App() {
+
         tabList = new FileTabList(this);
+        opts = new UserOptions();
+
+        loadOptions();
+        tabList.setEditorFont(new Font(opts.fontFamily, Font.PLAIN, opts.fontSize));
+
     }
 
     public void onOpen(ActionEvent e) {
 
-        JFileChooser chooser = new JFileChooser(getLastOpenPath());
+        JFileChooser chooser = new JFileChooser(opts.lastOpenLocation);
         JFrame frame = new JFrame("Select File");
 
         int act = chooser.showOpenDialog(frame);
@@ -90,12 +99,26 @@ public class App implements KeyListener {
 
     }
 
-    public void setLastOpenPath(String s) {
+    public void onSaveAll(ActionEvent e) {
+
+        try {
+            tabList.saveAll();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+
+    }
+
+    public void saveOptions() {
 
         try {
 
             PrintStream out = new PrintStream(new FileOutputStream(SETTINGS_PATH));
-            out.println(s);
+
+            out.println(opts.lastOpenLocation);
+            out.println(opts.fontFamily);
+            out.println(opts.fontSize);
+
             out.close();
 
         } catch (FileNotFoundException e) {
@@ -104,20 +127,22 @@ public class App implements KeyListener {
 
     }
 
-    public String getLastOpenPath() {
+    public void loadOptions() {
 
-        String s = System.getProperty("user.home");
+        opts.lastOpenLocation = System.getProperty("user.home");
         try {
 
             Scanner scanner = new Scanner(new File(SETTINGS_PATH));
-            s = scanner.nextLine();
+
+            opts.lastOpenLocation = scanner.nextLine();
+            opts.fontFamily = scanner.nextLine();
+            opts.fontSize = scanner.nextInt();
+
             scanner.close();
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-
-        return s;
 
     }
 
@@ -125,7 +150,7 @@ public class App implements KeyListener {
 
         String title = f.getName();
         StringBuilder sBuilder = new StringBuilder();
-        setLastOpenPath(f.getParent());
+        opts.lastOpenLocation = f.getParent();
 
         try {
 
@@ -176,6 +201,7 @@ public class App implements KeyListener {
         // //frame.add(panel);
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.addWindowListener(this);
         //frame.pack();
         frame.setSize(WIDTH, HEIGHT);
         frame.setLocation((screenSize.width - frame.getWidth()) / 2, 0);
@@ -234,4 +260,90 @@ public class App implements KeyListener {
 
     }
 
+    /**
+     * Invoked the first time a window is made visible.
+     *
+     * @param e the event to be processed
+     */
+    @Override
+    public void windowOpened(WindowEvent e) {
+
+    }
+
+    /**
+     * Invoked when the user attempts to close the window
+     * from the window's system menu.
+     *
+     * @param e the event to be processed
+     */
+    @Override
+    public void windowClosing(WindowEvent e) {
+        saveOptions();
+    }
+
+    /**
+     * Invoked when a window has been closed as the result
+     * of calling dispose on the window.
+     *
+     * @param e the event to be processed
+     */
+    @Override
+    public void windowClosed(WindowEvent e) {
+
+    }
+
+    /**
+     * Invoked when a window is changed from a normal to a
+     * minimized state. For many platforms, a minimized window
+     * is displayed as the icon specified in the window's
+     * iconImage property.
+     *
+     * @param e the event to be processed
+     * @see Frame#setIconImage
+     */
+    @Override
+    public void windowIconified(WindowEvent e) {
+
+    }
+
+    /**
+     * Invoked when a window is changed from a minimized
+     * to a normal state.
+     *
+     * @param e the event to be processed
+     */
+    @Override
+    public void windowDeiconified(WindowEvent e) {
+
+    }
+
+    /**
+     * Invoked when the Window is set to be the active Window. Only a Frame or
+     * a Dialog can be the active Window. The native windowing system may
+     * denote the active Window or its children with special decorations, such
+     * as a highlighted title bar. The active Window is always either the
+     * focused Window, or the first Frame or Dialog that is an owner of the
+     * focused Window.
+     *
+     * @param e the event to be processed
+     */
+    @Override
+    public void windowActivated(WindowEvent e) {
+
+    }
+
+    /**
+     * Invoked when a Window is no longer the active Window. Only a Frame or a
+     * Dialog can be the active Window. The native windowing system may denote
+     * the active Window or its children with special decorations, such as a
+     * highlighted title bar. The active Window is always either the focused
+     * Window, or the first Frame or Dialog that is an owner of the focused
+     * Window.
+     *
+     * @param e the event to be processed
+     */
+    @Override
+    public void windowDeactivated(WindowEvent e) {
+
+    }
 }
