@@ -64,8 +64,9 @@ public class App {
             e.printStackTrace();
         }
 
-        area.setSize(editors.getSize());
-        editors.addTab(title, area);
+        JScrollPane scroll = new JScrollPane(area);
+        scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        editors.addTab(title, scroll);
 
     }
 
