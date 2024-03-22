@@ -19,7 +19,9 @@ public class FileTabList extends JPanel{
         app = a;
         this.setLayout(new BorderLayout());
         this.add(tabbedPane);
+        addKeyListener(app);
         tabbedPane.addKeyListener(app);
+        setFont(new Font("Tahoma", Font.PLAIN,20));
 
     }
 
@@ -27,11 +29,18 @@ public class FileTabList extends JPanel{
 
         tab.setParent(tabbedPane);
         tab.addKeyListener(app);
+        tab.setFont(getFont());
         tabs.add(tab);
         tabbedPane.addTab(tab.getTitle(), tab);
         tabbedPane.setSelectedComponent(tab);
 
         tab.changeCard(currentCardName);
+    }
+
+    public void setEditorFont(Font font) {
+        for(Component c : tabbedPane.getComponents()) {
+
+        }
     }
 
     public void save(int index) throws IOException {

@@ -38,8 +38,12 @@ public class App implements KeyListener {
     public void addMenuItems(JMenuBar bar) {
 
         JMenu fileMenu = new JMenu("File");
+        JMenu vMenu = new JMenu("View");
+
         JMenuItem save = new JMenuItem("Save");
         JMenuItem open = new JMenuItem("Open");
+
+        JMenuItem font = new JMenuItem("Font");
 
         bar.add(fileMenu);
         fileMenu.setFont(MENU_FONT);
@@ -63,6 +67,10 @@ public class App implements KeyListener {
         int act = chooser.showOpenDialog(frame);
         if (act == JFileChooser.APPROVE_OPTION)
             loadFile(chooser.getSelectedFile());
+
+    }
+
+    public void fontSetter(ActionEvent e) {
 
     }
 
@@ -155,6 +163,7 @@ public class App implements KeyListener {
 
         frame.add(topPanel, BorderLayout.NORTH);
         frame.add(tabList);
+        frame.addKeyListener(this);
 
         // panel.setSize(WIDTH, HEIGHT);
         // panel.setPreferredSize(panel.getSize());
