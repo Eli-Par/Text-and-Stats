@@ -30,11 +30,11 @@ public class EditorPanel extends JPanel implements DocumentListener{
         area.setLineWrap(true);
         area.setText(text);
 
-        JPanel panel = new JPanel();
-        panel.setLayout(new BorderLayout());
-        panel.add(area);
+        // JPanel panel = new JPanel();
+        // panel.setLayout(new BorderLayout());
+        // panel.add(area);
 
-        JScrollPane scroll = new JScrollPane(panel);
+        JScrollPane scroll = new JScrollPane(area);
         scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
         this.add(scroll);
@@ -88,6 +88,10 @@ public class EditorPanel extends JPanel implements DocumentListener{
     public void addKeyListener(KeyListener l) {
         super.addKeyListener(l);
         area.addKeyListener(l);
+    }
+
+    public JTextArea getTextArea() {
+        return area;
     }
 
 }
