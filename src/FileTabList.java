@@ -10,15 +10,25 @@ public class FileTabList extends JPanel{
     
     private ArrayList<TabPanel> tabs = new ArrayList<>();
 
-    public FileTabList() {
+    private App app;
+
+    public FileTabList(App a) {
+
+        app = a;
         this.setLayout(new BorderLayout());
         this.add(tabbedPane);
+        tabbedPane.addKeyListener(app);
+
     }
 
     public void addTab(TabPanel tab) {
+
+        tab.setParent(tabbedPane);
+        tab.addKeyListener(app);
         tabs.add(tab);
         tabbedPane.addTab(tab.getTitle(), tab);
         tabbedPane.setSelectedComponent(tab);
+
     }
 
     public void save(int index) throws IOException {
@@ -39,14 +49,22 @@ public class FileTabList extends JPanel{
 
     }
 
+    public void close() {
+
+        int ind = tabbedPane.getSelectedIndex();
+
+        if(ind == -1)
+            return;
+        tabbedPane.remove(ind);
+
+    }
+
     public EditorPanel getCurrentEditor() {
         Component component = tabbedPane.getSelectedComponent();
-        if(component instanceof TabPanel) {
-            return ((TabPanel) component).getEditor();
+        if(component instanceof TabPanel panel) {
+            return panel.getEditor();
         }
-
-        System.err.println("Tab list contained non TabPanel component");
-        return null;
+        throw new IllegalStateException("Selected component is " + component.getClass() + ", not TabPanel");
     }
 
 }

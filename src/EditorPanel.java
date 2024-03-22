@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.awt.event.KeyListener;
 import java.io.*;
 
 import javax.swing.*;
@@ -13,12 +14,15 @@ public class EditorPanel extends JPanel implements DocumentListener{
 
     private File path;
 
+    private boolean saved;
+
     public EditorPanel(TabPanel tab, File p, String text) {
 
         super();
 
         this.tab = tab;
         path = p;
+        saved = true;
 
         this.setLayout(new BorderLayout());
 
@@ -43,6 +47,11 @@ public class EditorPanel extends JPanel implements DocumentListener{
 
         PrintStream out = new PrintStream(new BufferedOutputStream(new FileOutputStream(path)));
 
+        if (!saved) {
+            saved = true;
+            tab.savedIndicator();
+        }
+
         out.print(area.getText());
         out.close();
 
@@ -50,16 +59,35 @@ public class EditorPanel extends JPanel implements DocumentListener{
 
     @Override
     public void insertUpdate(DocumentEvent e) {
+
         tab.textChanged();
+        if (saved) {
+            tab.notSavedIndicator();
+            saved = false;
+        }
+
     }
 
     @Override
     public void removeUpdate(DocumentEvent e) {
+
         tab.textChanged();
+        if (saved) {
+            tab.notSavedIndicator();
+            saved = false;
+        }
+
     }
 
     @Override
     public void changedUpdate(DocumentEvent e) {
         //Do nothing
     }
+
+    @Override
+    public void addKeyListener(KeyListener l) {
+        super.addKeyListener(l);
+        area.addKeyListener(l);
+    }
+
 }

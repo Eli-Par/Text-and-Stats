@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.awt.event.KeyListener;
 import java.io.File;
 import java.io.IOException;
 
@@ -13,10 +14,13 @@ public class TabPanel extends JPanel {
 
     private JPanel windowPanel;
 
-    public TabPanel(File path, String text, String title) {
-        super();
+    private JTabbedPane parent;
 
+    public TabPanel(File path, String text, String title) {
+
+        super();
         this.title = title;
+        parent = null;
 
         //Setup window panels
         panels[0] = new EditorPanel(this, path, text);
@@ -34,6 +38,37 @@ public class TabPanel extends JPanel {
 
     public String getTitle() {
         return title;
+    }
+
+    public void setParent(JTabbedPane p) {
+        parent = p;
+    }
+
+    @Override
+    public void addKeyListener(KeyListener l) {
+
+        super.addKeyListener(l);
+        for (JPanel p : panels)
+            p.addKeyListener(l);
+
+    }
+
+    public void notSavedIndicator() {
+
+        int ind = parent.indexOfComponent(this);
+        String title = parent.getTitleAt(ind);
+
+        parent.setTitleAt(ind, "*" + title);
+
+    }
+
+    public void savedIndicator() {
+
+        int ind = parent.indexOfComponent(this);
+        String title = parent.getTitleAt(ind);
+
+        parent.setTitleAt(ind,  title.substring(1));
+
     }
 
     public void save() throws IOException {
