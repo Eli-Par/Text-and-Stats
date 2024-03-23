@@ -6,6 +6,9 @@ import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import com.inet.jortho.FileUserDictionary;
+import com.inet.jortho.SpellChecker;
+
 public class EditorPanel extends JPanel implements DocumentListener{
 
     private TabPanel tab;
@@ -40,6 +43,10 @@ public class EditorPanel extends JPanel implements DocumentListener{
         this.add(scroll);
 
         area.getDocument().addDocumentListener(this);
+
+        SpellChecker.setUserDictionaryProvider(new FileUserDictionary());      
+        SpellChecker.registerDictionaries(this.getClass().getResource("/dictionary"), "en");
+        SpellChecker.register(area, true, false, true, true);
 
     }
 
