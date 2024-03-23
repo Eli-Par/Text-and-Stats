@@ -1,10 +1,11 @@
 import java.awt.*;
+import java.awt.event.*;
 import java.io.IOException;
 import java.util.*;
 
 import javax.swing.*;
 
-public class FileTabList extends JPanel{
+public class FileTabList extends JPanel implements MouseListener{
 
     private JTabbedPane tabbedPane = new JTabbedPane();
     
@@ -21,6 +22,8 @@ public class FileTabList extends JPanel{
         this.add(tabbedPane);
         addKeyListener(app);
         tabbedPane.addKeyListener(app);
+
+        tabbedPane.addMouseListener(this);
 
     }
 
@@ -93,5 +96,107 @@ public class FileTabList extends JPanel{
 
         currentCardName = name;
     }
+
+    @Override
+    public void mouseClicked(MouseEvent e) { }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+        //Right click on the JTabbedPane
+        if(e.getButton() == MouseEvent.BUTTON3) {
+            //Get the tab index that they clicked and if it is not -1 (outside of a tab) it is valid
+            int index = tabbedPane.getUI().tabForCoordinate(tabbedPane, e.getX(), e.getY());
+            if(index != -1) {
+                JPopupMenu popupMenu = new JPopupMenu();
+
+                JMenuItem rightMoveButton = new JMenuItem("Move Right");
+                rightMoveButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent event) {
+                        if(index < tabbedPane.getTabCount() - 1) {
+                            int selectedIndex = tabbedPane.getSelectedIndex();
+
+                            resetAllTabs();
+
+                            TabPanel panel = tabs.remove(index);
+                            tabs.add(index + 1, panel);
+
+                            addAllTabs();
+
+                            if(index == selectedIndex) tabbedPane.setSelectedIndex(index - 1);
+                            else tabbedPane.setSelectedIndex(selectedIndex);
+                        }
+                    }
+                });
+
+                if(index >= tabbedPane.getTabCount() - 1) {
+                    rightMoveButton.setEnabled(false);
+                }
+
+                popupMenu.add(rightMoveButton);
+
+                JMenuItem leftMoveButton = new JMenuItem("Move Left");
+                leftMoveButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent event) {
+                        if(index > 0) {
+                            int selectedIndex = tabbedPane.getSelectedIndex();
+
+                            resetAllTabs();
+
+                            TabPanel panel = tabs.remove(index);
+                            tabs.add(index - 1, panel);
+
+                            addAllTabs();
+
+                            if(index == selectedIndex) tabbedPane.setSelectedIndex(index - 1);
+                            else tabbedPane.setSelectedIndex(selectedIndex);
+                        }
+                    }
+                });
+
+                if(index == 0) {
+                    leftMoveButton.setEnabled(false);
+                }
+
+                popupMenu.add(leftMoveButton);
+
+                JMenuItem deleteButton = new JMenuItem("Remove Tab");
+                deleteButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent event) {
+                        tabbedPane.remove(index);
+                        tabs.remove(index);
+                    }
+                });
+                popupMenu.add(deleteButton);
+
+                popupMenu.show(this, e.getX(), e.getY() + popupMenu.getHeight());
+            }
+        }
+    }
+
+    //Remove all tabs from the JTabbedPanel but do not remove them from the tabs ArrayList
+    private void resetAllTabs() {
+        while(tabbedPane.getTabCount() > 0) {
+            tabbedPane.removeTabAt(0);
+        }
+    }
+
+    //Add all tabs from the ArrayList back into the JTabbedPanel
+    private void addAllTabs() {
+        for(TabPanel panel : tabs) {
+            tabbedPane.addTab(panel.getTitle(), panel);
+        }
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) { }
+
+    @Override
+    public void mouseEntered(MouseEvent e) { }
+
+    @Override
+    public void mouseExited(MouseEvent e) { }
 
 }
