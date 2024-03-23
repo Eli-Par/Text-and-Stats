@@ -15,7 +15,7 @@ public class FontSetter {
     private final JFrame frame;
 
     public void updateFont(ActionEvent e) {
-        tabList.setEditorFont(new Font(familyField.getText(), Font.PLAIN, ((Integer) sizeBox.getSelectedItem()) < 1 ? 1 : (Integer) sizeBox.getSelectedItem()));
+        tabList.setEditorFont(new Font(familyField.getText(), Font.PLAIN, Math.max(1, Math.min((Integer) sizeBox.getSelectedItem(), 96))));
         frame.dispose();
     }
 
