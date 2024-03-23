@@ -1,21 +1,22 @@
 package parsing;
 
 
+import java.awt.BorderLayout;
+
 import javax.swing.*;
 
 
 public class SentPanel extends JPanel{
     private JTextArea stats = new JTextArea(5,30);
-    private Parser parser;
     public SentPanel(Parser parser){
-        this.parser = parser;
-        
+        setLayout(new BorderLayout());
         SentObserver sent = new SentObserver(parser, this);
         
         parser.addParseObserver(sent);
         
         stats.setEditable(false);
-        this.add(stats);
+        JScrollPane sp = new JScrollPane(stats);
+        this.add(sp, BorderLayout.CENTER);
 
     }
     public void setStats(String s){

@@ -1,23 +1,28 @@
 package parsing;
 
+import java.awt.BorderLayout;
+
 import javax.swing.*;
 
 public class CharPanel extends JPanel{
     private JTextArea charCount = new JTextArea(5,30);
     private JTextArea totChars = new JTextArea(5, 10);
-    private Parser parser;
+    private BarGraph bg;
 
     public CharPanel(Parser parser){
-        this.parser = parser;
+        setLayout(new BorderLayout());
         CharCounter chars = new CharCounter(parser, this);
         parser.addParseObserver(chars);
         charCount.setEditable(false);
         
         totChars.setEditable(false);
-        this.add(totChars);
+        this.add(totChars, BorderLayout.NORTH);
         
         JScrollPane scrollPane = new JScrollPane(charCount);
-        this.add(scrollPane);
+        this.add(scrollPane, BorderLayout.WEST);
+
+        bg = new BarGraph();
+        this.add(bg, BorderLayout.CENTER);
 
     }
     
@@ -28,5 +33,8 @@ public class CharPanel extends JPanel{
         totChars.setText(s);
     }
 
+    public void setBG(int [] data, String [] keys){
+        bg.setData(data, keys);
+    }
 
 }
