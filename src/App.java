@@ -287,6 +287,7 @@ public class App implements KeyListener, WindowListener {
     @Override
     public void windowClosing(WindowEvent e) {
         saveOptions();
+        tabList.closing();
     }
 
     /**

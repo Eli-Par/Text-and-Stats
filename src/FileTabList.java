@@ -97,6 +97,13 @@ public class FileTabList extends JPanel implements MouseListener{
         currentCardName = name;
     }
 
+    //Called when the app is being closed
+    public void closing() {
+        for(TabPanel panel : tabs) {
+            panel.getEditor().closing();
+        }
+    }
+
     @Override
     public void mouseClicked(MouseEvent e) { }
 
@@ -165,6 +172,7 @@ public class FileTabList extends JPanel implements MouseListener{
                 deleteButton.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent event) {
+                        tabs.get(index).getEditor().closing();
                         tabbedPane.remove(index);
                         tabs.remove(index);
                     }
@@ -186,7 +194,7 @@ public class FileTabList extends JPanel implements MouseListener{
     //Add all tabs from the ArrayList back into the JTabbedPanel
     private void addAllTabs() {
         for(TabPanel panel : tabs) {
-            tabbedPane.addTab(panel.getTitle(), panel);
+            tabbedPane.addTab((panel.getEditor().isSaved() ? "" : "*") + panel.getTitle(), panel);
         }
     }
 
