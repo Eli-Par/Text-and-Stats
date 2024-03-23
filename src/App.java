@@ -45,6 +45,9 @@ public class App implements KeyListener, WindowListener {
         JMenuItem saveAll = new JMenuItem("Save All");
 
         JMenuItem font = new JMenuItem("Font");
+        JMenuItem zoomIn = new JMenuItem("Zoom In");
+        JMenuItem zoomOut = new JMenuItem("Zoom Out");
+        JMenuItem zoom = new JMenuItem("Zoom Reset");
 
         bar.add(fileMenu);
         bar.add(vMenu);
@@ -56,6 +59,9 @@ public class App implements KeyListener, WindowListener {
 
         vMenu.setFont(MENU_FONT);
         vMenu.add(font);
+        vMenu.add(zoomIn);
+        vMenu.add(zoomOut);
+        vMenu.add(zoom);
 
         open.addActionListener(this::onOpen);
         save.addActionListener(this::onSave);
@@ -130,6 +136,8 @@ public class App implements KeyListener, WindowListener {
     public void loadOptions() {
 
         opts.lastOpenLocation = System.getProperty("user.home");
+        opts.fontSize = 12;
+
         try {
 
             Scanner scanner = new Scanner(new File(SETTINGS_PATH));
