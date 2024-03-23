@@ -55,7 +55,8 @@ public class WordFrequency extends ParseObserver <String, String>{
             String finWord = w.getText();
             totalLength += finWord.length();
         }
-
+        
+        if(isCancelled()) return null;
         String tWordString = "";
         tWordString = "Words: " + words.size();
         tWordString += "\nThere are "+ totWords +" unique Words";

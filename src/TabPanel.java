@@ -11,20 +11,22 @@ public class TabPanel extends JPanel {
 
     private String title;
 
-    JPanel panels[] = new JPanel[5];
-    String panelNames[] = new String[5];
-
+    JPanel panels[];
+    String panelNames[];
     private JPanel windowPanel;
     private CardLayout cardLayout;
 
     private JTabbedPane parent;
 
-    public Parser parser = new TextParser();
+    public Parser parser;
 
     public TabPanel(File path, String text, String title) {
 
         super();
+        panels  = new JPanel[5];
+        panelNames = new String[5];
         this.title = title;
+        parser = new TextParser();
         parent = null;
 
         //Setup window panels
@@ -37,11 +39,11 @@ public class TabPanel extends JPanel {
         panelNames[1] = "TestLabel";
 
         panels[2] = new WordPanel(parser);
-        panelNames[2] = "Word Stats";
+        panelNames[2] = "WordStats";
         panels[3] = new CharPanel(parser);
-        panelNames[3] = "Char Stats";
+        panelNames[3] = "CharStats";
         panels[4] = new SentPanel(parser);
-        panelNames[4] = "Sent Stats";
+        panelNames[4] = "SentStats";
 
         windowPanel = new JPanel();
         cardLayout = new CardLayout();

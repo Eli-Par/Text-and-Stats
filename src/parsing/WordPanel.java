@@ -3,8 +3,8 @@ package parsing;
 import javax.swing.*;
 
 public class WordPanel extends JPanel{
-    private static JTextArea totWords = new JTextArea(5, 10);
-    private static JTextArea wordFrequencies = new JTextArea(5,30);
+    private JTextArea totWords = new JTextArea(5, 10);
+    private JTextArea wordFrequencies = new JTextArea(5,30);
     private Parser parser;
 
     public WordPanel(Parser parser){

@@ -5,7 +5,7 @@ import javax.swing.*;
 
 
 public class SentPanel extends JPanel{
-    private static JTextArea stats = new JTextArea(5,30);
+    private JTextArea stats = new JTextArea(5,30);
     private Parser parser;
     public SentPanel(Parser parser){
         this.parser = parser;

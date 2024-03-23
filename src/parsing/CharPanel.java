@@ -3,8 +3,8 @@ package parsing;
 import javax.swing.*;
 
 public class CharPanel extends JPanel{
-    private static JTextArea charCount = new JTextArea(5,30);
-    private static JTextArea totChars = new JTextArea(5, 10);
+    private JTextArea charCount = new JTextArea(5,30);
+    private JTextArea totChars = new JTextArea(5, 10);
     private Parser parser;
 
     public CharPanel(Parser parser){
