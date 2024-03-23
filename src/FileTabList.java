@@ -123,7 +123,7 @@ public class FileTabList extends JPanel implements MouseListener{
 
                             addAllTabs();
 
-                            if(index == selectedIndex) tabbedPane.setSelectedIndex(index - 1);
+                            if(index == selectedIndex) tabbedPane.setSelectedIndex(index + 1);
                             else tabbedPane.setSelectedIndex(selectedIndex);
                         }
                     }
