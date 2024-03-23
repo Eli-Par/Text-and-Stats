@@ -5,22 +5,28 @@ import java.io.IOException;
 
 import javax.swing.*;
 
+import parsing.*;
+
 public class TabPanel extends JPanel {
 
     private String title;
 
-    JPanel panels[] = new JPanel[2];
-    String panelNames[] = new String[2];
-
+    JPanel panels[];
+    String panelNames[];
     private JPanel windowPanel;
     private CardLayout cardLayout;
 
     private JTabbedPane parent;
 
+    public Parser parser;
+
     public TabPanel(File path, String text, String title) {
 
         super();
+        panels  = new JPanel[5];
+        panelNames = new String[5];
         this.title = title;
+        parser = new TextParser();
         parent = null;
 
         //Setup window panels
@@ -32,6 +38,13 @@ public class TabPanel extends JPanel {
         panels[1].add(new JLabel("A screen just for testing"));
         panelNames[1] = "TestLabel";
 
+        panels[2] = new WordPanel(parser);
+        panelNames[2] = "WordStats";
+        panels[3] = new CharPanel(parser);
+        panelNames[3] = "CharStats";
+        panels[4] = new SentPanel(parser);
+        panelNames[4] = "SentStats";
+
         windowPanel = new JPanel();
         cardLayout = new CardLayout();
         windowPanel.setLayout(cardLayout);
@@ -41,6 +54,8 @@ public class TabPanel extends JPanel {
             windowPanel.add(panelNames[i], panels[i]);
         }
         this.add(windowPanel);
+
+        parser.parse(text);
     }
 
     public String getTitle() {
@@ -85,6 +100,7 @@ public class TabPanel extends JPanel {
     //Called whenever the text area has its text changed
     public void textChanged() {
         //Parsing can go here
+        parser.parse(getEditor().getTextArea().getText());
     }
 
     public EditorPanel getEditor() {

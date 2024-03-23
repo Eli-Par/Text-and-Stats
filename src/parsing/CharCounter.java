@@ -9,9 +9,9 @@ import java.util.LinkedHashMap;
 public class CharCounter extends ParseObserver <String, String>{
     
     private Parser parser;
-    private TextStatsPanel panel;
+    private CharPanel panel;
 
-    public CharCounter(Parser parser, TextStatsPanel textPanel) {
+    public CharCounter(Parser parser, CharPanel textPanel) {
         this.parser = parser;
         this.panel = textPanel;
     }
@@ -34,6 +34,7 @@ public class CharCounter extends ParseObserver <String, String>{
 
         }
         if(isCancelled()) return null;
+        
         for(Word w: words){
             String finWord = w.getText();
             char [] charArray = finWord.toCharArray();
@@ -48,13 +49,23 @@ public class CharCounter extends ParseObserver <String, String>{
             }
         }
         if(isCancelled()) return null;
-        
 
         
         panel.setTotChars("Character Count: " + charCount + "\n");
         LinkedHashMap<Character, Integer> sortedChars = chars.entrySet().stream()
                 .sorted(Map.Entry.<Character, Integer>comparingByValue().reversed())
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+
+
+        int [] arr = new int[words.size()];
+        String [] keys = new String[words.size()];
+        int i = 0;
+        for(char c: sortedChars.keySet()){
+            arr[i] = sortedChars.get(c);
+            keys[i] = "" + c;
+            i++;
+        }
+        panel.setBG(arr,keys);
 
         // Construct statOutput with sorted characters
         StringBuilder statOutput = new StringBuilder();
