@@ -57,6 +57,35 @@ public class EditorPanel extends JPanel implements DocumentListener{
 
     }
 
+    //Is called before the tab the editor is in is closed
+    public void closing() {
+        if(!saved) {
+            String[] options = {"Save", "Don't Save"}; 
+            int result = JOptionPane.showOptionDialog(
+               this,
+               "Are you sure you don't want to save " + path.getName() + "?", 
+               "Want to save?",            
+               JOptionPane.YES_NO_OPTION,
+               JOptionPane.WARNING_MESSAGE,
+               null,
+               options,
+               options[0]
+            );
+            if(result == JOptionPane.YES_OPTION) {
+                try {
+                    save();
+                }
+                catch(IOException exception) {
+                    JOptionPane.showMessageDialog(this, "There was a problem saving " + path.getName(), "Problem saving file", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        }
+    }
+
+    public boolean isSaved() {
+        return saved;
+    }
+
     @Override
     public void insertUpdate(DocumentEvent e) {
 
