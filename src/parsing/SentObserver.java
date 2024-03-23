@@ -1,14 +1,16 @@
 package parsing;
 
+
 import java.util.ArrayList;
 import java.util.List;
+
 
 public class SentObserver extends ParseObserver <String, String>{
     
     private Parser parser;
-    private TextStatsPanel panel;
+    private SentPanel panel;
 
-    public SentObserver(Parser parser, TextStatsPanel textPanel) {
+    public SentObserver(Parser parser, SentPanel textPanel) {
         this.parser = parser;
         this.panel = textPanel;
     }
@@ -19,7 +21,6 @@ public class SentObserver extends ParseObserver <String, String>{
         //Publishing something will result in processThread being called at the next opportunity
         publish(null);
 
-        ArrayList<Word> words = parser.getWords();
         ArrayList<Sentence> sents = parser.getSentences();
 
         String statOutput = "Sentences: " + sents.size();

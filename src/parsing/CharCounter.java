@@ -9,9 +9,9 @@ import java.util.LinkedHashMap;
 public class CharCounter extends ParseObserver <String, String>{
     
     private Parser parser;
-    private TextStatsPanel panel;
+    private CharPanel panel;
 
-    public CharCounter(Parser parser, TextStatsPanel textPanel) {
+    public CharCounter(Parser parser, CharPanel textPanel) {
         this.parser = parser;
         this.panel = textPanel;
     }

@@ -7,9 +7,9 @@ import java.util.HashMap;
 public class WordFrequency extends ParseObserver <String, String>{
     
     private Parser parser;
-    private TextStatsPanel panel;
+    private WordPanel panel;
 
-    public WordFrequency(Parser parser, TextStatsPanel textPanel) {
+    public WordFrequency(Parser parser, WordPanel textPanel) {
         this.parser = parser;
         this.panel = textPanel;
     }
