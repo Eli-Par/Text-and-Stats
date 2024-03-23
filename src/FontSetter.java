@@ -4,7 +4,7 @@ import java.awt.event.ActionEvent;
 
 public class FontSetter {
 
-    public static final Integer[]FONT_SIZES = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 18, 20, 22, 24, 28, 32, 36, 48, 72};
+    public static final Integer[]FONT_SIZES = {8, 9, 10, 11, 12, 13, 14, 16, 18, 20, 22, 24, 28, 32, 36, 48, 72};
 
     private FileTabList tabList;
 
@@ -15,7 +15,7 @@ public class FontSetter {
     private final JFrame frame;
 
     public void updateFont(ActionEvent e) {
-        tabList.setEditorFont(new Font(familyField.getText(), Font.PLAIN, (Integer) sizeBox.getSelectedItem()));
+        tabList.setEditorFont(new Font(familyField.getText(), Font.PLAIN, ((Integer) sizeBox.getSelectedItem()) < 1 ? 1 : (Integer) sizeBox.getSelectedItem()));
         frame.dispose();
     }
 
