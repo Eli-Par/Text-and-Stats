@@ -85,7 +85,8 @@ public class FileTabList extends JPanel implements MouseListener{
         if(component instanceof TabPanel panel) {
             return panel.getEditor();
         }
-        throw new IllegalStateException("Selected component is " + component.getClass() + ", not TabPanel");
+        return null;
+        //throw new IllegalStateException("Selected component is " + component.getClass() + ", not TabPanel");
     }
 
     //Change all tabs to show the screen with the specified name
