@@ -17,6 +17,24 @@ public class WordFrequency extends ParseObserver <String, String>{
         this.panel = textPanel;
     }
 
+    private String capitalizeString(String str) {
+        boolean isAcrynym = true;
+        for(int i = 0; i < str.length(); i++) {
+            if(str.charAt(i) != '.' && i % 2 == 1) {
+                isAcrynym = false;
+            }
+            if(str.charAt(i) == '.' && i % 2 == 0) {
+                isAcrynym = false;
+            }
+        }
+
+        if(isAcrynym) {
+            return str.toUpperCase();
+        }
+
+        return str.substring(0, 1).toUpperCase() + str.substring(1).toLowerCase();
+    }
+
     @Override
     protected String backgroundTask() {
 
@@ -35,7 +53,7 @@ public class WordFrequency extends ParseObserver <String, String>{
             if(isCancelled()) return null;
 
             if(!words.get(i).isNumeric() && !words.get(i).isSymbol()) {
-                String currWordText = words.get(i).getText().substring(0, 1).toUpperCase() + words.get(i).getText().substring(1);
+                String currWordText = capitalizeString(words.get(i).getText());
                 wFrequencies.putIfAbsent(currWordText, 0);
             }
         }
@@ -44,7 +62,7 @@ public class WordFrequency extends ParseObserver <String, String>{
             if(isCancelled()) return null;
 
             if(!w.isNumeric() && !w.isSymbol()) {
-                wordStr = w.getText().substring(0, 1).toUpperCase() + w.getText().substring(1);
+                wordStr = capitalizeString(w.getText());
                 wFrequencies.put(wordStr, wFrequencies.get(wordStr) + 1);
 
                 wordCount++;
