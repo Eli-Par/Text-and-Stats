@@ -121,8 +121,8 @@ class TextParserThread extends Thread {
         // System.out.println("\n\nSentence:" + sentences.size());
 
         // for(Sentence s : sentences) {
-        //     System.out.println(s);
-        //}
+        //     System.out.println(s + "\n");
+        // }
         //@Temp end temporary print statements
 
         parser.parseDone(words, sentences);
@@ -274,7 +274,7 @@ class TextParserThread extends Thread {
                         tokens.add(new ParseToken("\"", ParseToken.Type.SYMBOL));
 
                         //If it is the end of the sentence, add a placeholder punctuation
-                        if(shouldHavePunctuation) {
+                        if(shouldHavePunctuation && usePunctuation) {
                             tokens.add(new ParseToken("", ParseToken.Type.PUNCTUATION));
                         }
                     }

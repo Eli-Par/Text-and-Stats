@@ -28,13 +28,11 @@ public class App implements KeyListener, WindowListener {
 
         barPanel.add(new PageSwitchButton(tabList, "Editor", "Editor"));
         barPanel.add(Box.createHorizontalStrut(5));
-        barPanel.add(new PageSwitchButton(tabList, "Label", "TestLabel"));
-        barPanel.add(Box.createHorizontalStrut(5));
         barPanel.add(new PageSwitchButton(tabList, "Word Stats", "WordStats"));
         barPanel.add(Box.createHorizontalStrut(5));
         barPanel.add(new PageSwitchButton(tabList, "Char Stats", "CharStats"));
         barPanel.add(Box.createHorizontalStrut(5));
-        barPanel.add(new PageSwitchButton(tabList, "Sent Stats", "SentStats"));
+        barPanel.add(new PageSwitchButton(tabList, "Sentence Stats", "SentStats"));
 
         toolBar.add(barPanel);
 

@@ -28,8 +28,8 @@ public class TabPanel extends JPanel {
 
         file = path;
 
-        panels  = new JPanel[5];
-        panelNames = new String[5];
+        panels  = new JPanel[4];
+        panelNames = new String[4];
         this.title = title;
         parser = new TextParser();
         parent = null;
@@ -38,17 +38,12 @@ public class TabPanel extends JPanel {
         panels[0] = new EditorPanel(this, path, text);
         panelNames[0] = "Editor";
 
-        //@Debug Setup window with just a label for testing
-        panels[1] = new JPanel();
-        panels[1].add(new JLabel("A screen just for testing"));
-        panelNames[1] = "TestLabel";
-
-        panels[2] = new WordPanel(parser);
-        panelNames[2] = "WordStats";
-        panels[3] = new CharPanel(parser);
-        panelNames[3] = "CharStats";
-        panels[4] = new SentPanel(parser);
-        panelNames[4] = "SentStats";
+        panels[1] = new WordPanel(parser);
+        panelNames[1] = "WordStats";
+        panels[2] = new CharPanel(parser);
+        panelNames[2] = "CharStats";
+        panels[3] = new SentPanel(parser);
+        panelNames[3] = "SentStats";
 
         windowPanel = new JPanel();
         cardLayout = new CardLayout();

@@ -31,8 +31,16 @@ public class SentObserver extends ParseObserver <String, String>{
 
         HashMap<String, Integer> sentFreq = new HashMap<String, Integer>();
 
+        int longestSentence = 0;
+        String longestSentenceString = "";
+
         for(Sentence s: sents){
             if(isCancelled()) return null;
+
+            if(s.getWords().length > longestSentence) {
+                longestSentence = s.getWords().length;
+                longestSentenceString = s.getText();
+            }
 
             String sString = s.getText();
             if(!sentFreq.containsKey(sString)){
@@ -41,6 +49,8 @@ public class SentObserver extends ParseObserver <String, String>{
                 sentFreq.put(sString, sentFreq.get(sString)+1);
             }
         }
+
+        statOutput += "\nLongest sentence is " + longestSentence + " words long and is '" + longestSentenceString + "'\n";
         
         LinkedHashMap<String, Integer> sortedWords = sentFreq.entrySet().stream()
                 .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
