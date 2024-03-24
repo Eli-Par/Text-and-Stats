@@ -1,6 +1,7 @@
 package parsing;
 
 import java.awt.*;
+import java.awt.GridBagLayout;
 import java.util.*;
 
 import javax.swing.*;

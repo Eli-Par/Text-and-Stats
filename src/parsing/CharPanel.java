@@ -1,6 +1,7 @@
 package parsing;
 
-import java.awt.BorderLayout;
+import java.awt.*;
+import java.awt.GridBagLayout;
 
 import javax.swing.*;
 
@@ -17,12 +18,33 @@ public class CharPanel extends JPanel{
         
         totChars.setEditable(false);
         this.add(totChars, BorderLayout.NORTH);
+
+        
+        JPanel middlePanel = new JPanel();
+        middlePanel.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
         
         JScrollPane scrollPane = new JScrollPane(charCount);
-        this.add(scrollPane, BorderLayout.WEST);
+        
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.weightx = 1;
+        gbc.weighty = 1;
+        gbc.gridwidth = 2;
+        gbc.fill = GridBagConstraints.BOTH;
+        middlePanel.add(scrollPane, gbc);
 
         bg = new BarGraph();
-        this.add(bg, BorderLayout.CENTER);
+        bg.setPreferredSize(new Dimension(450, 400));
+        gbc.gridx = 2;
+        gbc.gridy = 0;
+        gbc.weightx = 0.5;
+        gbc.weighty = 1;
+        gbc.gridheight = 2;
+        gbc.fill = GridBagConstraints.BOTH;
+        middlePanel.add(bg, gbc);
+
+        this.add(middlePanel);
 
     }
     
