@@ -31,43 +31,7 @@ public class SearchBarListener implements DocumentListener{
             worker.cancel(true);
         }
 
-        worker = new SwingWorker<>() {
-
-            @Override
-            protected String doInBackground() throws Exception {
-                String word = panel.getSearchWord().trim();
-
-                if(word.isBlank()) {
-                    panel.useDefaultFrequencyText();
-                    return null;
-                }
-
-                HashMap<String, Integer> wordList = panel.getWordList();
-                String updateString = "";
-                for(String s: wordList.keySet()){
-                    if(isCancelled()) return null;
-                    if(s.contains(word)){
-                        updateString += "'" + s + "' appears " + wordList.get(s) + " times\n";
-                    }
-                }
-
-                if(isCancelled()) return null;
-
-                return updateString;
-            }
-
-            @Override
-            protected void done() {
-                try {
-                    String text = get();
-                    if(text != null) panel.setFrequencies(text);
-                }
-                catch(Exception exception) {
-
-                }
-            }
-            
-        };
+        worker = new SearchWorker(panel);
 
         worker.execute();
 

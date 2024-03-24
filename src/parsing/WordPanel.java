@@ -1,7 +1,6 @@
 package parsing;
 
 import java.awt.*;
-import java.awt.GridBagLayout;
 import java.util.*;
 import javax.swing.*;
 
@@ -95,5 +94,14 @@ public class WordPanel extends JPanel{
 
     public void setDefaultFrequencyText(String text) {
         this.defaultFrequencyText = text;
+    }
+
+    public int getViewableLines() {
+        Font font = wordFrequencies.getFont();
+        FontMetrics fontMetrics = wordFrequencies.getFontMetrics(font);
+
+        int numLines = (int)((double)sp.getHeight() / (fontMetrics.getHeight() * 1.1));
+
+        return numLines;
     }
 }
