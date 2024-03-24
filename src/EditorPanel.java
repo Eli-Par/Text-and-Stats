@@ -1,10 +1,15 @@
 import java.awt.*;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.*;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultHighlighter;
+import javax.swing.text.Highlighter;
 
 import com.inet.jortho.FileUserDictionary;
 import com.inet.jortho.SpellChecker;
@@ -97,12 +102,13 @@ public class EditorPanel extends JPanel implements DocumentListener{
     @Override
     public void insertUpdate(DocumentEvent e) {
 
+//        Highlighter h = area.getHighlighter();
+//        h.removeAllHighlights();
         tab.textChanged();
         if (saved) {
             tab.notSavedIndicator();
             saved = false;
         }
-
     }
 
     @Override
@@ -131,4 +137,43 @@ public class EditorPanel extends JPanel implements DocumentListener{
         return area;
     }
 
+    public void find(String text){
+        // get the text
+        String content = area.getText();
+        // create a highlighter to highlight the text
+        Highlighter h = area.getHighlighter();
+        Highlighter.HighlightPainter painter = new DefaultHighlighter.DefaultHighlightPainter(Color.CYAN);
+        h.removeAllHighlights();
+
+        // loop through all occurrences and highlight them
+        int i = content.indexOf(text);
+        while(i != -1){
+            try{
+                h.addHighlight(i, i+text.length(), painter);
+            } catch (BadLocationException e) {
+                e.printStackTrace();
+            }
+            i = content.indexOf(text, i+1);
+        }
+
+        // delete highlighted text when mouse is clicked
+        area.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                h.removeAllHighlights();
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                h.removeAllHighlights();
+            }
+        });
+    }
+
+    public void replaceAll(String find, String replace){
+        // get the text and replace all occurrences of find
+        String content = area.getText();
+        content = content.replaceAll(find, replace);
+        area.setText(content);
+    }
 }
