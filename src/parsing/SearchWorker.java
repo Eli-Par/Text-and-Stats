@@ -59,17 +59,17 @@ public class SearchWorker extends SwingWorker<String, String> {
     }
 
     //Use a variation on hammer distance as an approximation of edit distance for pruning
-    private int hammeringDistance(String str1, String str2) {
-        int minLength = Math.min(str1.length(), str2.length());
-        int cost = Math.abs(str1.length() - str2.length());
+    // private int hammeringDistance(String str1, String str2) {
+    //     int minLength = Math.min(str1.length(), str2.length());
+    //     int cost = Math.abs(str1.length() - str2.length());
 
-        for(int i = 0; i < minLength; i++) {
-            if(str1.charAt(i) != str2.charAt(i)) {
-                cost++;
-            }
-        }
+    //     for(int i = 0; i < minLength; i++) {
+    //         if(str1.charAt(i) != str2.charAt(i)) {
+    //             cost++;
+    //         }
+    //     }
 
-        return cost;
-    }
+    //     return cost;
+    // }
 
 }

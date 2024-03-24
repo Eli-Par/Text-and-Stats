@@ -1,7 +1,5 @@
 package parsing;
 
-import java.util.HashMap;
-
 import javax.swing.SwingWorker;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
