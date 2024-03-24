@@ -68,7 +68,7 @@ public class CharCounter extends ParseObserver <String, String>{
         int i = 0;
         for(char c: sortedChars.keySet()){
             if(isCancelled()) return null;
-            
+
             arr[i] = sortedChars.get(c);
             keys[i] = "" + c;
             i++;
@@ -95,6 +95,6 @@ public class CharCounter extends ParseObserver <String, String>{
 
     @Override
     public void parseStarted() {
-        panel.setChars("Parse started...");
+        panel.setChars("Processing the text. Please wait a moment.");
     }
 }

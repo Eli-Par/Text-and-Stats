@@ -267,7 +267,16 @@ class TextParserThread extends Thread {
                     if(sectionMatcher.getTokenType() == ParseToken.Type.QUOTE) {
                         tokens.add(new ParseToken("\"", ParseToken.Type.SYMBOL));
                         getTokens(tokens, input.substring(startIndex+1, startIndex + matchSize - 1), false);
+
+                        //If a quote ends in a period, then it is the end of a sentence, otherwise the sentence continues most likely afterwards
+                        boolean shouldHavePunctuation = tokens.get(tokens.size() - 1).getText().equals(".");
+                        
                         tokens.add(new ParseToken("\"", ParseToken.Type.SYMBOL));
+
+                        //If it is the end of the sentence, add a placeholder punctuation
+                        if(shouldHavePunctuation) {
+                            tokens.add(new ParseToken("", ParseToken.Type.PUNCTUATION));
+                        }
                     }
                     else if(sectionMatcher.getTokenType() == ParseToken.Type.SINGLE_QUOTE) {
                         tokens.add(new ParseToken("'", ParseToken.Type.SYMBOL));

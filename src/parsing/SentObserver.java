@@ -48,7 +48,7 @@ public class SentObserver extends ParseObserver <String, String>{
                 
         for(String s: sortedWords.keySet()){
             if(isCancelled()) return null;
-            
+
             if(sentFreq.get(s)>1){
                 statOutput += "\n\"" + s + "\" appears " + sentFreq.get(s) + " times";
             }
@@ -66,7 +66,7 @@ public class SentObserver extends ParseObserver <String, String>{
 
     @Override
     protected void processTask(List<String> textList) {
-        panel.setStats("Processing tokens...");
+        //panel.setStats("Processing tokens...");
     }
 
     @Override
@@ -78,6 +78,6 @@ public class SentObserver extends ParseObserver <String, String>{
 
     @Override
     public void parseStarted() {
-        panel.setStats("Parse started...");
+        panel.setStats("Processing the text. Please wait a moment.");
     }
 }
