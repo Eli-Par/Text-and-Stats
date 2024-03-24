@@ -121,7 +121,7 @@ public class WordFrequency extends ParseObserver <String, String>{
 
     @Override
     public void parseStarted() {
-        panel.setFrequencies("Parse started...");
+        panel.setFrequencies("Processing the text. Please wait a moment.");
     }
 }
 
