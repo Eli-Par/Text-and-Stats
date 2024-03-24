@@ -13,6 +13,8 @@ public class WordPanel extends JPanel{
     private BarGraph bg;
     private HashMap<String, Integer> sortedWordList = new HashMap<String, Integer>();
 
+    private String defaultFrequencyText;
+
     public WordPanel(Parser parser){
         setLayout(new BorderLayout());
         WordFrequency freq = new WordFrequency(parser, this);
@@ -85,5 +87,13 @@ public class WordPanel extends JPanel{
     }
     public HashMap<String, Integer> getWordList(){
         return this.sortedWordList;
+    }
+
+    public void useDefaultFrequencyText() {
+        setFrequencies(defaultFrequencyText);
+    }
+
+    public void setDefaultFrequencyText(String text) {
+        this.defaultFrequencyText = text;
     }
 }

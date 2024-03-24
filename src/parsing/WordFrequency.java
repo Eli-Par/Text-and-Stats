@@ -104,6 +104,8 @@ public class WordFrequency extends ParseObserver <String, String>{
 
         String statOutput = frequencyWords.toString().trim();
 
+        panel.setDefaultFrequencyText(statOutput);
+
         System.out.println("Background task returning");
         return statOutput;
     }
