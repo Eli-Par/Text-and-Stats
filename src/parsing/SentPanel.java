@@ -15,12 +15,15 @@ public class SentPanel extends JPanel{
         parser.addParseObserver(sent);
         
         stats.setEditable(false);
+        stats.setLineWrap(true);
+        stats.setWrapStyleWord(true);
         JScrollPane sp = new JScrollPane(stats);
         this.add(sp, BorderLayout.CENTER);
 
     }
     public void setStats(String s){
         stats.setText(s);
+        stats.setCaretPosition(0);
     }
 }
 
