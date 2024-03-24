@@ -3,15 +3,15 @@ package parsing;
 import java.awt.*;
 import java.awt.GridBagLayout;
 import java.util.*;
-
 import javax.swing.*;
 
 public class WordPanel extends JPanel{
     private JTextArea totWords = new JTextArea(5, 10);
     private JTextArea wordFrequencies = new JTextArea(5,30);
+    JTextField searchField;
+    JScrollPane sp;
     private BarGraph bg;
-
-    private ArrayList<StringValue> frequencyList = new ArrayList<>();
+    private HashMap<String, Integer> sortedWordList = new HashMap<String, Integer>();
 
     public WordPanel(Parser parser){
         setLayout(new BorderLayout());
@@ -33,12 +33,15 @@ public class WordPanel extends JPanel{
         gbc.weighty = 0;
         middlePanel.add(new JLabel("Search word: "), gbc);
 
-        JTextField searchField = new JTextField();
+        searchField = new JTextField();
         gbc.gridx = 1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         middlePanel.add(searchField, gbc);
 
-        JScrollPane sp = new JScrollPane(wordFrequencies);
+        SearchBarListener sbl = new SearchBarListener(this);
+        searchField.getDocument().addDocumentListener(sbl);
+
+        sp = new JScrollPane(wordFrequencies);
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.weightx = 1;
@@ -74,7 +77,13 @@ public class WordPanel extends JPanel{
         bg.setData(data, keys);
     }
 
-    public void setFrequencyList(ArrayList<StringValue> frequencies) {
-        frequencyList = frequencies;
+    public void setWordList(HashMap<String, Integer> wordList){
+        this.sortedWordList = wordList;
+    }
+    public String getSearchWord(){
+        return searchField.getText();
+    }
+    public HashMap<String, Integer> getWordList(){
+        return this.sortedWordList;
     }
 }

@@ -58,6 +58,8 @@ public class WordFrequency extends ParseObserver <String, String>{
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
         StringBuilder frequencyWords = new StringBuilder();
 
+        panel.setWordList(sortedWords);
+
         ArrayList<StringValue> frequencies = new ArrayList<>();
 
         int [] arr = new int[words.size()];
@@ -76,8 +78,6 @@ public class WordFrequency extends ParseObserver <String, String>{
             totWords++;
             i++;
         }
-
-        panel.setFrequencyList(frequencies);
         
         panel.setBG(arr,keys);
 
