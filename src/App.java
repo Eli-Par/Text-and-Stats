@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.swing.text.Highlighter;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
@@ -44,6 +45,7 @@ public class App implements KeyListener, WindowListener {
 
         JMenu fileMenu = new JMenu("File");
         JMenu vMenu = new JMenu("View");
+        JMenuItem editMenu = new JMenu("Edit");
 
         JMenuItem save = new JMenuItem("Save");
         JMenuItem open = new JMenuItem("Open");
@@ -54,8 +56,13 @@ public class App implements KeyListener, WindowListener {
         JMenuItem zoomOut = new JMenuItem("Zoom Out");
         JMenuItem zoom = new JMenuItem("Zoom Reset");
 
+        JMenuItem find = new JMenuItem("Find");
+        JMenuItem replaceFirst = new JMenuItem("Replace First");
+        JMenuItem replaceAll = new JMenuItem("Replace All");
+
         bar.add(fileMenu);
         bar.add(vMenu);
+        bar.add(editMenu);
 
         fileMenu.setFont(MENU_FONT);
         fileMenu.add(save);
@@ -68,10 +75,20 @@ public class App implements KeyListener, WindowListener {
         vMenu.add(zoomOut);
         vMenu.add(zoom);
 
+        editMenu.setFont(MENU_FONT);
+        editMenu.add(find);
+        editMenu.add(replaceFirst);
+        editMenu.add(replaceAll);
+
         open.addActionListener(this::onOpen);
         save.addActionListener(this::onSave);
         saveAll.addActionListener(this::onSaveAll);
         font.addActionListener(this::fontSetter);
+
+        find.addActionListener(this::onFind);
+        replaceFirst.addActionListener(this::replaceFirst);
+        replaceAll.addActionListener(this::onReplaceAll);
+
         zoomIn.addActionListener(this::onZoomIn);
         zoomOut.addActionListener(this::onZoomOut);
         zoom.addActionListener(this::onZoomReset);
@@ -106,6 +123,34 @@ public class App implements KeyListener, WindowListener {
     public void fontSetter(ActionEvent e) {
         new FontSetter(tabList);
     }
+
+    public void onFind(ActionEvent e){
+        JTextField tf = new JTextField();
+        int option = JOptionPane.showConfirmDialog(null, tf, "Find", JOptionPane.OK_CANCEL_OPTION);
+        if (option == JOptionPane.OK_OPTION) {
+            String text = tf.getText();
+            tabList.getCurrentEditor().find(text);
+        }
+    }
+
+    public void onReplaceAll(ActionEvent e){
+        JTextField findTf = new JTextField();
+        JTextField replaceTf = new JTextField();
+        Object[] msg = {"Find: ", findTf, "Replace with: ", replaceTf};
+        int option = JOptionPane.showConfirmDialog(null, msg , "Replace All", JOptionPane.OK_CANCEL_OPTION);
+        if(option == JOptionPane.OK_OPTION){
+            tabList.getCurrentEditor().replaceAll(findTf.getText(), replaceTf.getText());
+        }
+    }
+
+    public void replaceFirst(ActionEvent e){
+        JTextField findTf = new JTextField();
+        JTextField replaceTf = new JTextField();
+        Object[] msg = {"Find: ", findTf, "Replace with: ", replaceTf};
+        int option = JOptionPane.showConfirmDialog(null, msg, "Replace First Instance", JOptionPane.OK_CANCEL_OPTION);
+        if(option == JOptionPane.OK_OPTION){
+            tabList.getCurrentEditor().replaceFirst(findTf.getText(), replaceTf.getText());
+        }
 
     public void onZoomIn(ActionEvent e) {
 
@@ -144,7 +189,6 @@ public class App implements KeyListener, WindowListener {
             return;
 
         editor.getTextArea().setFont(tabList.getFont());
-
     }
 
     public void onSave(ActionEvent e) {
