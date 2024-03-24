@@ -28,7 +28,8 @@ public class BarGraph extends JPanel {
 
         int x = 0;
         // Draw bars
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < Math.min(data.length, 10); i++) {
+            if( keys[i] == null) continue;
             int barHeight = (int) ((double) data[i] / getMaxValue(data) * panelHeight);
             int y = panelHeight - barHeight;
             g.setColor(Color.blue);
