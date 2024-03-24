@@ -28,6 +28,7 @@ public class CharPanel extends JPanel{
     
     public void setChars(String s){
         charCount.setText(s);
+        charCount.setCaretPosition(0);
     }
     public void setTotChars(String s){
         totChars.setText(s);
