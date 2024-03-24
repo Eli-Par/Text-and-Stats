@@ -31,6 +31,7 @@ public class EditorPanel extends JPanel implements DocumentListener{
 
         area = new JTextArea();
         area.setLineWrap(true);
+        area.setWrapStyleWord(true);
         area.setText(text);
 
         // JPanel panel = new JPanel();

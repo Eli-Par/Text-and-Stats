@@ -32,14 +32,19 @@ public class WordFrequency extends ParseObserver <String, String>{
         
         if(isCancelled()) return null;
         for(int i =0; i< words.size(); i++){
+            if(isCancelled()) return null;
+
             if(!words.get(i).isNumeric() && !words.get(i).isSymbol()) {
-                wFrequencies.putIfAbsent(words.get(i).getText(), 0);
+                String currWordText = words.get(i).getText().substring(0, 1).toUpperCase() + words.get(i).getText().substring(1);
+                wFrequencies.putIfAbsent(currWordText, 0);
             }
         }
         if(isCancelled()) return null;
         for(Word w:words){
+            if(isCancelled()) return null;
+
             if(!w.isNumeric() && !w.isSymbol()) {
-                wordStr = w.getText();
+                wordStr = w.getText().substring(0, 1).toUpperCase() + w.getText().substring(1);
                 wFrequencies.put(wordStr, wFrequencies.get(wordStr) + 1);
 
                 wordCount++;
@@ -59,6 +64,8 @@ public class WordFrequency extends ParseObserver <String, String>{
         String [] keys = new String[words.size()];
         int i = 0;
         for (String word : sortedWords.keySet()) {
+            if(isCancelled()) return null;
+
             int f = sortedWords.get(word);
             
             frequencyWords.append("'" + word+ "'").append(" appears ").append(f).append(" times\n");
@@ -80,6 +87,8 @@ public class WordFrequency extends ParseObserver <String, String>{
         if(isCancelled()) return null;
         int totalLength =0;
         for(Word w: words){
+            if(isCancelled()) return null;
+
             if(!w.isNumeric() && !w.isSymbol()) {
                 String finWord = w.getText();
                 totalLength += finWord.length();

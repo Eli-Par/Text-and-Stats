@@ -29,6 +29,8 @@ public class CharCounter extends ParseObserver <String, String>{
         HashMap<Character, Integer> chars = new HashMap<Character, Integer>();
 
         for(Sentence s : sents){
+            if(isCancelled()) return null;
+
             String sentance = s.getText();
             charCount += sentance.length();
 
@@ -36,9 +38,13 @@ public class CharCounter extends ParseObserver <String, String>{
         if(isCancelled()) return null;
         
         for(Word w: words){
+            if(isCancelled()) return null;
+
             String finWord = w.getText();
             char [] charArray = finWord.toCharArray();
             for(char c: charArray){
+                if(isCancelled()) return null;
+
                 c = Character.toLowerCase(c);
                 if(!chars.containsKey(c)){
                     chars.put(c, 1);
@@ -61,6 +67,8 @@ public class CharCounter extends ParseObserver <String, String>{
         String [] keys = new String[words.size()];
         int i = 0;
         for(char c: sortedChars.keySet()){
+            if(isCancelled()) return null;
+            
             arr[i] = sortedChars.get(c);
             keys[i] = "" + c;
             i++;
