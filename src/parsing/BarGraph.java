@@ -28,17 +28,32 @@ public class BarGraph extends JPanel {
 
         int x = 0;
         // Draw bars
-        for (int i = 0; i < 10; i++) {
-            int barHeight = (int) ((double) data[i] / getMaxValue(data) * panelHeight);
-            int y = panelHeight - barHeight;
-            g.setColor(Color.blue);
-            g.fillRect(x, y, barWidth, barHeight);
-            g.setColor(Color.black);
-            g.drawRect(x, y, barWidth, barHeight);
-            g.setColor(Color.black);
-            g.drawString(keys[i], x + barWidth / 2 - keys[i].length(), panelHeight + 15); // Adjust position as needed
-        
-            x += 16 + barWidth + keys[i].length();
+        if(data.length >10){
+            for (int i = 0; i < 10; i++) {
+                int barHeight = (int) ((double) data[i] / getMaxValue(data) * panelHeight);
+                int y = panelHeight - barHeight;
+                g.setColor(Color.blue);
+                g.fillRect(x, y, barWidth, barHeight);
+                g.setColor(Color.black);
+                g.drawRect(x, y, barWidth, barHeight);
+                g.setColor(Color.black);
+                g.drawString(keys[i], x + barWidth / 2 - keys[i].length(), panelHeight + 15); // Adjust position as needed
+            
+                x += 16 + barWidth + keys[i].length();
+            }
+        }else{
+            for (int i = 0; i < data.length; i++) {
+                int barHeight = (int) ((double) data[i] / getMaxValue(data) * panelHeight);
+                int y = panelHeight - barHeight;
+                g.setColor(Color.blue);
+                g.fillRect(x, y, barWidth, barHeight);
+                g.setColor(Color.black);
+                g.drawRect(x, y, barWidth, barHeight);
+                g.setColor(Color.black);
+                g.drawString(keys[i], x + barWidth / 2 - keys[i].length(), panelHeight + 15); // Adjust position as needed
+            
+                x += 16 + barWidth + keys[i].length();
+            }
         }
     }
 

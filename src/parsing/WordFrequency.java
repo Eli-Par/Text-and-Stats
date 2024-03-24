@@ -80,8 +80,8 @@ public class WordFrequency extends ParseObserver <String, String>{
 
         ArrayList<StringValue> frequencies = new ArrayList<>();
 
-        int [] arr = new int[words.size()];
-        String [] keys = new String[words.size()];
+        int [] arr = new int[sortedWords.size()];
+        String [] keys = new String[sortedWords.size()];
         int i = 0;
         for (String word : sortedWords.keySet()) {
             if(isCancelled()) return null;

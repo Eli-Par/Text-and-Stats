@@ -66,13 +66,13 @@ public class CharCounter extends ParseObserver <String, String>{
         int [] arr = new int[words.size()];
         String [] keys = new String[words.size()];
         int i = 0;
+        
         for(char c: sortedChars.keySet()){
-            if(isCancelled()) return null;
-
             arr[i] = sortedChars.get(c);
-            keys[i] = "" + c;
+            keys[i] = Character.toString(c);
             i++;
         }
+        
         panel.setBG(arr,keys);
 
         // Construct statOutput with sorted characters
