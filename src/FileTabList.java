@@ -198,6 +198,19 @@ public class FileTabList extends JPanel implements MouseListener{
         }
     }
 
+    //If any tab has a matching absolute path, select it and return true, otherwise return false
+    public boolean tryOpeningPath(String path) {
+
+        for(int i = 0; i < tabs.size(); i++) {
+            if(tabs.get(i).matchesPath(path)) {
+                tabbedPane.setSelectedIndex(i);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     @Override
     public void mouseReleased(MouseEvent e) { }
 
