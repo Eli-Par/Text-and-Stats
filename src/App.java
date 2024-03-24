@@ -92,8 +92,12 @@ public class App implements KeyListener, WindowListener {
         JFrame frame = new JFrame("Select File");
 
         int act = chooser.showOpenDialog(frame);
-        if (act == JFileChooser.APPROVE_OPTION)
-            loadFile(chooser.getSelectedFile());
+        if (act == JFileChooser.APPROVE_OPTION) {
+            //Load the file only if it is not already open
+            if(!tabList.tryOpeningPath(chooser.getSelectedFile().getAbsolutePath())) {
+                loadFile(chooser.getSelectedFile());
+            }
+        }
 
     }
 

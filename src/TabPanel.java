@@ -20,9 +20,14 @@ public class TabPanel extends JPanel {
 
     public Parser parser;
 
+    File file;
+
     public TabPanel(File path, String text, String title) {
 
         super();
+
+        file = path;
+
         panels  = new JPanel[5];
         panelNames = new String[5];
         this.title = title;
@@ -110,6 +115,10 @@ public class TabPanel extends JPanel {
     //Change the tab to show the screen with the specified name
     public void changeCard(String name) {
         cardLayout.show(windowPanel, name);
+    }
+
+    public boolean matchesPath(String path) {
+        return file.getAbsolutePath().equals(path);
     }
 
 }
