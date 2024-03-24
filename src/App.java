@@ -151,6 +151,7 @@ public class App implements KeyListener, WindowListener {
         if(option == JOptionPane.OK_OPTION){
             tabList.getCurrentEditor().replaceFirst(findTf.getText(), replaceTf.getText());
         }
+    }
 
     public void onZoomIn(ActionEvent e) {
 
