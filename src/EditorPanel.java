@@ -58,6 +58,14 @@ public class EditorPanel extends JPanel implements DocumentListener{
 
     }
 
+    public void setPath(File p) {
+        path = p;
+    }
+
+    public File getPath() {
+        return path;
+    }
+
     public void save() throws IOException {
 
         PrintStream out = new PrintStream(new BufferedOutputStream(new FileOutputStream(path)));
