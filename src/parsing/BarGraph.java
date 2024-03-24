@@ -18,6 +18,9 @@ public class BarGraph extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
 
+        if(data == null || keys == null) {
+            return;
+        }
         
         super.paintComponent(g);
         int barWidth = 24;

@@ -11,7 +11,7 @@ public class App implements KeyListener, WindowListener {
 
     public static final String SETTINGS_PATH = System.getProperty("user.home") + "/.comp2800-settings";
 
-    public static final int WIDTH = 800, HEIGHT = 450;
+    public static final int WIDTH = 1000, HEIGHT = 650;
 
     private static FileTabList tabList;
 

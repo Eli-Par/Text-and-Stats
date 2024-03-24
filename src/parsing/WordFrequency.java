@@ -27,15 +27,28 @@ public class WordFrequency extends ParseObserver <String, String>{
         HashMap<String, Integer> wFrequencies = new HashMap<String, Integer>();
         String wordStr;
         int totWords = 0;
+
+        int wordCount = 0;
         
         if(isCancelled()) return null;
         for(int i =0; i< words.size(); i++){
-            wFrequencies.putIfAbsent(words.get(i).getText(), 0);
+            if(isCancelled()) return null;
+
+            if(!words.get(i).isNumeric() && !words.get(i).isSymbol()) {
+                String currWordText = words.get(i).getText().substring(0, 1).toUpperCase() + words.get(i).getText().substring(1);
+                wFrequencies.putIfAbsent(currWordText, 0);
+            }
         }
         if(isCancelled()) return null;
         for(Word w:words){
-            wordStr = w.getText();
-            wFrequencies.put(wordStr, wFrequencies.get(wordStr) + 1);
+            if(isCancelled()) return null;
+
+            if(!w.isNumeric() && !w.isSymbol()) {
+                wordStr = w.getText().substring(0, 1).toUpperCase() + w.getText().substring(1);
+                wFrequencies.put(wordStr, wFrequencies.get(wordStr) + 1);
+
+                wordCount++;
+            }
         }
         if(isCancelled()) return null;
 
@@ -43,21 +56,28 @@ public class WordFrequency extends ParseObserver <String, String>{
         LinkedHashMap<String, Integer> sortedWords = wFrequencies.entrySet().stream()
                 .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
-        StringBuilder aboveOneFrequencyWords = new StringBuilder();
+        StringBuilder frequencyWords = new StringBuilder();
+
+        ArrayList<StringValue> frequencies = new ArrayList<>();
 
         int [] arr = new int[words.size()];
         String [] keys = new String[words.size()];
         int i = 0;
         for (String word : sortedWords.keySet()) {
+            if(isCancelled()) return null;
+
             int f = sortedWords.get(word);
-            if (f > 1) {
-                aboveOneFrequencyWords.append("'" + word+ "'").append(" appears ").append(f).append(" times\n");
-            }
+            
+            frequencyWords.append("'" + word+ "'").append(" appears ").append(f).append(" times\n");
+            frequencies.add(new StringValue(word, f));
+
             arr[i] = f;
             keys[i] = word;
             totWords++;
             i++;
         }
+
+        panel.setFrequencyList(frequencies);
         
         panel.setBG(arr,keys);
 
@@ -67,18 +87,22 @@ public class WordFrequency extends ParseObserver <String, String>{
         if(isCancelled()) return null;
         int totalLength =0;
         for(Word w: words){
-            String finWord = w.getText();
-            totalLength += finWord.length();
+            if(isCancelled()) return null;
+
+            if(!w.isNumeric() && !w.isSymbol()) {
+                String finWord = w.getText();
+                totalLength += finWord.length();
+            }
         }
         
         if(isCancelled()) return null;
         String tWordString = "";
-        tWordString = "Words: " + words.size();
+        tWordString = "Words: " + wordCount;
         tWordString += "\nThere are "+ totWords +" unique Words";
-        tWordString += "\nThe Average Word Length is " + totalLength/words.size();
+        tWordString += "\nThe Average Word Length is " + totalLength/wordCount;
         panel.setTotWords(tWordString);
 
-        String statOutput = aboveOneFrequencyWords.toString().trim();
+        String statOutput = frequencyWords.toString().trim();
 
         System.out.println("Background task returning");
         return statOutput;

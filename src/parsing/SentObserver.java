@@ -32,6 +32,8 @@ public class SentObserver extends ParseObserver <String, String>{
         HashMap<String, Integer> sentFreq = new HashMap<String, Integer>();
 
         for(Sentence s: sents){
+            if(isCancelled()) return null;
+
             String sString = s.getText();
             if(!sentFreq.containsKey(sString)){
                 sentFreq.put(sString, 1);
@@ -45,6 +47,8 @@ public class SentObserver extends ParseObserver <String, String>{
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
                 
         for(String s: sortedWords.keySet()){
+            if(isCancelled()) return null;
+            
             if(sentFreq.get(s)>1){
                 statOutput += "\n\"" + s + "\" appears " + sentFreq.get(s) + " times";
             }

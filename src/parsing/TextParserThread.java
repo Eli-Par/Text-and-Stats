@@ -15,8 +15,8 @@ class TextParserThread extends Thread {
     //private ParseToken.Type[] validEndingWordTypes = {ParseToken.Type.WORD, ParseToken.Type.EMAIL, ParseToken.Type.URL, ParseToken.Type.ACRONYM, ParseToken.Type.ABBREVIATION};
 
     private TokenMatcher[] sectionMatchers = {
-        new TokenMatcher("\"[^\"]+\"", ParseToken.Type.QUOTE),
-        new TokenMatcher("'[^']+'", ParseToken.Type.SINGLE_QUOTE),
+        new TokenMatcher("\"[^\"]+\"|“[^”]+”", ParseToken.Type.QUOTE),
+        new TokenMatcher("'[^']+'|‘[^’]’", ParseToken.Type.SINGLE_QUOTE),
         new TokenMatcher("\\([^\"]+\\)", ParseToken.Type.BRACKET)
     };
 
@@ -25,7 +25,7 @@ class TextParserThread extends Thread {
         new TokenMatcher("[\\w\\-]+(\\.[\\w\\-]+)*@[\\w\\-]+(\\.[\\w\\-]+)*(\\.[\\w\\-]{2,4})", ParseToken.Type.EMAIL),
         new TokenMatcher("(http(s)?:\\/\\/.)?(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+\\.~#?&//=]*[-a-zA-Z0-9@:%_\\+~#?&//=])", ParseToken.Type.URL),
         new TokenMatcher("[+\\-]?[0-9]+(\\.[0-9]+)?", ParseToken.Type.NUMBER),
-        new TokenMatcher( "([a-zA-Z_']+-?|-?[a-zA-Z_']+)+", ParseToken.Type.WORD),
+        new TokenMatcher( "([a-zA-Z_'’]+([a-zA-Z_'’]+-)?)+", ParseToken.Type.WORD),
         new TokenMatcher("\\s+", ParseToken.Type.WHITESPACE),
         new TokenMatcher("[\\.][\\.]+", ParseToken.Type.SYMBOL),
         new TokenMatcher("[\\?!\\.]+", ParseToken.Type.PUNCTUATION),
@@ -47,11 +47,22 @@ class TextParserThread extends Thread {
         //Get a list of tokens in the string
         ArrayList<ParseToken> tokens = getTokens();
 
+        if(Thread.interrupted()) {
+            Thread.currentThread().interrupt();
+            return;
+        }
+
         //An array of tokens encountered so far in the sentence
         ArrayList<ParseToken> tokenBuffer = new ArrayList<>();
 
         //Loop through all tokens
         for(int i = 0; i < tokens.size(); i++) {
+            
+            if(Thread.interrupted()) {
+                Thread.currentThread().interrupt();
+                return;
+            }
+
             //Get the current token and add it to the buffer
             ParseToken currToken = tokens.get(i);
             tokenBuffer.add(currToken);
@@ -81,7 +92,7 @@ class TextParserThread extends Thread {
                     //Only add the sentence if it contains actual text
                     if(!sentenceString.isBlank()) 
                     {
-                        sentences.add(new Sentence(sentenceString, wordListToWordArray(newWords)));
+                        sentences.add(new Sentence(sentenceString.trim(), wordListToWordArray(newWords)));
                     }
 
                     //Clear the buffer for the next sentence
@@ -101,17 +112,17 @@ class TextParserThread extends Thread {
         }
 
         //@Temp print statements
-        System.out.println("\nWords:" + words.size());
+        // System.out.println("\nWords:" + words.size());
 
-        for(Word word : words) {
-            System.out.println(word);
-        }
+        // for(Word word : words) {
+        //     System.out.println(word);
+        // }
 
-        System.out.println("\n\nSentence:" + sentences.size());
+        // System.out.println("\n\nSentence:" + sentences.size());
 
-        for(Sentence s : sentences) {
-            System.out.println(s);
-        }
+        // for(Sentence s : sentences) {
+        //     System.out.println(s);
+        //}
         //@Temp end temporary print statements
 
         parser.parseDone(words, sentences);
@@ -215,6 +226,11 @@ class TextParserThread extends Thread {
         //Loop through the entire string and keep track of where it is in the parse
         int startIndex = 0;
         while(startIndex < input.length()) {
+
+            if(Thread.interrupted()) {
+                Thread.currentThread().interrupt();
+                return;
+            }
 
             //Loop through all the TokenMatchers until a valid match is found
             boolean matchFound = false;
