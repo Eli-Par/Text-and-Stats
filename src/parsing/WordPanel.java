@@ -69,7 +69,13 @@ public class WordPanel extends JPanel{
         totWords.setText(s);
     }
     public void setFrequencies(String s){
-        wordFrequencies.setText(s);
+        //If the search bar is blank, use the default to prevent old search terms from replacing it
+        if(searchField.getText().isBlank()) {
+            wordFrequencies.setText(defaultFrequencyText);
+        }
+        else {
+            wordFrequencies.setText(s);
+        }
         wordFrequencies.setCaretPosition(0);
     }
     public String get(){
