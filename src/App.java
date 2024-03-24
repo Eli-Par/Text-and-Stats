@@ -16,7 +16,7 @@ public class App implements KeyListener, WindowListener {
 
     private static FileTabList tabList;
 
-    public static Font MENU_FONT = new Font("Tahoma", Font.PLAIN, 30);
+    public static Font MENU_FONT = new Font("Tahoma", Font.PLAIN, 20);
 
     UserOptions opts;
 
@@ -234,7 +234,7 @@ public class App implements KeyListener, WindowListener {
 
     }
 
-    public void init() {
+    public void init(String[]args) {
 
         JFrame frame = new JFrame(TITLE);
         // JPanel panel = new JPanel();
@@ -268,6 +268,9 @@ public class App implements KeyListener, WindowListener {
         frame.setSize(WIDTH, HEIGHT);
         frame.setLocation((screenSize.width - frame.getWidth()) / 2, 0);
         frame.setVisible(true);
+
+        for(String arg : args)
+            loadFile(new File(arg));
 
     }
 
@@ -305,7 +308,7 @@ public class App implements KeyListener, WindowListener {
     }
 
     public static void main(String[] args) {
-        new App().init();
+        new App().init(args);
     }
 
     /**
