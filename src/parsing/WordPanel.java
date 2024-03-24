@@ -3,6 +3,7 @@ package parsing;
 import java.awt.*;
 import java.util.*;
 import javax.swing.*;
+import java.awt.GridBagLayout;
 
 public class WordPanel extends JPanel{
     private JTextArea totWords = new JTextArea(5, 10);
