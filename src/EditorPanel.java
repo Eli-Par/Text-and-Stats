@@ -10,6 +10,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultHighlighter;
 import javax.swing.text.Highlighter;
+import javax.swing.text.StyledDocument;
 
 import com.inet.jortho.FileUserDictionary;
 import com.inet.jortho.SpellChecker;
@@ -168,6 +169,18 @@ public class EditorPanel extends JPanel implements DocumentListener{
                 h.removeAllHighlights();
             }
         });
+    }
+
+    public void replaceFirst(String find, String replace){
+        // get the text
+        String content = area.getText();
+
+        // find the first occurrence of find and replace it with replace
+        int i = content.indexOf(find);
+        if(i != 1){
+            content = content.substring(0, i) + replace + content.substring(i+find.length());
+            area.setText(content);
+        }
     }
 
     public void replaceAll(String find, String replace){

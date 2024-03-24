@@ -56,6 +56,7 @@ public class App implements KeyListener, WindowListener {
         JMenuItem zoom = new JMenuItem("Zoom Reset");
 
         JMenuItem find = new JMenuItem("Find");
+        JMenuItem replaceFirst = new JMenuItem("Replace First");
         JMenuItem replaceAll = new JMenuItem("Replace All");
 
         bar.add(fileMenu);
@@ -75,6 +76,7 @@ public class App implements KeyListener, WindowListener {
 
         editMenu.setFont(MENU_FONT);
         editMenu.add(find);
+        editMenu.add(replaceFirst);
         editMenu.add(replaceAll);
 
         open.addActionListener(this::onOpen);
@@ -82,7 +84,9 @@ public class App implements KeyListener, WindowListener {
         saveAll.addActionListener(this::onSaveAll);
         font.addActionListener(this::fontSetter);
         find.addActionListener(this::onFind);
+        replaceFirst.addActionListener(this::replaceFirst);
         replaceAll.addActionListener(this::onReplaceAll);
+
     }
 
     public App() {
@@ -116,7 +120,7 @@ public class App implements KeyListener, WindowListener {
 
     public void onFind(ActionEvent e){
         JTextField tf = new JTextField();
-        int option = JOptionPane.showConfirmDialog(null, tf, "Enter Text: ", JOptionPane.OK_CANCEL_OPTION);
+        int option = JOptionPane.showConfirmDialog(null, tf, "Find", JOptionPane.OK_CANCEL_OPTION);
         if (option == JOptionPane.OK_OPTION) {
             String text = tf.getText();
             tabList.getCurrentEditor().find(text);
@@ -127,9 +131,19 @@ public class App implements KeyListener, WindowListener {
         JTextField findTf = new JTextField();
         JTextField replaceTf = new JTextField();
         Object[] msg = {"Find: ", findTf, "Replace with: ", replaceTf};
-        int option = JOptionPane.showConfirmDialog(null, msg , "Enter Find Text: ", JOptionPane.OK_CANCEL_OPTION);
+        int option = JOptionPane.showConfirmDialog(null, msg , "Replace All", JOptionPane.OK_CANCEL_OPTION);
         if(option == JOptionPane.OK_OPTION){
             tabList.getCurrentEditor().replaceAll(findTf.getText(), replaceTf.getText());
+        }
+    }
+
+    public void replaceFirst(ActionEvent e){
+        JTextField findTf = new JTextField();
+        JTextField replaceTf = new JTextField();
+        Object[] msg = {"Find: ", findTf, "Replace with: ", replaceTf};
+        int option = JOptionPane.showConfirmDialog(null, msg, "Replace First Instance", JOptionPane.OK_CANCEL_OPTION);
+        if(option == JOptionPane.OK_OPTION){
+            tabList.getCurrentEditor().replaceFirst(findTf.getText(), replaceTf.getText());
         }
     }
 
