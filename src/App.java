@@ -16,7 +16,6 @@ public class App implements KeyListener, WindowListener {
     public static final int WIDTH = 1000, HEIGHT = 650;
 
     private static FileTabList tabList;
-
     public static Font MENU_FONT = new Font("Tahoma", Font.PLAIN, 20);
 
     UserOptions opts;
@@ -50,6 +49,8 @@ public class App implements KeyListener, WindowListener {
         JMenuItem save = new JMenuItem("Save");
         JMenuItem open = new JMenuItem("Open");
         JMenuItem saveAll = new JMenuItem("Save All");
+        JMenuItem ne = new JMenuItem("New Text File");
+        JMenuItem saveAs = new JMenuItem("Save As");
 
         JMenuItem font = new JMenuItem("Font");
         JMenuItem zoomIn = new JMenuItem("Zoom In");
@@ -61,12 +62,14 @@ public class App implements KeyListener, WindowListener {
         JMenuItem replaceAll = new JMenuItem("Replace All");
 
         bar.add(fileMenu);
-        bar.add(vMenu);
         bar.add(editMenu);
+        bar.add(vMenu);
 
         fileMenu.setFont(MENU_FONT);
+        fileMenu.add(ne);
         fileMenu.add(save);
         fileMenu.add(saveAll);
+        fileMenu.add(saveAs);
         fileMenu.add(open);
 
         vMenu.setFont(MENU_FONT);
@@ -83,6 +86,8 @@ public class App implements KeyListener, WindowListener {
         open.addActionListener(this::onOpen);
         save.addActionListener(this::onSave);
         saveAll.addActionListener(this::onSaveAll);
+        ne.addActionListener(this::onOpen);
+        saveAs.addActionListener(this::onSaveAs);
         font.addActionListener(this::fontSetter);
 
         find.addActionListener(this::onFind);
@@ -105,17 +110,27 @@ public class App implements KeyListener, WindowListener {
 
     }
 
-    public void onOpen(ActionEvent e) {
+    public File fileSelector() {
 
         JFileChooser chooser = new JFileChooser(opts.lastOpenLocation);
         JFrame frame = new JFrame("Select File");
 
         int act = chooser.showOpenDialog(frame);
-        if (act == JFileChooser.APPROVE_OPTION) {
-            //Load the file only if it is not already open
-            if(!tabList.tryOpeningPath(chooser.getSelectedFile().getAbsolutePath())) {
-                loadFile(chooser.getSelectedFile());
-            }
+        if (act == JFileChooser.APPROVE_OPTION)
+            return chooser.getSelectedFile();
+        return null;
+
+    }
+
+    public void onOpen(ActionEvent e) {
+
+        File f = fileSelector();
+
+        if(f == null)
+            return;
+        //Load the file only if it is not already open
+        if(!tabList.tryOpeningPath(f.getAbsolutePath())) {
+            loadFile(f);
         }
 
     }
@@ -209,6 +224,29 @@ public class App implements KeyListener, WindowListener {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+
+    }
+
+    public void onSaveAs(ActionEvent e) {
+
+        EditorPanel ed = tabList.getCurrentEditor();
+        if(ed == null)
+            return;
+
+        File f = fileSelector();
+        if(f == null)
+            return;
+
+        File old = ed.getPath();
+        ed.setPath(f);
+
+        try {
+            ed.save();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+
+        ed.setPath(old);
 
     }
 
