@@ -4,6 +4,7 @@ import java.awt.event.*;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.util.Scanner;
+import static util.algobase.*;
 
 public class App implements KeyListener, WindowListener {
 
@@ -15,7 +16,7 @@ public class App implements KeyListener, WindowListener {
 
     private static FileTabList tabList;
 
-    public static Font MENU_FONT = new Font("Tahoma", Font.PLAIN, 30);
+    public static Font MENU_FONT = new Font("Tahoma", Font.PLAIN, 20);
 
     UserOptions opts;
 
@@ -71,6 +72,9 @@ public class App implements KeyListener, WindowListener {
         save.addActionListener(this::onSave);
         saveAll.addActionListener(this::onSaveAll);
         font.addActionListener(this::fontSetter);
+        zoomIn.addActionListener(this::onZoomIn);
+        zoomOut.addActionListener(this::onZoomOut);
+        zoom.addActionListener(this::onZoomReset);
 
     }
 
@@ -101,6 +105,46 @@ public class App implements KeyListener, WindowListener {
 
     public void fontSetter(ActionEvent e) {
         new FontSetter(tabList);
+    }
+
+    public void onZoomIn(ActionEvent e) {
+
+        var editor = tabList.getCurrentEditor();
+        if(editor == null)
+            return;
+
+        JTextArea area = editor.getTextArea();
+        Font f = area.getFont();
+        int ind = lower_bound(FontSetter.FONT_SIZES, f.getSize()) + 1;
+
+        if(ind < FontSetter.FONT_SIZES.length)
+            area.setFont(new Font(f.getFamily(), Font.PLAIN, FontSetter.FONT_SIZES[ind]));
+
+    }
+
+    public void onZoomOut(ActionEvent e) {
+
+        var editor = tabList.getCurrentEditor();
+        if(editor == null)
+            return;
+
+        JTextArea area = editor.getTextArea();
+        Font f = area.getFont();
+        int ind = lower_bound(FontSetter.FONT_SIZES, f.getSize()) - 1;
+
+        if(ind >= 0)
+            area.setFont(new Font(f.getFamily(), Font.PLAIN, FontSetter.FONT_SIZES[ind]));
+
+    }
+
+    public void onZoomReset(ActionEvent e) {
+
+        var editor = tabList.getCurrentEditor();
+        if(editor == null)
+            return;
+
+        editor.getTextArea().setFont(tabList.getFont());
+
     }
 
     public void onSave(ActionEvent e) {
@@ -188,7 +232,7 @@ public class App implements KeyListener, WindowListener {
 
     }
 
-    public void init() {
+    public void init(String[]args) {
 
         JFrame frame = new JFrame(TITLE);
         // JPanel panel = new JPanel();
@@ -223,6 +267,9 @@ public class App implements KeyListener, WindowListener {
         frame.setLocation((screenSize.width - frame.getWidth()) / 2, 0);
         frame.setVisible(true);
 
+        for(String arg : args)
+            loadFile(new File(arg));
+
     }
 
     /**
@@ -236,6 +283,16 @@ public class App implements KeyListener, WindowListener {
     public void keyReleased(KeyEvent e) {
         if (e.isControlDown()) {
             switch (e.getKeyCode()) {
+                case 107:
+                    onZoomIn(null);
+                    break;
+                case 109:
+                case KeyEvent.VK_MINUS:
+                    onZoomOut(null);
+                    break;
+                case '0':
+                    onZoomReset(null);
+                    break;
                 case 'X':
                     break;
                 case 'O':
@@ -249,7 +306,7 @@ public class App implements KeyListener, WindowListener {
     }
 
     public static void main(String[] args) {
-        new App().init();
+        new App().init(args);
     }
 
     /**
