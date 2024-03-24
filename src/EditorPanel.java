@@ -39,6 +39,7 @@ public class EditorPanel extends JPanel implements DocumentListener{
         area.setLineWrap(true);
         area.setWrapStyleWord(true);
         area.setText(text);
+        area.setCaretPosition(0);
 
         // JPanel panel = new JPanel();
         // panel.setLayout(new BorderLayout());
@@ -148,6 +149,12 @@ public class EditorPanel extends JPanel implements DocumentListener{
 
         // loop through all occurrences and highlight them
         int i = content.indexOf(text);
+        boolean caretNotSet = true;
+        if((i > area.getCaretPosition() || i == 0 && area.getCaretPosition() == 0) && caretNotSet) 
+        {
+            area.setCaretPosition(i);
+            caretNotSet = false;
+        }
         while(i != -1){
             try{
                 h.addHighlight(i, i+text.length(), painter);
@@ -155,6 +162,11 @@ public class EditorPanel extends JPanel implements DocumentListener{
                 e.printStackTrace();
             }
             i = content.indexOf(text, i+1);
+            if(i > area.getCaretPosition() && caretNotSet) 
+        {
+            area.setCaretPosition(i);
+            caretNotSet = false;
+        }
         }
 
         // delete highlighted text when mouse is clicked
