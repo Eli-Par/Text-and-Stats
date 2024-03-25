@@ -315,6 +315,8 @@ public class App implements KeyListener, WindowListener {
 
         ed.setPath(old);
 
+        loadFile(f);
+
     }
 
     public void saveOptions() {
