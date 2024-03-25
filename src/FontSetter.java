@@ -8,30 +8,30 @@ public class FontSetter {
 
     private FileTabList tabList;
 
-    private final JComboBox<Integer> size;
-    private final JTextField fontTF;
-    private final JButton button;
+    private final JComboBox<Integer> sizeCB;
+    private final JComboBox<String> fontCB;
     private final JPanel panel;
 
     public void updateFont(ActionEvent e) {
-        tabList.setEditorFont(new Font(fontTF.getText(), Font.PLAIN, Math.max(1, Math.min((Integer) size.getSelectedItem(), 96))));
+        tabList.setEditorFont(new Font((String) fontCB.getSelectedItem(), Font.PLAIN, Math.max(1, Math.min((Integer) sizeCB.getSelectedItem(), 96))));
     }
 
     public FontSetter(FileTabList tabs) {
 
+        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+
         tabList = tabs;
 
-        size = new JComboBox<>(FONT_SIZES);
-        size.setSelectedItem(36);
-
-        fontTF = new JTextField("Tahoma", 20);
-        button = new JButton("Change");
+        sizeCB = new JComboBox<>(FONT_SIZES);
+        sizeCB.setSelectedItem(36);
+        fontCB = new JComboBox<>(ge.getAvailableFontFamilyNames());
+        if(tabList.getCurrentEditor() != null) fontCB.setSelectedItem(tabList.getCurrentEditor().getTextArea().getFont().getFamily());
 
         panel = new JPanel(new GridLayout(0, 2));
         panel.add(new JLabel("Font Type: "));
-        panel.add(fontTF);
+        panel.add(fontCB);
         panel.add(new JLabel("Font Size: "));
-        panel.add(size);
+        panel.add(sizeCB);
 
         int op = JOptionPane.showConfirmDialog(null, panel, "Set Font", JOptionPane.OK_CANCEL_OPTION);
         if(op == JOptionPane.OK_OPTION){

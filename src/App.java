@@ -137,7 +137,6 @@ public class App implements KeyListener, WindowListener {
         if(!tabList.tryOpeningPath(f.getAbsolutePath())) {
             loadFile(f);
         }
-
     }
 
     public void fontSetter(ActionEvent e) {
