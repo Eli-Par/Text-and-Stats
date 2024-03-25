@@ -47,6 +47,18 @@ public class WordFrequency extends ParseObserver <String, String>{
         int totWords = 0;
 
         int wordCount = 0;
+
+        if(words.size() == 0) {
+            panel.setBG(null, null);
+            String tWordString = "";
+            tWordString = "Words: " + 0;
+            tWordString += "\nThere are "+ 0 +" unique Words";
+            tWordString += "\nThe Average Word Length is " + 0;
+            panel.setTotWords(tWordString);
+            panel.setDefaultFrequencyText("No words found");
+            panel.setFrequencies("No words found");
+            panel.setWordList(null);
+        }
         
         if(isCancelled()) return null;
         for(int i =0; i< words.size(); i++){

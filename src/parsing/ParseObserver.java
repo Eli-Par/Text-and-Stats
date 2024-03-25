@@ -17,6 +17,8 @@ import java.util.List;
 
 public abstract class ParseObserver<T, K> {
 
+    private long updateTime = 0;
+
     private ParseObserverWorker<T, K> worker = null;
 
     //Run on a background thread
@@ -27,6 +29,13 @@ public abstract class ParseObserver<T, K> {
 
     //Run on the swing event disbatch thread
     protected void doneTask(T backgroundResult) {}
+
+    protected synchronized void tryDoneTask(T result, long time) {
+        if(time > updateTime) {
+            updateTime = time;
+            doneTask(result);
+        }
+    }
 
     //Run on the thread that called the parser
     public void parseStarted() {}
@@ -42,8 +51,8 @@ public abstract class ParseObserver<T, K> {
     }
 
     //Start the internal swing worker
-    public final void startThread() {
-        worker = new ParseObserverWorker<>(this);
+    public final void startThread(long startTime) {
+        worker = new ParseObserverWorker<>(this, startTime);
         worker.execute();
     }
 
