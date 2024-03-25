@@ -59,7 +59,7 @@ public class SentObserver extends ParseObserver <String, String>{
         for(String s: sortedWords.keySet()){
             if(isCancelled()) return null;
 
-            if(sentFreq.get(s)>1){
+            if(sentFreq.get(s)>1 && !s.equals(".") ){
                 statOutput += "\n\"" + s + "\" appears " + sentFreq.get(s) + " times";
             }
         }
