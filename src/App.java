@@ -15,7 +15,7 @@ public class App implements KeyListener, WindowListener {
     public static final int WIDTH = 1000, HEIGHT = 650;
 
     private static FileTabList tabList;
-    public static Font MENU_FONT = new Font("Tahoma", Font.PLAIN, 20);
+    public static Font MENU_FONT = new Font("Tahoma", Font.PLAIN, 16);
 
     UserOptions opts;
 
@@ -46,9 +46,8 @@ public class App implements KeyListener, WindowListener {
         JMenuItem editMenu = new JMenu("Edit");
 
         JMenuItem save = new JMenuItem("Save");
-        JMenuItem open = new JMenuItem("Open");
+        JMenuItem openAndCreate = new JMenuItem("Open/Create");
         JMenuItem saveAll = new JMenuItem("Save All");
-        JMenuItem ne = new JMenuItem("New Text File");
         JMenuItem saveAs = new JMenuItem("Save As");
 
         JMenuItem font = new JMenuItem("Font");
@@ -67,11 +66,10 @@ public class App implements KeyListener, WindowListener {
         bar.add(vMenu);
 
         fileMenu.setFont(MENU_FONT);
-        fileMenu.add(ne);
+        fileMenu.add(openAndCreate);
         fileMenu.add(save);
         fileMenu.add(saveAll);
         fileMenu.add(saveAs);
-        fileMenu.add(open);
 
         vMenu.setFont(MENU_FONT);
         vMenu.add(font);
@@ -86,10 +84,9 @@ public class App implements KeyListener, WindowListener {
         editMenu.add(undo);
         editMenu.add(redo);
 
-        open.addActionListener(this::onOpen);
+        openAndCreate.addActionListener(this::onOpenAndCreate);
         save.addActionListener(this::onSave);
         saveAll.addActionListener(this::onSaveAll);
-        ne.addActionListener(this::onOpen);
         saveAs.addActionListener(this::onSaveAs);
         font.addActionListener(this::fontSetter);
 
@@ -127,7 +124,7 @@ public class App implements KeyListener, WindowListener {
 
     }
 
-    public void onOpen(ActionEvent e) {
+    public void onOpenAndCreate(ActionEvent e) {
 
         File f = fileSelector();
 
@@ -137,7 +134,6 @@ public class App implements KeyListener, WindowListener {
         if(!tabList.tryOpeningPath(f.getAbsolutePath())) {
             loadFile(f);
         }
-
     }
 
     public void fontSetter(ActionEvent e) {
@@ -379,34 +375,6 @@ public class App implements KeyListener, WindowListener {
      */
     @Override
     public void keyReleased(KeyEvent e) {
-        if (e.isControlDown()) {
-            switch (e.getKeyCode()) {
-                case 107:
-                    onZoomIn(null);
-                    break;
-                case 109:
-                case KeyEvent.VK_MINUS:
-                    onZoomOut(null);
-                    break;
-                case '0':
-                    onZoomReset(null);
-                    break;
-                case 'X':
-                    break;
-                case 'O':
-                    onOpen(null);
-                    break;
-                case 'S':
-                    onSave(null);
-                    break;
-                case 'Y':
-                    onRedo(null);
-                    break;
-                case 'Z':
-                    onUndo(null);
-                    break;
-            }
-        }
     }
 
     public static void main(String[] args) {
@@ -434,7 +402,35 @@ public class App implements KeyListener, WindowListener {
      */
     @Override
     public void keyPressed(KeyEvent e) {
-
+        if (e.isControlDown()) {
+            switch (e.getKeyCode()) {
+                case 107:
+                    onZoomIn(null);
+                    break;
+                case 109:
+                case KeyEvent.VK_MINUS:
+                    onZoomOut(null);
+                    break;
+                case '0':
+                    onZoomReset(null);
+                    break;
+                case 'F':
+                    onFind(null);
+                    break;
+                case 'O':
+                    onOpenAndCreate(null);
+                    break;
+                case 'S':
+                    onSave(null);
+                    break;
+                case 'Y':
+                    onRedo(null);
+                    break;
+                case 'Z':
+                    onUndo(null);
+                    break;
+            }
+        }
     }
 
     /**
