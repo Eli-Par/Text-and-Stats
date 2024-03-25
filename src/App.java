@@ -89,17 +89,11 @@ public class App implements KeyListener, WindowListener {
         fileMenu.add(saveAll);
         fileMenu.add(saveAs);
 
-        for(var c : fileMenu.getMenuComponents())
-            c.setFont(MENU_FONT);
-
         vMenu.setFont(MENU_FONT);
         vMenu.add(font);
         vMenu.add(zoomIn);
         vMenu.add(zoomOut);
         vMenu.add(zoomDefault);
-
-        for(var c : vMenu.getMenuComponents())
-            c.setFont(MENU_FONT);
 
         editMenu.setFont(MENU_FONT);
         editMenu.add(find);
@@ -107,8 +101,6 @@ public class App implements KeyListener, WindowListener {
         editMenu.add(replaceAll);
         editMenu.add(undo);
         editMenu.add(redo);
-        for(var c : editMenu.getMenuComponents())
-            c.setFont(MENU_FONT);
 
         open.addActionListener(this::onOpen);
         save.addActionListener(this::onSave);
