@@ -1,5 +1,4 @@
 import javax.swing.*;
-import javax.swing.text.Highlighter;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
@@ -9,7 +8,7 @@ import static util.algobase.*;
 
 public class App implements KeyListener, WindowListener {
 
-    public static final String TITLE = "Editor";
+    public static final String TITLE = "Text Buddy";
 
     public static final String SETTINGS_PATH = System.getProperty("user.home") + "/.comp2800-settings";
 
@@ -332,6 +331,8 @@ public class App implements KeyListener, WindowListener {
     public void init(String[]args) {
 
         JFrame frame = new JFrame(TITLE);
+        ImageIcon icon = new ImageIcon("img/TextBuddyIcon.png");
+        frame.setIconImage(icon.getImage());
         // JPanel panel = new JPanel();
 
         Toolkit tk = Toolkit.getDefaultToolkit();
