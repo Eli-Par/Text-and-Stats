@@ -4,6 +4,8 @@ import java.awt.event.*;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.util.Scanner;
+
+import static util.GUI.boolQuery;
 import static util.algobase.*;
 
 public class App implements KeyListener, WindowListener {
@@ -89,7 +91,7 @@ public class App implements KeyListener, WindowListener {
         open.addActionListener(this::onOpen);
         save.addActionListener(this::onSave);
         saveAll.addActionListener(this::onSaveAll);
-        ne.addActionListener(this::onOpen);
+        ne.addActionListener(this::onNew);
         saveAs.addActionListener(this::onSaveAs);
         font.addActionListener(this::fontSetter);
 
@@ -115,21 +117,50 @@ public class App implements KeyListener, WindowListener {
 
     }
 
-    public File fileSelector() {
+    public File fileSelector(boolean b) {
 
         JFileChooser chooser = new JFileChooser(opts.lastOpenLocation);
         JFrame frame = new JFrame("Select File");
 
         int act = chooser.showOpenDialog(frame);
-        if (act == JFileChooser.APPROVE_OPTION)
-            return chooser.getSelectedFile();
+        if (act == JFileChooser.APPROVE_OPTION) {
+
+            File selected = chooser.getSelectedFile();
+            boolean cont;
+
+            if (selected.exists() == b) {
+
+                if(b)
+                    cont = boolQuery(selected.getParent() + " already exists. Do you want to open it?");
+                else
+                    cont = boolQuery(selected.getPath() + " does not exist. Do you want to create it?");
+
+                if (!cont)
+                    return null;
+
+                if (!b) {
+                    try {
+                        new FileOutputStream(selected).close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                return selected;
+
+            }
+
+            return selected;
+
+        }
+
         return null;
 
     }
 
     public void onOpen(ActionEvent e) {
 
-        File f = fileSelector();
+        File f = fileSelector(false);
 
         if(f == null)
             return;
@@ -137,6 +168,16 @@ public class App implements KeyListener, WindowListener {
         if(!tabList.tryOpeningPath(f.getAbsolutePath())) {
             loadFile(f);
         }
+
+    }
+
+    public void onNew(ActionEvent e) {
+
+        File f = fileSelector(true);
+
+        if(f == null)
+            return;
+        loadFile(f);
 
     }
 
@@ -246,7 +287,7 @@ public class App implements KeyListener, WindowListener {
         if(ed == null)
             return;
 
-        File f = fileSelector();
+        File f = fileSelector(true);
         if(f == null)
             return;
 
