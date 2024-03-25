@@ -136,7 +136,7 @@ public class WordFrequency extends ParseObserver <String, String>{
 
         panel.setDefaultFrequencyText(statOutput);
 
-        System.out.println("Background task returning");
+        //@REMOVED System.out.println("Background task returning");
         return statOutput;
     }
 
@@ -146,7 +146,7 @@ public class WordFrequency extends ParseObserver <String, String>{
 
     @Override
     protected void doneTask(String output) {
-        System.out.println("!!>>Done run<<!!");
+        //@REMOVED System.out.println("!!>>Done run<<!!");
         panel.setFrequencies(output);
 
     }

@@ -93,7 +93,7 @@ public class CharCounter extends ParseObserver <String, String>{
 
     @Override
     protected void doneTask(String output) {
-        System.out.println("!!>>Done run<<!!");
+        //@REMOVED System.out.println("!!>>Done run<<!!");
         panel.setChars(output);
 
     }

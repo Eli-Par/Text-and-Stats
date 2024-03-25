@@ -69,7 +69,7 @@ public class SentObserver extends ParseObserver <String, String>{
         // other methods on the swing event disbatch thread
         if(isCancelled()) return null;
 
-        System.out.println("Background task returning");
+        //@REMOVED System.out.println("Background task returning");
 
         return statOutput;
     }
@@ -81,7 +81,7 @@ public class SentObserver extends ParseObserver <String, String>{
 
     @Override
     protected void doneTask(String output) {
-        System.out.println("!!>>Done run<<!!");
+        //@REMOVED System.out.println("!!>>Done run<<!!");
 
         panel.setStats(output);
     }

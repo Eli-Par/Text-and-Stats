@@ -84,7 +84,7 @@ public class TestParseObserver extends ParseObserver<String, String> {
             if(isCancelled()) return null;
         }
 
-        if(ENABLE_PRINT) System.out.println("Background task returning");
+        //if(ENABLE_PRINT) //@REMOVED System.out.println("Background task returning");
 
         return statOutput;
     }
@@ -96,7 +96,7 @@ public class TestParseObserver extends ParseObserver<String, String> {
 
     @Override
     protected void doneTask(String output) {
-        if(ENABLE_PRINT) System.out.println("!!>>Done run<<!!");
+        if(ENABLE_PRINT) //@REMOVED System.out.println("!!>>Done run<<!!");
 
         textArea.setText(output);
     }
