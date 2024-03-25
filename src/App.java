@@ -48,7 +48,6 @@ public class App implements KeyListener, WindowListener {
         JMenuItem save = new JMenuItem("Save");
         JMenuItem openAndCreate = new JMenuItem("Open/Create");
         JMenuItem saveAll = new JMenuItem("Save All");
-//        JMenuItem ne = new JMenuItem("New Text File");
         JMenuItem saveAs = new JMenuItem("Save As");
 
         JMenuItem font = new JMenuItem("Font");
@@ -67,7 +66,6 @@ public class App implements KeyListener, WindowListener {
         bar.add(vMenu);
 
         fileMenu.setFont(MENU_FONT);
-//        fileMenu.add(ne);
         fileMenu.add(openAndCreate);
         fileMenu.add(save);
         fileMenu.add(saveAll);
@@ -89,7 +87,6 @@ public class App implements KeyListener, WindowListener {
         openAndCreate.addActionListener(this::onOpenAndCreate);
         save.addActionListener(this::onSave);
         saveAll.addActionListener(this::onSaveAll);
-//        ne.addActionListener(this::onOpen);
         saveAs.addActionListener(this::onSaveAs);
         font.addActionListener(this::fontSetter);
 
@@ -378,34 +375,6 @@ public class App implements KeyListener, WindowListener {
      */
     @Override
     public void keyReleased(KeyEvent e) {
-        if (e.isControlDown()) {
-            switch (e.getKeyCode()) {
-                case 107:
-                    onZoomIn(null);
-                    break;
-                case 109:
-                case KeyEvent.VK_MINUS:
-                    onZoomOut(null);
-                    break;
-                case '0':
-                    onZoomReset(null);
-                    break;
-                case 'X':
-                    break;
-                case 'O':
-                    onOpenAndCreate(null);
-                    break;
-                case 'S':
-                    onSave(null);
-                    break;
-                case 'Y':
-                    onRedo(null);
-                    break;
-                case 'Z':
-                    onUndo(null);
-                    break;
-            }
-        }
     }
 
     public static void main(String[] args) {
@@ -433,7 +402,35 @@ public class App implements KeyListener, WindowListener {
      */
     @Override
     public void keyPressed(KeyEvent e) {
-
+        if (e.isControlDown()) {
+            switch (e.getKeyCode()) {
+                case 107:
+                    onZoomIn(null);
+                    break;
+                case 109:
+                case KeyEvent.VK_MINUS:
+                    onZoomOut(null);
+                    break;
+                case '0':
+                    onZoomReset(null);
+                    break;
+                case 'F':
+                    onFind(null);
+                    break;
+                case 'O':
+                    onOpenAndCreate(null);
+                    break;
+                case 'S':
+                    onSave(null);
+                    break;
+                case 'Y':
+                    onRedo(null);
+                    break;
+                case 'Z':
+                    onUndo(null);
+                    break;
+            }
+        }
     }
 
     /**

@@ -12,10 +12,6 @@ public class FontSetter {
     private final JComboBox<String> fontCB;
     private final JPanel panel;
 
-    public void updateFont(ActionEvent e) {
-        tabList.setEditorFont(new Font((String) fontCB.getSelectedItem(), Font.PLAIN, Math.max(1, Math.min((Integer) sizeCB.getSelectedItem(), 96))));
-    }
-
     public FontSetter(FileTabList tabs) {
 
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -39,4 +35,7 @@ public class FontSetter {
         }
     }
 
+    public void updateFont(ActionEvent e) {
+        tabList.setEditorFont(new Font((String) fontCB.getSelectedItem(), Font.PLAIN, Math.max(1, Math.min((Integer) sizeCB.getSelectedItem(), 96))));
+    }
 }
