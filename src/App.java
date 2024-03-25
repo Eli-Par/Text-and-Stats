@@ -130,10 +130,11 @@ public class App implements KeyListener, WindowListener {
 
     }
 
-    public File fileSelector(boolean b) {
+    public File fileSelector(boolean b, String title) {
 
         JFileChooser chooser = new JFileChooser(opts.lastOpenLocation);
         JFrame frame = new JFrame("Select File");
+        chooser.setDialogTitle(title);
 
         int act = chooser.showOpenDialog(frame);
         if (act == JFileChooser.APPROVE_OPTION) {
@@ -173,7 +174,7 @@ public class App implements KeyListener, WindowListener {
 
     public void onOpen(ActionEvent e) {
 
-        File f = fileSelector(false);
+        File f = fileSelector(false, "Open");
 
         if(f == null)
             return;
@@ -185,7 +186,7 @@ public class App implements KeyListener, WindowListener {
 
     public void onNew(ActionEvent e) {
 
-        File f = fileSelector(true);
+        File f = fileSelector(true, "New");
 
         if(f == null)
             return;
@@ -299,7 +300,7 @@ public class App implements KeyListener, WindowListener {
         if(ed == null)
             return;
 
-        File f = fileSelector(true);
+        File f = fileSelector(true, "Save As");
         if(f == null)
             return;
 
