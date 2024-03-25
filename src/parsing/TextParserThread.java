@@ -32,10 +32,13 @@ class TextParserThread extends Thread {
         new TokenMatcher(".", ParseToken.Type.SYMBOL)
     };
 
+    private long startTime;
+
     //Set the text to parse and the TextParser to return to
-    public TextParserThread(String text, TextParser parser) {
+    public TextParserThread(String text, TextParser parser, long startTime) {
         this.text = text;
         this.parser = parser;
+        this.startTime = startTime;
     }
 
     @Override
@@ -125,7 +128,7 @@ class TextParserThread extends Thread {
         // }
         //@Temp end temporary print statements
 
-        parser.parseDone(words, sentences);
+        parser.parseDone(words, sentences, startTime);
     }
 
     //Joins the last 2 tokens in the buffer into a single acrynym token

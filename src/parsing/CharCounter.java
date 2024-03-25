@@ -29,6 +29,7 @@ public class CharCounter extends ParseObserver <String, String>{
         HashMap<Character, Integer> chars = new HashMap<Character, Integer>();
 
         if(sents.size() == 0) {
+            panel.setTotChars("Character Count: " + 0 + "\n");
             return "No characters found";
         }
 

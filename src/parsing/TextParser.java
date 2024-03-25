@@ -17,6 +17,8 @@ public class TextParser implements Parser {
     @Override
     public void parse(String text) {
 
+        long startTime = System.currentTimeMillis();
+
         this.text = text;
 
         //Stop all running parse observers, since there is updated information to use instead
@@ -35,7 +37,7 @@ public class TextParser implements Parser {
         }
 
         //Create a new parse thread to run the parsing on
-        parseThread = new TextParserThread(text, this);
+        parseThread = new TextParserThread(text, this, startTime);
 
         //Start the new parse thread
         parseThread.start();
@@ -44,13 +46,13 @@ public class TextParser implements Parser {
 
     //Called when the parse is done
     //Updates the word and sentence lists and starts all parse observers processing
-    protected void parseDone(ArrayList<Word> words, ArrayList<Sentence> sentences) {
+    protected void parseDone(ArrayList<Word> words, ArrayList<Sentence> sentences, long startTime) {
 
         this.words = words;
         this.sentences = sentences;
 
         for(ParseObserver<?, ?> observer : observers) {
-            observer.startThread();
+            observer.startThread(startTime);
         }
     }
 

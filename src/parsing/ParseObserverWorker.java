@@ -9,8 +9,11 @@ class ParseObserverWorker<T, K> extends SwingWorker<T, K> {
 
     private ParseObserver<T, K> observer;
 
-    ParseObserverWorker(ParseObserver<T, K> observer) {
+    private long startTime;
+
+    ParseObserverWorker(ParseObserver<T, K> observer, long startTime) {
         this.observer = observer;
+        this.startTime = startTime;
     }
 
     @Override
@@ -33,7 +36,7 @@ class ParseObserverWorker<T, K> extends SwingWorker<T, K> {
     protected void done() {
         if(!isCancelled()) {
             try {
-                observer.doneTask(get());
+                observer.tryDoneTask(get(), startTime);
             }
             catch(InterruptedException interruptedException) {
 

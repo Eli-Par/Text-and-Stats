@@ -52,7 +52,7 @@ public class TestParser implements Parser {
 
         for(ParseObserver<?, ?> observer : observers) {
             if(ENABLE_PRINT) System.out.println("Done parsing, starting observers, num words: " + words.size());
-            observer.startThread();
+            observer.startThread(10);
         }
     }
 
