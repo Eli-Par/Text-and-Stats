@@ -11,6 +11,9 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultHighlighter;
 import javax.swing.text.Highlighter;
 import javax.swing.text.StyledDocument;
+import javax.swing.undo.CannotRedoException;
+import javax.swing.undo.CannotUndoException;
+import javax.swing.undo.UndoManager;
 
 import com.inet.jortho.FileUserDictionary;
 import com.inet.jortho.SpellChecker;
@@ -24,6 +27,7 @@ public class EditorPanel extends JPanel implements DocumentListener{
     private File path;
 
     private boolean saved;
+    private UndoManager undoer;
 
     public EditorPanel(TabPanel tab, File p, String text) {
 
@@ -56,6 +60,8 @@ public class EditorPanel extends JPanel implements DocumentListener{
         SpellChecker.registerDictionaries(this.getClass().getResource("/dictionary"), "en");
         SpellChecker.register(area, true, false, true, true);
 
+        undoer = new UndoManager();
+        area.getDocument().addUndoableEditListener(undoer);
     }
 
     public void setPath(File p) {
@@ -208,5 +214,21 @@ public class EditorPanel extends JPanel implements DocumentListener{
         String content = area.getText();
         content = content.replaceAll(find, replace);
         area.setText(content);
+    }
+
+    public void undo(){
+        try{
+            if(undoer.canUndo()) undoer.undo();
+        }catch(CannotUndoException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void redo(){
+        try{
+            if(undoer.canRedo()) undoer.redo();
+        }catch(CannotRedoException e){
+            e.printStackTrace();
+        }
     }
 }

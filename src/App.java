@@ -60,6 +60,8 @@ public class App implements KeyListener, WindowListener {
         JMenuItem find = new JMenuItem("Find");
         JMenuItem replaceFirst = new JMenuItem("Replace First");
         JMenuItem replaceAll = new JMenuItem("Replace All");
+        JMenuItem undo = new JMenuItem("Undo");
+        JMenuItem redo = new JMenuItem("Redo");
 
         bar.add(fileMenu);
         bar.add(editMenu);
@@ -82,6 +84,8 @@ public class App implements KeyListener, WindowListener {
         editMenu.add(find);
         editMenu.add(replaceFirst);
         editMenu.add(replaceAll);
+        editMenu.add(undo);
+        editMenu.add(redo);
 
         open.addActionListener(this::onOpen);
         save.addActionListener(this::onSave);
@@ -93,6 +97,8 @@ public class App implements KeyListener, WindowListener {
         find.addActionListener(this::onFind);
         replaceFirst.addActionListener(this::replaceFirst);
         replaceAll.addActionListener(this::onReplaceAll);
+        undo.addActionListener(this::onUndo);
+        redo.addActionListener(this::onRedo);
 
         zoomIn.addActionListener(this::onZoomIn);
         zoomOut.addActionListener(this::onZoomOut);
@@ -156,6 +162,14 @@ public class App implements KeyListener, WindowListener {
         if(option == JOptionPane.OK_OPTION){
             tabList.getCurrentEditor().replaceAll(findTf.getText(), replaceTf.getText());
         }
+    }
+
+    public void onUndo(ActionEvent e){
+        tabList.getCurrentEditor().undo();
+    }
+
+    public void onRedo(ActionEvent e){
+        tabList.getCurrentEditor().redo();
     }
 
     public void replaceFirst(ActionEvent e){
@@ -383,6 +397,12 @@ public class App implements KeyListener, WindowListener {
                     break;
                 case 'S':
                     onSave(null);
+                    break;
+                case 'Y':
+                    onRedo(null);
+                    break;
+                case 'Z':
+                    onUndo(null);
                     break;
             }
         }
