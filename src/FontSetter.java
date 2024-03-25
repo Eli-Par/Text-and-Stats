@@ -23,7 +23,7 @@ public class FontSetter {
         tabList = tabs;
 
         sizeCB = new JComboBox<>(FONT_SIZES);
-        sizeCB.setSelectedItem(36);
+        sizeCB.setSelectedItem(tabList.getCurrentEditor().getTextArea().getFont().getSize());
         fontCB = new JComboBox<>(ge.getAvailableFontFamilyNames());
         if(tabList.getCurrentEditor() != null) fontCB.setSelectedItem(tabList.getCurrentEditor().getTextArea().getFont().getFamily());
 
