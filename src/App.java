@@ -4,6 +4,8 @@ import java.awt.event.*;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.util.Scanner;
+
+import static util.GUI.boolQuery;
 import static util.algobase.*;
 
 public class App implements KeyListener, WindowListener {
@@ -43,12 +45,13 @@ public class App implements KeyListener, WindowListener {
 
         JMenu fileMenu = new JMenu("File");
         JMenu vMenu = new JMenu("View");
-        JMenuItem editMenu = new JMenu("Edit");
+        JMenu editMenu = new JMenu("Edit");
 
         JMenuItem save = new JMenuItem("Save");
-        JMenuItem openAndCreate = new JMenuItem("Open/Create");
+        JMenuItem open = new JMenuItem("Open");
         JMenuItem saveAll = new JMenuItem("Save All");
         JMenuItem saveAs = new JMenuItem("Save As");
+        JMenuItem ne = new JMenuItem("New Text File");
 
         JMenuItem font = new JMenuItem("Font");
         JMenuItem zoomIn = new JMenuItem("Zoom In");
@@ -62,7 +65,9 @@ public class App implements KeyListener, WindowListener {
         JMenuItem redo = new JMenuItem("Redo");
 
         save.setAccelerator(KeyStroke.getKeyStroke("control S"));
-        openAndCreate.setAccelerator(KeyStroke.getKeyStroke("control O"));
+        open.setAccelerator(KeyStroke.getKeyStroke("control O"));
+        ne.setAccelerator(KeyStroke.getKeyStroke("control N"));
+        saveAll.setAccelerator(KeyStroke.getKeyStroke("control shift S"));
 
         zoomIn.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_ADD, InputEvent.CTRL_DOWN_MASK));
         zoomOut.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_SUBTRACT, InputEvent.CTRL_DOWN_MASK));
@@ -78,10 +83,14 @@ public class App implements KeyListener, WindowListener {
         bar.add(vMenu);
 
         fileMenu.setFont(MENU_FONT);
-        fileMenu.add(openAndCreate);
+        fileMenu.add(ne);
+        fileMenu.add(open);
         fileMenu.add(save);
         fileMenu.add(saveAll);
         fileMenu.add(saveAs);
+
+        for(var c : fileMenu.getMenuComponents())
+            c.setFont(MENU_FONT);
 
         vMenu.setFont(MENU_FONT);
         vMenu.add(font);
@@ -89,16 +98,22 @@ public class App implements KeyListener, WindowListener {
         vMenu.add(zoomOut);
         vMenu.add(zoomDefault);
 
+        for(var c : vMenu.getMenuComponents())
+            c.setFont(MENU_FONT);
+
         editMenu.setFont(MENU_FONT);
         editMenu.add(find);
         editMenu.add(replaceFirst);
         editMenu.add(replaceAll);
         editMenu.add(undo);
         editMenu.add(redo);
+        for(var c : editMenu.getMenuComponents())
+            c.setFont(MENU_FONT);
 
-        openAndCreate.addActionListener(this::onOpenAndCreate);
+        open.addActionListener(this::onOpen);
         save.addActionListener(this::onSave);
         saveAll.addActionListener(this::onSaveAll);
+        ne.addActionListener(this::onNew);
         saveAs.addActionListener(this::onSaveAs);
         font.addActionListener(this::fontSetter);
 
@@ -123,21 +138,50 @@ public class App implements KeyListener, WindowListener {
 
     }
 
-    public File fileSelector() {
+    public File fileSelector(boolean b) {
 
         JFileChooser chooser = new JFileChooser(opts.lastOpenLocation);
         JFrame frame = new JFrame("Select File");
 
         int act = chooser.showOpenDialog(frame);
-        if (act == JFileChooser.APPROVE_OPTION)
-            return chooser.getSelectedFile();
+        if (act == JFileChooser.APPROVE_OPTION) {
+
+            File selected = chooser.getSelectedFile();
+            boolean cont;
+
+            if (selected.exists() == b) {
+
+                if(b)
+                    cont = boolQuery(selected.getParent() + " already exists. Do you want to open it?");
+                else
+                    cont = boolQuery(selected.getPath() + " does not exist. Do you want to create it?");
+
+                if (!cont)
+                    return null;
+
+                if (!b) {
+                    try {
+                        new FileOutputStream(selected).close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                return selected;
+
+            }
+
+            return selected;
+
+        }
+
         return null;
 
     }
 
-    public void onOpenAndCreate(ActionEvent e) {
+    public void onOpen(ActionEvent e) {
 
-        File f = fileSelector();
+        File f = fileSelector(false);
 
         if(f == null)
             return;
@@ -145,6 +189,16 @@ public class App implements KeyListener, WindowListener {
         if(!tabList.tryOpeningPath(f.getAbsolutePath())) {
             loadFile(f);
         }
+    }
+
+    public void onNew(ActionEvent e) {
+
+        File f = fileSelector(true);
+
+        if(f == null)
+            return;
+        loadFile(f);
+
     }
 
     public void fontSetter(ActionEvent e) {
@@ -253,7 +307,7 @@ public class App implements KeyListener, WindowListener {
         if(ed == null)
             return;
 
-        File f = fileSelector();
+        File f = fileSelector(true);
         if(f == null)
             return;
 

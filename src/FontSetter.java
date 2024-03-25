@@ -14,14 +14,15 @@ public class FontSetter {
 
     public FontSetter(FileTabList tabs) {
 
-        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-
         tabList = tabs;
 
+        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        Font current = tabList.getFont();
+
         sizeCB = new JComboBox<>(FONT_SIZES);
-        sizeCB.setSelectedItem(tabList.getCurrentEditor().getTextArea().getFont().getSize());
+        sizeCB.setSelectedItem(current.getSize());
         fontCB = new JComboBox<>(ge.getAvailableFontFamilyNames());
-        if(tabList.getCurrentEditor() != null) fontCB.setSelectedItem(tabList.getCurrentEditor().getTextArea().getFont().getFamily());
+        fontCB.setSelectedItem(current.getFamily());
 
         panel = new JPanel(new GridLayout(0, 2));
         panel.add(new JLabel("Font Type: "));
@@ -31,11 +32,11 @@ public class FontSetter {
 
         int op = JOptionPane.showConfirmDialog(null, panel, "Set Font", JOptionPane.OK_CANCEL_OPTION);
         if(op == JOptionPane.OK_OPTION){
-            updateFont(null);
+            updateFont();
         }
     }
 
-    public void updateFont(ActionEvent e) {
+    public void updateFont() {
         tabList.setEditorFont(new Font((String) fontCB.getSelectedItem(), Font.PLAIN, Math.max(1, Math.min((Integer) sizeCB.getSelectedItem(), 96))));
     }
 }
