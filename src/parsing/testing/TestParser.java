@@ -25,14 +25,14 @@ public class TestParser implements Parser {
 
         this.text = text;
 
-        if(ENABLE_PRINT) System.out.println("Parse started");
+        if(ENABLE_PRINT) //@REMOVED System.out.println("Parse started");
 
         for(ParseObserver<?, ?> observer : observers) {
             observer.stopThread();
         }
 
         if(parseThread != null) {
-            if(ENABLE_PRINT) System.out.println("Parse thread stopped");
+            if(ENABLE_PRINT) //@REMOVED System.out.println("Parse thread stopped");
             parseThread.interrupt();
         }
 
@@ -51,7 +51,7 @@ public class TestParser implements Parser {
         this.sentences = sentences;
 
         for(ParseObserver<?, ?> observer : observers) {
-            if(ENABLE_PRINT) System.out.println("Done parsing, starting observers, num words: " + words.size());
+            if(ENABLE_PRINT) //@REMOVED System.out.println("Done parsing, starting observers, num words: " + words.size());
             observer.startThread(10);
         }
     }

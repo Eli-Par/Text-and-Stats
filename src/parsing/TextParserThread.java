@@ -70,14 +70,14 @@ class TextParserThread extends Thread {
             ParseToken currToken = tokens.get(i);
             tokenBuffer.add(currToken);
 
-            //System.out.println("Curr: " + currToken);
+            ////@REMOVED System.out.println("Curr: " + currToken);
 
             //If the token is a punctuation mark, it might be the end of the sentence
             if(currToken.getType() == ParseToken.Type.PUNCTUATION) {
 
                 //If the current token is a '.', there are 2 or more tokens in the buffer, the second most recent token is a 1 letter word or an acrynym, then merge the punctuation into the acrynym
                 if(currToken.getText().equals(".") && tokenBuffer.size() > 1 && ((tokenBuffer.get(tokenBuffer.size()-2).getType() == ParseToken.Type.WORD && tokenBuffer.get(tokenBuffer.size()-2).getText().length() == 1) || tokenBuffer.get(tokenBuffer.size()-2).getType() == ParseToken.Type.ACRONYM)) {
-                    //System.out.print("Merge punct: ");
+                    ////@REMOVED System.out.print("Merge punct: ");
                     mergeAbbreviation(tokenBuffer);
 
                 }
@@ -107,7 +107,7 @@ class TextParserThread extends Thread {
 
                 //If there is 2 or more tokens in the buffer, the second most recent is an acrynym and the current is 1 letter, add it to the acrynym
                 if(tokenBuffer.size() > 1 && tokenBuffer.get(tokenBuffer.size()-2).getType() == ParseToken.Type.ACRONYM  && tokenBuffer.get(tokenBuffer.size()-1).getText().length() == 1) {
-                    //System.out.print("Merge word: ");
+                    ////@REMOVED System.out.print("Merge word: ");
                     mergeAbbreviation(tokenBuffer);
                 }
             }
@@ -115,16 +115,16 @@ class TextParserThread extends Thread {
         }
 
         //@Temp print statements
-        // System.out.println("\nWords:" + words.size());
+        // //@REMOVED System.out.println("\nWords:" + words.size());
 
         // for(Word word : words) {
-        //     System.out.println(word);
+        //     //@REMOVED System.out.println(word);
         // }
 
-        // System.out.println("\n\nSentence:" + sentences.size());
+        // //@REMOVED System.out.println("\n\nSentence:" + sentences.size());
 
         // for(Sentence s : sentences) {
-        //     System.out.println(s + "\n");
+        //     //@REMOVED System.out.println(s + "\n");
         // }
         //@Temp end temporary print statements
 
@@ -144,7 +144,7 @@ class TextParserThread extends Thread {
         ParseToken newToken = new ParseToken(tokenString, ParseToken.Type.ACRONYM);
         tokenBuffer.add(newToken);
 
-        //System.out.println("New: " + newToken);
+        ////@REMOVED System.out.println("New: " + newToken);
     }
 
     //Takes an ArrayList of tokens and returns a converted ArrayList of Words
