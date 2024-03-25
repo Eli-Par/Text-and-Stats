@@ -28,6 +28,10 @@ public class CharCounter extends ParseObserver <String, String>{
         ArrayList<Word> words = parser.getWords();
         HashMap<Character, Integer> chars = new HashMap<Character, Integer>();
 
+        if(sents.size() == 0) {
+            return "No characters found";
+        }
+
         for(Sentence s : sents){
             if(isCancelled()) return null;
 
@@ -63,8 +67,8 @@ public class CharCounter extends ParseObserver <String, String>{
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
 
 
-        int [] arr = new int[words.size()];
-        String [] keys = new String[words.size()];
+        int [] arr = new int[sortedChars.size()];
+        String [] keys = new String[sortedChars.size()];
         int i = 0;
         for(char c: sortedChars.keySet()){
             if(isCancelled()) return null;
