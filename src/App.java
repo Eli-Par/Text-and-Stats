@@ -15,7 +15,7 @@ public class App implements KeyListener, WindowListener {
     public static final int WIDTH = 1000, HEIGHT = 650;
 
     private static FileTabList tabList;
-    public static Font MENU_FONT = new Font("Tahoma", Font.PLAIN, 20);
+    public static Font MENU_FONT = new Font("Tahoma", Font.PLAIN, 16);
 
     UserOptions opts;
 
@@ -46,9 +46,9 @@ public class App implements KeyListener, WindowListener {
         JMenuItem editMenu = new JMenu("Edit");
 
         JMenuItem save = new JMenuItem("Save");
-        JMenuItem open = new JMenuItem("Open");
+        JMenuItem openAndCreate = new JMenuItem("Open/Create");
         JMenuItem saveAll = new JMenuItem("Save All");
-        JMenuItem ne = new JMenuItem("New Text File");
+//        JMenuItem ne = new JMenuItem("New Text File");
         JMenuItem saveAs = new JMenuItem("Save As");
 
         JMenuItem font = new JMenuItem("Font");
@@ -67,11 +67,11 @@ public class App implements KeyListener, WindowListener {
         bar.add(vMenu);
 
         fileMenu.setFont(MENU_FONT);
-        fileMenu.add(ne);
+//        fileMenu.add(ne);
+        fileMenu.add(openAndCreate);
         fileMenu.add(save);
         fileMenu.add(saveAll);
         fileMenu.add(saveAs);
-        fileMenu.add(open);
 
         vMenu.setFont(MENU_FONT);
         vMenu.add(font);
@@ -86,10 +86,10 @@ public class App implements KeyListener, WindowListener {
         editMenu.add(undo);
         editMenu.add(redo);
 
-        open.addActionListener(this::onOpen);
+        openAndCreate.addActionListener(this::onOpenAndCreate);
         save.addActionListener(this::onSave);
         saveAll.addActionListener(this::onSaveAll);
-        ne.addActionListener(this::onOpen);
+//        ne.addActionListener(this::onOpen);
         saveAs.addActionListener(this::onSaveAs);
         font.addActionListener(this::fontSetter);
 
@@ -127,7 +127,7 @@ public class App implements KeyListener, WindowListener {
 
     }
 
-    public void onOpen(ActionEvent e) {
+    public void onOpenAndCreate(ActionEvent e) {
 
         File f = fileSelector();
 
@@ -394,7 +394,7 @@ public class App implements KeyListener, WindowListener {
                 case 'X':
                     break;
                 case 'O':
-                    onOpen(null);
+                    onOpenAndCreate(null);
                     break;
                 case 'S':
                     onSave(null);

@@ -4,52 +4,39 @@ import java.awt.event.ActionEvent;
 
 public class FontSetter {
 
-    public static final Integer[]FONT_SIZES = {8, 9, 10, 11, 12, 13, 14, 16, 18, 20, 22, 24, 28, 32, 36, 48, 72};
+    public static final Integer[] FONT_SIZES = {8, 9, 10, 11, 12, 13, 14, 16, 18, 20, 22, 24, 28, 32, 36, 48, 72};
 
     private FileTabList tabList;
 
-    private final JComboBox<Integer>sizeBox;
-
-    private final JTextField familyField;
-
-    private final JFrame frame;
+    private final JComboBox<Integer> size;
+    private final JTextField fontTF;
+    private final JButton button;
+    private final JPanel panel;
 
     public void updateFont(ActionEvent e) {
-        tabList.setEditorFont(new Font(familyField.getText(), Font.PLAIN, Math.max(1, Math.min((Integer) sizeBox.getSelectedItem(), 96))));
-        frame.dispose();
+        tabList.setEditorFont(new Font(fontTF.getText(), Font.PLAIN, Math.max(1, Math.min((Integer) size.getSelectedItem(), 96))));
     }
 
     public FontSetter(FileTabList tabs) {
 
         tabList = tabs;
 
-        frame = new JFrame("Set Font");
-        JPanel panel = new JPanel();
-        Font f = new Font("Tahoma", Font.PLAIN, 36);
-        Font current = tabList.getFont();
+        size = new JComboBox<>(FONT_SIZES);
+        size.setSelectedItem(36);
 
-        sizeBox = new JComboBox<>(FONT_SIZES);
-        familyField = new JTextField(current.getFamily(), 20);
-        JButton setButton = new JButton("Change Font");
+        fontTF = new JTextField("Tahoma", 20);
+        button = new JButton("Change");
 
-        sizeBox.setFont(f);
-        familyField.setFont(f);
-        setButton.setFont(f);
+        panel = new JPanel(new GridLayout(0, 2));
+        panel.add(new JLabel("Font Type: "));
+        panel.add(fontTF);
+        panel.add(new JLabel("Font Size: "));
+        panel.add(size);
 
-        sizeBox.setEditable(true);
-        sizeBox.setSelectedItem(current.getSize());
-        setButton.addActionListener(this::updateFont);
-
-        panel.add(familyField);
-        panel.add(sizeBox);
-        panel.add(setButton);
-
-        frame.add(panel);
-        frame.pack();
-        frame.setResizable(false);
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.setVisible(true);
-
+        int op = JOptionPane.showConfirmDialog(null, panel, "Set Font", JOptionPane.OK_CANCEL_OPTION);
+        if(op == JOptionPane.OK_OPTION){
+            updateFont(null);
+        }
     }
 
 }
