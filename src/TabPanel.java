@@ -104,7 +104,7 @@ public class TabPanel extends JPanel {
             System.out.println("No editor found");
             return;
         }
-        parser.parse(getEditor().getTextArea().getText());
+        parser.parse(getEditor().getPlainText());
     }
 
     public EditorPanel getEditor() {
