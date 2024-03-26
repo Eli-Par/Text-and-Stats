@@ -3,6 +3,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.*;
+import java.nio.charset.Charset;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -28,9 +29,28 @@ public class EditorPanel extends JPanel implements DocumentListener{
     private boolean saved;
     private UndoManager undoer;
 
-    public EditorPanel(TabPanel tab, File p, String text) {
+    public EditorPanel(TabPanel tab, File p) {
 
         super();
+
+        StringBuilder sBuilder = new StringBuilder();
+        try {
+
+            InputStreamReader  in = new InputStreamReader (new FileInputStream(p), Charset.forName("UTF-8"));
+            char[]fileData = new char[1024];
+            int cnt;
+
+            while ((cnt = in.read(fileData)) > 0)
+                sBuilder.append(new String(fileData, 0, cnt));
+
+            in.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        String text = sBuilder.toString();
 
         this.tab = tab;
         path = p;
@@ -57,6 +77,7 @@ public class EditorPanel extends JPanel implements DocumentListener{
 
         undoer = new UndoManager();
         area.getDocument().addUndoableEditListener(undoer);
+
     }
 
     public void setPath(File p) {

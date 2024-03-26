@@ -22,7 +22,7 @@ public class TabPanel extends JPanel {
 
     File file;
 
-    public TabPanel(File path, String text, String title) {
+    public TabPanel(File path, String title) {
 
         super();
 
@@ -35,7 +35,7 @@ public class TabPanel extends JPanel {
         parent = null;
 
         //Setup window panels
-        panels[0] = new EditorPanel(this, path, text);
+        panels[0] = new EditorPanel(this, path);
         panelNames[0] = "Editor";
 
         panels[1] = new WordPanel(parser);
@@ -55,7 +55,7 @@ public class TabPanel extends JPanel {
         }
         this.add(windowPanel);
 
-        parser.parse(text);
+        textChanged();
     }
 
     public String getTitle() {
@@ -100,6 +100,10 @@ public class TabPanel extends JPanel {
     //Called whenever the text area has its text changed
     public void textChanged() {
         //Parsing can go here
+        if(getEditor() == null) {
+            System.out.println("No editor found");
+            return;
+        }
         parser.parse(getEditor().getTextArea().getText());
     }
 

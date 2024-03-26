@@ -359,25 +359,9 @@ public class App implements KeyListener, WindowListener {
     public void loadFile(File f) {
 
         String title = f.getName();
-        StringBuilder sBuilder = new StringBuilder();
         opts.lastOpenLocation = f.getParent();
 
-        try {
-
-            InputStreamReader  in = new InputStreamReader (new FileInputStream(f), Charset.forName("UTF-8"));
-            char[]fileData = new char[1024];
-            int cnt;
-
-            while ((cnt = in.read(fileData)) > 0)
-                sBuilder.append(new String(fileData, 0, cnt));
-
-            in.close();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        TabPanel tabPanel = new TabPanel(f, sBuilder.toString(), title);
+        TabPanel tabPanel = new TabPanel(f, title);
         tabList.addTab(tabPanel);
 
     }
