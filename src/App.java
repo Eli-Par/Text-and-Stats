@@ -240,7 +240,7 @@ public class App implements KeyListener, WindowListener {
         if(editor == null)
             return;
 
-        JTextArea area = editor.getTextArea();
+        JTextPane area = editor.getTextPane();
         Font f = area.getFont();
         int ind = lower_bound(FontSetter.FONT_SIZES, f.getSize()) + 1;
 
@@ -255,7 +255,7 @@ public class App implements KeyListener, WindowListener {
         if(editor == null)
             return;
 
-        JTextArea area = editor.getTextArea();
+        JTextPane area = editor.getTextPane();
         Font f = area.getFont();
         int ind = lower_bound(FontSetter.FONT_SIZES, f.getSize()) - 1;
 
@@ -270,7 +270,7 @@ public class App implements KeyListener, WindowListener {
         if(editor == null)
             return;
 
-        editor.getTextArea().setFont(tabList.getFont());
+        editor.getTextPane().setFont(tabList.getFont());
     }
 
     public void onSave(ActionEvent e) {

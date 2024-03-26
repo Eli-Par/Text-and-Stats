@@ -21,8 +21,8 @@ public class EditorPanel extends JPanel implements DocumentListener{
 
     private TabPanel tab;
 
-    @Deprecated
-    private JTextArea area = new JTextArea("Empty"); //@TODO Remove this
+    //@Deprecated
+    //private JTextArea area = new JTextArea("Empty"); //@TODO Remove this
 
     private File path;
 
@@ -196,10 +196,9 @@ public class EditorPanel extends JPanel implements DocumentListener{
         textPane.addKeyListener(l);
     }
 
-    //@TODO Remove once all features are ported to JTextPane
-    @Deprecated
-    public JTextArea getTextArea() {
-        return area;
+    //@TODO Phase out accessing the text externally
+    public JTextPane getTextPane() {
+        return textPane;
     }
 
     public void find(String text){
