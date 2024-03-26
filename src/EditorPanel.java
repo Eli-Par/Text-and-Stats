@@ -8,9 +8,8 @@ import java.nio.charset.Charset;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.DefaultHighlighter;
-import javax.swing.text.Highlighter;
+import javax.swing.text.*;
+import javax.swing.text.rtf.RTFEditorKit;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.UndoManager;
@@ -22,62 +21,94 @@ public class EditorPanel extends JPanel implements DocumentListener{
 
     private TabPanel tab;
 
-    private JTextArea area;
+    @Deprecated
+    private JTextArea area = new JTextArea("Empty"); //@TODO Remove this
 
     private File path;
 
     private boolean saved;
     private UndoManager undoer;
 
-    public EditorPanel(TabPanel tab, File p) {
+    public static enum Format {PLAIN, RTF};
+
+    public static Format[] styledFormats = {Format.RTF};
+
+    private Format fileFormat;
+
+    private EditorKit editorKit;
+
+    private StyledDocument document;
+
+    private JTextPane textPane;
+
+    public EditorPanel(TabPanel tab, File file) {
 
         super();
 
-        StringBuilder sBuilder = new StringBuilder();
-        try {
+        updateFormat(file); //Sets the fileFormat based on the inputted file
 
-            InputStreamReader  in = new InputStreamReader (new FileInputStream(p), Charset.forName("UTF-8"));
-            char[]fileData = new char[1024];
-            int cnt;
-
-            while ((cnt = in.read(fileData)) > 0)
-                sBuilder.append(new String(fileData, 0, cnt));
-
-            in.close();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            return;
-        }
-
-        String text = sBuilder.toString();
+        System.out.println(">" + fileFormat);
 
         this.tab = tab;
-        path = p;
+        path = file;
         saved = true;
 
         this.setLayout(new BorderLayout());
 
-        area = new JTextArea();
-        area.setLineWrap(true);
-        area.setWrapStyleWord(true);
-        area.setText(text);
-        area.setCaretPosition(0);
+        textPane = new JTextPane();
 
-        JScrollPane scroll = new JScrollPane(area);
+        document = new DefaultStyledDocument(new StyleContext());
+
+        if(fileFormat == Format.RTF) 
+        {
+            editorKit = new RTFEditorKit();
+        }
+        else 
+        {
+            editorKit = new DefaultEditorKit();
+        }
+
+        textPane.setDocument(document);
+
+        try {
+            editorKit.read(new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8")), document, 0);
+        }
+        catch(Exception exception) {
+            System.out.println(exception.getStackTrace());
+        }
+
+        JScrollPane scroll = new JScrollPane(textPane);
         scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
         this.add(scroll);
 
-        area.getDocument().addDocumentListener(this);
+        document.addDocumentListener(this);
 
         SpellChecker.setUserDictionaryProvider(new FileUserDictionary());      
         SpellChecker.registerDictionaries(this.getClass().getResource("/dictionary"), "en");
-        SpellChecker.register(area, true, false, true, true);
+        SpellChecker.register(textPane, true, false, true, true);
 
         undoer = new UndoManager();
-        area.getDocument().addUndoableEditListener(undoer);
+        document.addUndoableEditListener(undoer);
 
+    }
+
+    private void updateFormat(File file) {
+        if(file.getName().contains(".")) {
+            String extension = file.getName().substring(file.getName().lastIndexOf('.'), file.getName().length());
+            
+            if(extension.equals(".rtf")) fileFormat = Format.RTF;
+            else fileFormat = Format.PLAIN;
+        }
+    }
+
+    public String getPlainText() {
+        try {
+            return document.getText(0, document.getLength());
+        }
+        catch(BadLocationException exception) {
+            return null;
+        }
     }
 
     public void setPath(File p) {
@@ -90,15 +121,17 @@ public class EditorPanel extends JPanel implements DocumentListener{
 
     public void save() throws IOException {
 
-        PrintStream out = new PrintStream(new BufferedOutputStream(new FileOutputStream(path)));
+        try {
+            editorKit.write(new FileOutputStream(path), document, 0, document.getLength());
+        }
+        catch(BadLocationException exception) {
+            System.out.println(exception.getStackTrace());
+        }
 
-        if (!saved) {
+        if(!saved) {
             saved = true;
             tab.savedIndicator();
         }
-
-        out.print(area.getText());
-        out.close();
 
     }
 
@@ -160,27 +193,29 @@ public class EditorPanel extends JPanel implements DocumentListener{
     @Override
     public void addKeyListener(KeyListener l) {
         super.addKeyListener(l);
-        area.addKeyListener(l);
+        textPane.addKeyListener(l);
     }
 
+    //@TODO Remove once all features are ported to JTextPane
+    @Deprecated
     public JTextArea getTextArea() {
         return area;
     }
 
     public void find(String text){
         // get the text
-        String content = area.getText();
+        String content = getPlainText();
         // create a highlighter to highlight the text
-        Highlighter h = area.getHighlighter();
+        Highlighter h = textPane.getHighlighter();
         Highlighter.HighlightPainter painter = new DefaultHighlighter.DefaultHighlightPainter(Color.CYAN);
         h.removeAllHighlights();
 
         // loop through all occurrences and highlight them
         int i = content.indexOf(text);
         boolean caretNotSet = true;
-        if((i > area.getCaretPosition() || i == 0 && area.getCaretPosition() == 0) && caretNotSet) 
+        if((i > textPane.getCaretPosition() || i == 0 && textPane.getCaretPosition() == 0) && caretNotSet) 
         {
-            area.setCaretPosition(i);
+            textPane.setCaretPosition(i);
             caretNotSet = false;
         }
         while(i != -1){
@@ -190,15 +225,15 @@ public class EditorPanel extends JPanel implements DocumentListener{
                 e.printStackTrace();
             }
             i = content.indexOf(text, i+1);
-            if(i > area.getCaretPosition() && caretNotSet) 
+            if(i > textPane.getCaretPosition() && caretNotSet) 
         {
-            area.setCaretPosition(i);
+            textPane.setCaretPosition(i);
             caretNotSet = false;
         }
         }
 
         // delete highlighted text when mouse is clicked
-        area.addMouseListener(new MouseAdapter() {
+        textPane.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
                 h.removeAllHighlights();
@@ -213,21 +248,21 @@ public class EditorPanel extends JPanel implements DocumentListener{
 
     public void replaceFirst(String find, String replace){
         // get the text
-        String content = area.getText();
+        String content = getPlainText();
 
         // find the first occurrence of find and replace it with replace
         int i = content.indexOf(find);
         if(i != 1){
             content = content.substring(0, i) + replace + content.substring(i+find.length());
-            area.setText(content);
+            textPane.setText(content);
         }
     }
 
     public void replaceAll(String find, String replace){
         // get the text and replace all occurrences of find
-        String content = area.getText();
+        String content = getPlainText();
         content = content.replaceAll(find, replace);
-        area.setText(content);
+        textPane.setText(content);
     }
 
     public void undo(){
