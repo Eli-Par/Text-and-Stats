@@ -44,10 +44,6 @@ public class EditorPanel extends JPanel implements DocumentListener{
         area.setText(text);
         area.setCaretPosition(0);
 
-        // JPanel panel = new JPanel();
-        // panel.setLayout(new BorderLayout());
-        // panel.add(area);
-
         JScrollPane scroll = new JScrollPane(area);
         scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
@@ -117,8 +113,6 @@ public class EditorPanel extends JPanel implements DocumentListener{
     @Override
     public void insertUpdate(DocumentEvent e) {
 
-//        Highlighter h = area.getHighlighter();
-//        h.removeAllHighlights();
         tab.textChanged();
         if (saved) {
             tab.notSavedIndicator();
