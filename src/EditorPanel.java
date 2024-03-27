@@ -4,6 +4,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.*;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -75,10 +76,10 @@ public class EditorPanel extends JPanel implements DocumentListener{
 
         //Load the file using the editor kit
         try {
-            editorKit.read(new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8")), document, 0);
+            editorKit.read(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8), document, 0);
         }
         catch(Exception exception) {
-            System.out.println(exception.getStackTrace());
+            exception.printStackTrace();
         }
 
         //Add a scroll bar
@@ -115,6 +116,9 @@ public class EditorPanel extends JPanel implements DocumentListener{
         catch(BadLocationException exception) {
             return null;
         }
+    }
+
+    public void toggleWordWrap() {
     }
 
     public void setPath(File p) {
