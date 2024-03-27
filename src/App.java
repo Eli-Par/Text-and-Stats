@@ -130,43 +130,48 @@ public class App implements KeyListener, WindowListener {
 
     }
 
-    public File fileSelector(boolean b, String title) {
+    public boolean checkOpenedFile(File file, boolean b) {
+        
+        if (file == null)
+            return false;
+        
+        boolean cont;
+
+        if (file.exists() == b) {
+
+            if(b)
+                cont = boolQuery(file.getParent() + " already exists. Do you want to open it?");
+            else
+                cont = boolQuery(file.getPath() + " does not exist. Do you want to create it?");
+
+            if (!cont)
+                return false;
+
+            if (!b) {
+                try {
+                    new FileOutputStream(file).close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            return true;
+
+        }
+
+        return true;
+
+    }
+
+    public File fileSelector(String title) {
 
         JFileChooser chooser = new JFileChooser(opts.lastOpenLocation);
         JFrame frame = new JFrame("Select File");
         chooser.setDialogTitle(title);
 
         int act = chooser.showOpenDialog(frame);
-        if (act == JFileChooser.APPROVE_OPTION) {
-
-            File selected = chooser.getSelectedFile();
-            boolean cont;
-
-            if (selected.exists() == b) {
-
-                if(b)
-                    cont = boolQuery(selected.getParent() + " already exists. Do you want to open it?");
-                else
-                    cont = boolQuery(selected.getPath() + " does not exist. Do you want to create it?");
-
-                if (!cont)
-                    return null;
-
-                if (!b) {
-                    try {
-                        new FileOutputStream(selected).close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                return selected;
-
-            }
-
-            return selected;
-
-        }
+        if (act == JFileChooser.APPROVE_OPTION)
+            return chooser.getSelectedFile();
 
         return null;
 
@@ -174,9 +179,9 @@ public class App implements KeyListener, WindowListener {
 
     public void onOpen(ActionEvent e) {
 
-        File f = fileSelector(false, "Open");
+        File f = fileSelector( "Open");
 
-        if(f == null)
+        if(!checkOpenedFile(f, false))
             return;
         //Load the file only if it is not already open
         if(!tabList.tryOpeningPath(f.getAbsolutePath())) {
@@ -186,9 +191,9 @@ public class App implements KeyListener, WindowListener {
 
     public void onNew(ActionEvent e) {
 
-        File f = fileSelector(true, "New");
+        File f = fileSelector( "New");
 
-        if(f == null)
+        if(!checkOpenedFile(f, true))
             return;
         loadFile(f);
 
@@ -272,6 +277,7 @@ public class App implements KeyListener, WindowListener {
             return;
 
         editor.getTextArea().setFont(tabList.getFont());
+
     }
 
     public void onSave(ActionEvent e) {
@@ -300,9 +306,21 @@ public class App implements KeyListener, WindowListener {
         if(ed == null)
             return;
 
-        File f = fileSelector(true, "Save As");
+        File f = fileSelector( "Save As");
         if(f == null)
             return;
+
+        if (f.exists()) {
+
+            boolean ans = boolQuery(f.getName() + " already exists, do you want to overwrite it?");
+
+            if (ans)
+                ans = boolQuery("Triple check: " + f.getName() + " will be lost forever (a long time)!");
+
+            if (!ans)
+                return;
+
+        }
 
         File old = ed.getPath();
         ed.setPath(f);
@@ -313,7 +331,7 @@ public class App implements KeyListener, WindowListener {
             ex.printStackTrace();
         }
 
-        ed.setPath(old);
+        tabList.getTabbedPane().setTitleAt(tabList.getTabbedPane().getSelectedIndex(), f.getName());
 
     }
 
