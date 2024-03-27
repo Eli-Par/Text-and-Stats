@@ -2,7 +2,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
-import java.nio.charset.Charset;
 import java.util.Scanner;
 
 import static util.GUI.boolQuery;
@@ -246,7 +245,7 @@ public class App implements KeyListener, WindowListener {
         if(editor == null)
             return;
 
-        JTextArea area = editor.getTextArea();
+        JTextPane area = editor.getTextPane();
         Font f = area.getFont();
         int ind = lower_bound(FontSetter.FONT_SIZES, f.getSize()) + 1;
 
@@ -261,7 +260,7 @@ public class App implements KeyListener, WindowListener {
         if(editor == null)
             return;
 
-        JTextArea area = editor.getTextArea();
+        JTextPane area = editor.getTextPane();
         Font f = area.getFont();
         int ind = lower_bound(FontSetter.FONT_SIZES, f.getSize()) - 1;
 
@@ -276,7 +275,7 @@ public class App implements KeyListener, WindowListener {
         if(editor == null)
             return;
 
-        editor.getTextArea().setFont(tabList.getFont());
+        editor.getTextPane().setFont(tabList.getFont());
 
     }
 
@@ -377,25 +376,9 @@ public class App implements KeyListener, WindowListener {
     public void loadFile(File f) {
 
         String title = f.getName();
-        StringBuilder sBuilder = new StringBuilder();
         opts.lastOpenLocation = f.getParent();
 
-        try {
-
-            InputStreamReader  in = new InputStreamReader (new FileInputStream(f), Charset.forName("UTF-8"));
-            char[]fileData = new char[1024];
-            int cnt;
-
-            while ((cnt = in.read(fileData)) > 0)
-                sBuilder.append(new String(fileData, 0, cnt));
-
-            in.close();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        TabPanel tabPanel = new TabPanel(f, sBuilder.toString(), title);
+        TabPanel tabPanel = new TabPanel(f, title);
         tabList.addTab(tabPanel);
 
     }
