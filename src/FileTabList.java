@@ -89,6 +89,10 @@ public class FileTabList extends JPanel implements MouseListener{
         //throw new IllegalStateException("Selected component is " + component.getClass() + ", not TabPanel");
     }
 
+    public JTabbedPane getTabbedPane() {
+        return tabbedPane;
+    }
+
     //Change all tabs to show the screen with the specified name
     public void changeCards(String name) {
         for(TabPanel tabPanel : tabs) {
