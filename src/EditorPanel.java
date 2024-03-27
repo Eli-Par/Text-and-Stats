@@ -37,7 +37,7 @@ public class EditorPanel extends JPanel implements DocumentListener{
 
     private EditorKit editorKit;
 
-    private StyledDocument document;
+    private DefaultStyledDocument document;
 
     private JTextPane textPane;
 
@@ -251,17 +251,36 @@ public class EditorPanel extends JPanel implements DocumentListener{
 
         // find the first occurrence of find and replace it with replace
         int i = content.indexOf(find);
-        if(i != 1){
-            content = content.substring(0, i) + replace + content.substring(i+find.length());
-            textPane.setText(content);
+        if(i != -1){
+            //content = content.substring(0, i) + replace + content.substring(i+find.length());
+            //textPane.setText(content);
+            try {
+                document.replace(i, find.length(), replace, null);
+            }
+            catch(BadLocationException exception) {
+
+            }
         }
     }
 
     public void replaceAll(String find, String replace){
         // get the text and replace all occurrences of find
         String content = getPlainText();
-        content = content.replaceAll(find, replace);
-        textPane.setText(content);
+        // content = content.replaceAll(find, replace);
+        // textPane.setText(content);
+
+        int i = content.indexOf(find);
+        while(i != -1) {
+            try {
+                document.replace(i, find.length(), replace, null);
+            }
+            catch(BadLocationException exception) {
+
+            }
+
+            content = getPlainText();
+            i = content.indexOf(find, i+1);
+        }
     }
 
     public void undo(){
