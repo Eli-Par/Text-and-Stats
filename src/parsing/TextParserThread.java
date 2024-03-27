@@ -70,7 +70,7 @@ class TextParserThread extends Thread {
             ParseToken currToken = tokens.get(i);
             tokenBuffer.add(currToken);
 
-            System.out.println("Curr: " + currToken);
+            //System.out.println("Curr: " + currToken);
 
             //If the token is a punctuation mark, it might be the end of the sentence
             if(currToken.getType() == ParseToken.Type.PUNCTUATION) {
@@ -115,17 +115,17 @@ class TextParserThread extends Thread {
         }
 
         //@Temp print statements
-        System.out.println("\nWords:" + words.size());
+        // System.out.println("\nWords:" + words.size());
 
-        for(Word word : words) {
-            System.out.println(word);
-        }
+        // for(Word word : words) {
+        //     System.out.println(word);
+        // }
 
-        System.out.println("\n\nSentence:" + sentences.size());
+        // System.out.println("\n\nSentence:" + sentences.size());
 
-        for(Sentence s : sentences) {
-            System.out.println(s + "\n");
-        }
+        // for(Sentence s : sentences) {
+        //     System.out.println(s + "\n");
+        // }
         //@Temp end temporary print statements
 
         parser.parseDone(words, sentences, startTime);
