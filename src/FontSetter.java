@@ -20,6 +20,7 @@ public class FontSetter {
 
         sizeCB = new JComboBox<>(FONT_SIZES);
         sizeCB.setSelectedItem(current.getSize());
+        sizeCB.setEditable(true);
         fontCB = new JComboBox<>(ge.getAvailableFontFamilyNames());
         fontCB.setSelectedItem(current.getFamily());
 

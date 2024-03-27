@@ -56,6 +56,7 @@ public class App implements KeyListener, WindowListener {
         JMenuItem zoomIn = new JMenuItem("Zoom In");
         JMenuItem zoomOut = new JMenuItem("Zoom Out");
         JMenuItem zoomDefault = new JMenuItem("Zoom Reset");
+        //JMenuItem wrap = new JMenuItem("Enable Word Wrap");
 
         JMenuItem find = new JMenuItem("Find");
         JMenuItem replaceFirst = new JMenuItem("Replace First");
@@ -162,15 +163,17 @@ public class App implements KeyListener, WindowListener {
 
     }
 
-    public File fileSelector(String title) {
+    public File[]fileSelector(String title) {
 
         JFileChooser chooser = new JFileChooser(opts.lastOpenLocation);
         JFrame frame = new JFrame("Select File");
+
+        chooser.setMultiSelectionEnabled(true);
         chooser.setDialogTitle(title);
 
         int act = chooser.showOpenDialog(frame);
         if (act == JFileChooser.APPROVE_OPTION)
-            return chooser.getSelectedFile();
+            return chooser.getSelectedFiles();
 
         return null;
 
@@ -178,23 +181,28 @@ public class App implements KeyListener, WindowListener {
 
     public void onOpen(ActionEvent e) {
 
-        File f = fileSelector( "Open");
+        File[]farr = fileSelector( "Open");
 
-        if(!checkOpenedFile(f, false))
-            return;
-        //Load the file only if it is not already open
-        if(!tabList.tryOpeningPath(f.getAbsolutePath())) {
-            loadFile(f);
+        for(File f : farr) {
+            if(!checkOpenedFile(f, false))
+                continue;
+            //Load the file only if it is not already open
+            if(!tabList.tryOpeningPath(f.getAbsolutePath())) {
+                loadFile(f);
+            }
         }
+
     }
 
     public void onNew(ActionEvent e) {
 
-        File f = fileSelector( "New");
+        File[]farr = fileSelector( "New");
 
-        if(!checkOpenedFile(f, true))
-            return;
-        loadFile(f);
+        for(File f : farr) {
+            if(!checkOpenedFile(f, true))
+                return;
+            loadFile(f);
+        }
 
     }
 
@@ -305,32 +313,36 @@ public class App implements KeyListener, WindowListener {
         if(ed == null)
             return;
 
-        File f = fileSelector( "Save As");
-        if(f == null)
+        File[]farr = fileSelector( "Save As");
+        if(farr == null)
             return;
 
-        if (f.exists()) {
+        for(File f : farr) {
 
-            boolean ans = boolQuery(f.getName() + " already exists, do you want to overwrite it?");
+            if (f.exists()) {
 
-            if (ans)
-                ans = boolQuery("Triple check: " + f.getName() + " will be lost forever (a long time)!");
+                boolean ans = boolQuery(f.getName() + " already exists, do you want to overwrite it?");
 
-            if (!ans)
-                return;
+                if (ans)
+                    ans = boolQuery("Triple check: " + f.getName() + " will be lost forever (a long time)!");
+
+                if (!ans)
+                    continue;
+
+            }
+
+            File old = ed.getPath();
+            ed.setPath(f);
+
+            try {
+                ed.save();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+
+            tabList.getTabbedPane().setTitleAt(tabList.getTabbedPane().getSelectedIndex(), f.getName());
 
         }
-
-        File old = ed.getPath();
-        ed.setPath(f);
-
-        try {
-            ed.save();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-
-        tabList.getTabbedPane().setTitleAt(tabList.getTabbedPane().getSelectedIndex(), f.getName());
 
     }
 
