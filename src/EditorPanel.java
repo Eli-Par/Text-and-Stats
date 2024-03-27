@@ -57,8 +57,10 @@ public class EditorPanel extends JPanel implements DocumentListener{
 
         textPane = new JTextPane();
 
+        //Create a new DefaultStyledDocument
         document = new DefaultStyledDocument(new StyleContext());
 
+        //Create the correct editor kit for the file format
         if(fileFormat == Format.RTF) 
         {
             editorKit = new RTFEditorKit();
@@ -68,8 +70,10 @@ public class EditorPanel extends JPanel implements DocumentListener{
             editorKit = new DefaultEditorKit();
         }
 
+        //Set the textPane to display the document
         textPane.setDocument(document);
 
+        //Load the file using the editor kit
         try {
             editorKit.read(new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8")), document, 0);
         }
@@ -77,6 +81,7 @@ public class EditorPanel extends JPanel implements DocumentListener{
             System.out.println(exception.getStackTrace());
         }
 
+        //Add a scroll bar
         JScrollPane scroll = new JScrollPane(textPane);
         scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
@@ -93,6 +98,7 @@ public class EditorPanel extends JPanel implements DocumentListener{
 
     }
 
+    //Updates the format of the editor panel based on the file extension
     private void updateFormat(File file) {
         if(file.getName().contains(".")) {
             String extension = file.getName().substring(file.getName().lastIndexOf('.'), file.getName().length());
