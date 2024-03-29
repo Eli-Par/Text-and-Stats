@@ -309,14 +309,37 @@ public class EditorPanel extends JPanel implements DocumentListener{
         }
     }
 
-    public void toggleBoldSelected() {
+    //Changes the selected texts format to the opposite of what it currently is, toggling the style. Will change the word that the cursor
+    public void toggleFormatSelected(Object attributeKey) {
+
+        //Check that the formatting is valid for this file type
+        if(!ValidFormattingSet.isFormatValid(fileFormat, attributeKey)) {
+            return;
+        }
 
         int startIndex = textPane.getSelectionStart();
         int endIndex = textPane.getSelectionEnd();
 
-        boolean setBold = ! isSelectionBold();
+        //If no selection is picked, get the entire word
+        if(endIndex == startIndex) {
+            int wordStart = textPane.getCaretPosition();
+            int wordEnd = wordStart + 1;
+
+            while(wordStart > 0 && !Character.isWhitespace(textPane.getText().charAt(wordStart - 1))) {
+                wordStart--;
+            }
+
+            while(wordEnd < textPane.getText().length() && !Character.isWhitespace(textPane.getText().charAt(wordEnd))) {
+                wordEnd++;
+            }
+
+            startIndex = wordStart;
+            endIndex = wordEnd;
+        }
+
+        boolean setFormat = !isSelectionFormatted(attributeKey);
         SimpleAttributeSet style = new SimpleAttributeSet();
-        style.addAttribute(StyleConstants.Bold, setBold);
+        style.addAttribute(attributeKey, setFormat);
         document.setCharacterAttributes(startIndex, endIndex - startIndex, style, false);
 
         if(saved) {
@@ -325,18 +348,28 @@ public class EditorPanel extends JPanel implements DocumentListener{
         }
     }
 
-    public boolean isSelectionBold() {
+    //Returns if the selection is mostly the specified attribute or not. Only works on attributes with boolean return values.
+    //If no selection exists, returns the value for the character immediately after the cursor
+    public boolean isSelectionFormatted(Object attributeKey) {
         int startIndex = textPane.getSelectionStart();
         int endIndex = textPane.getSelectionEnd();
 
-        int boldCount = 0;
+        //If there is no selection, return the styling at the current caret position
+        if(endIndex == startIndex) {
+            if(document.getCharacterElement(textPane.getCaretPosition()).getAttributes().getAttribute(attributeKey) instanceof Boolean isFormatted) {
+                return isFormatted;
+            }
+            return false;
+        }
+
+        int formatCount = 0;
 
         for(int i = startIndex; i < endIndex; i++) {
-            if((Boolean) document.getCharacterElement(i).getAttributes().getAttribute(StyleConstants.Bold)) {
-                boldCount++;
+            if(document.getCharacterElement(i).getAttributes().getAttribute(attributeKey) instanceof Boolean isFormatted) {
+                if(isFormatted) formatCount++;
             }
         }
 
-        return boldCount > (endIndex - startIndex) / 2;
+        return formatCount > (endIndex - startIndex) / 2;
     }
 }
