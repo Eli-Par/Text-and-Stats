@@ -93,6 +93,31 @@ public class FileTabList extends JPanel implements MouseListener{
         return tabbedPane;
     }
 
+    public void moveTab(int ind, int cnt) {
+
+        int tot = tabbedPane.getTabCount();
+        int dest = ((ind + cnt) % tot + tot) % tot;
+        boolean sel = ind == tabbedPane.getSelectedIndex();
+        Component c = tabbedPane.getComponentAt(ind);
+        tabbedPane.remove(ind);
+        tabbedPane.insertTab(c.getName(), null, c, null, dest);
+        System.out.printf("%d %d %d\n", ind, dest, tabbedPane.getSelectedIndex());
+
+        if (sel)
+            tabbedPane.setSelectedIndex(dest);
+
+    }
+
+    public void moveLeft() {
+        int ind = tabbedPane.getSelectedIndex();
+        moveTab(ind, -1);
+    }
+
+    public void moveRight() {
+        int ind = tabbedPane.getSelectedIndex();
+        moveTab(ind, 1);
+    }
+
     //Change all tabs to show the screen with the specified name
     public void changeCards(String name) {
         for(TabPanel tabPanel : tabs) {
@@ -122,65 +147,20 @@ public class FileTabList extends JPanel implements MouseListener{
                 JPopupMenu popupMenu = new JPopupMenu();
 
                 JMenuItem rightMoveButton = new JMenuItem("Move Right");
-                rightMoveButton.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent event) {
-                        if(index < tabbedPane.getTabCount() - 1) {
-                            int selectedIndex = tabbedPane.getSelectedIndex();
-
-                            resetAllTabs();
-
-                            TabPanel panel = tabs.remove(index);
-                            tabs.add(index + 1, panel);
-
-                            addAllTabs();
-
-                            if(index == selectedIndex) tabbedPane.setSelectedIndex(index + 1);
-                            else tabbedPane.setSelectedIndex(selectedIndex);
-                        }
-                    }
-                });
-
-                if(index >= tabbedPane.getTabCount() - 1) {
-                    rightMoveButton.setEnabled(false);
-                }
+                rightMoveButton.addActionListener(event -> moveRight());
 
                 popupMenu.add(rightMoveButton);
 
                 JMenuItem leftMoveButton = new JMenuItem("Move Left");
-                leftMoveButton.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent event) {
-                        if(index > 0) {
-                            int selectedIndex = tabbedPane.getSelectedIndex();
-
-                            resetAllTabs();
-
-                            TabPanel panel = tabs.remove(index);
-                            tabs.add(index - 1, panel);
-
-                            addAllTabs();
-
-                            if(index == selectedIndex) tabbedPane.setSelectedIndex(index - 1);
-                            else tabbedPane.setSelectedIndex(selectedIndex);
-                        }
-                    }
-                });
-
-                if(index == 0) {
-                    leftMoveButton.setEnabled(false);
-                }
+                leftMoveButton.addActionListener(event -> moveLeft());
 
                 popupMenu.add(leftMoveButton);
 
                 JMenuItem deleteButton = new JMenuItem("Remove Tab");
-                deleteButton.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent event) {
-                        tabs.get(index).getEditor().closing();
-                        tabbedPane.remove(index);
-                        tabs.remove(index);
-                    }
+                deleteButton.addActionListener(event -> {
+                    tabs.get(index).getEditor().closing();
+                    tabbedPane.remove(index);
+                    tabs.remove(index);
                 });
                 popupMenu.add(deleteButton);
 

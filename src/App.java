@@ -229,6 +229,10 @@ public class App implements KeyListener, WindowListener {
         }
     }
 
+    public void onFindAndReplace(ActionEvent e) {
+
+    }
+
     public void onUndo(ActionEvent e){
         tabList.getCurrentEditor().undo();
     }
