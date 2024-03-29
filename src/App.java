@@ -56,6 +56,8 @@ public class App implements WindowListener {
         JMenuItem zoomIn = new JMenuItem("Zoom In");
         JMenuItem zoomOut = new JMenuItem("Zoom Out");
         JMenuItem zoomDefault = new JMenuItem("Zoom Reset");
+        JMenuItem moveLeft = new JMenuItem("Move Tab Left");
+        JMenuItem moveRight = new JMenuItem("Move Tab Right");
         //JMenuItem wrap = new JMenuItem("Enable Word Wrap");
 
         JMenuItem find = new JMenuItem("Find");
@@ -72,6 +74,8 @@ public class App implements WindowListener {
         zoomIn.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_ADD, InputEvent.CTRL_DOWN_MASK));
         zoomOut.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_SUBTRACT, InputEvent.CTRL_DOWN_MASK));
         zoomDefault.setAccelerator(KeyStroke.getKeyStroke("control 0"));
+        moveRight.setAccelerator(KeyStroke.getKeyStroke("control I"));
+        moveLeft.setAccelerator(KeyStroke.getKeyStroke("control U"));
 
         find.setAccelerator(KeyStroke.getKeyStroke("control F"));
         replaceAll.setAccelerator(KeyStroke.getKeyStroke("control R"));
@@ -94,6 +98,8 @@ public class App implements WindowListener {
         vMenu.add(zoomIn);
         vMenu.add(zoomOut);
         vMenu.add(zoomDefault);
+        vMenu.add(moveLeft);
+        vMenu.add(moveRight);
 
         editMenu.setFont(MENU_FONT);
         editMenu.add(find);
@@ -118,6 +124,9 @@ public class App implements WindowListener {
         zoomIn.addActionListener(this::onZoomIn);
         zoomOut.addActionListener(this::onZoomOut);
         zoomDefault.addActionListener(this::onZoomReset);
+        moveLeft.addActionListener(e -> tabList.moveLeft());
+        moveRight.addActionListener(e -> tabList.moveRight());
+
     }
 
     public App() {

@@ -111,13 +111,15 @@ public class FileTabList extends JPanel implements MouseListener{
 
     public void moveTab(int ind, int cnt) {
 
+        if (ind < 0)
+            return;
+
         int tot = tabbedPane.getTabCount();
         int dest = ((ind + cnt) % tot + tot) % tot;
         boolean sel = ind == tabbedPane.getSelectedIndex();
         Component c = tabbedPane.getComponentAt(ind);
         tabbedPane.remove(ind);
         tabbedPane.insertTab(c.getName(), null, c, null, dest);
-        System.out.printf("%d %d %d\n", ind, dest, tabbedPane.getSelectedIndex());
 
         if (sel)
             tabbedPane.setSelectedIndex(dest);
