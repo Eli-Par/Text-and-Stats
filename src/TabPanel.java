@@ -63,15 +63,6 @@ public class TabPanel extends JPanel {
         parent = p;
     }
 
-    @Override
-    public void addKeyListener(KeyListener l) {
-
-        super.addKeyListener(l);
-        for (JPanel p : panels)
-            p.addKeyListener(l);
-
-    }
-
     public void notSavedIndicator() {
 
         int ind = parent.indexOfComponent(this);

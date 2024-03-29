@@ -17,8 +17,6 @@ public class FileTabList extends JPanel implements MouseListener{
         app = a;
         this.setLayout(new BorderLayout());
         this.add(tabbedPane);
-        addKeyListener(app);
-        tabbedPane.addKeyListener(app);
 
         tabbedPane.addMouseListener(this);
 
@@ -27,7 +25,6 @@ public class FileTabList extends JPanel implements MouseListener{
     public void addTab(TabPanel tab) {
 
         tab.setParent(tabbedPane);
-        tab.addKeyListener(app);
         tab.getEditor().getTextPane().setFont(getFont());
         tabbedPane.addTab(tab.getTitle(), tab);
         tabbedPane.setSelectedComponent(tab);
@@ -84,6 +81,19 @@ public class FileTabList extends JPanel implements MouseListener{
                 }
             }
         }
+    }
+
+    public TabPanel getTabByPath(String path) {
+
+        for (Component component : tabbedPane.getComponents()) {
+            if (component instanceof TabPanel tab) {
+                if (tab.matchesPath(path))
+                    return tab;
+            }
+        }
+
+        return null;
+
     }
 
     public EditorPanel getCurrentEditor() {
