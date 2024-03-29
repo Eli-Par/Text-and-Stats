@@ -372,4 +372,134 @@ public class EditorPanel extends JPanel implements DocumentListener{
 
         return formatCount > (endIndex - startIndex) / 2;
     }
+
+    public void setSelectedFontSize(int size) {
+        //Check that the formatting is valid for this file type
+        if(!ValidFormattingSet.isFormatValid(fileFormat, StyleConstants.FontSize)) {
+            return;
+        }
+
+        int startIndex = textPane.getSelectionStart();
+        int endIndex = textPane.getSelectionEnd();
+
+        //If no selection is picked, get the entire word
+        if(endIndex == startIndex) {
+            int wordStart = textPane.getCaretPosition();
+            int wordEnd = wordStart + 1;
+
+            while(wordStart > 0 && !Character.isWhitespace(textPane.getText().charAt(wordStart - 1))) {
+                wordStart--;
+            }
+
+            while(wordEnd < textPane.getText().length() && !Character.isWhitespace(textPane.getText().charAt(wordEnd))) {
+                wordEnd++;
+            }
+
+            startIndex = wordStart;
+            endIndex = wordEnd;
+        }
+
+        SimpleAttributeSet format = new SimpleAttributeSet();
+        format.addAttribute(StyleConstants.FontSize, size);
+
+        document.setCharacterAttributes(startIndex, endIndex - startIndex, format, false);
+
+        if(saved) {
+            saved = false;
+            tab.notSavedIndicator();
+        }
+    }
+
+    public int getSelectedFontSize() {
+        int startIndex = textPane.getSelectionStart();
+        int endIndex = textPane.getSelectionEnd();
+
+        //If there is no selection, return the styling at the current caret position
+        if(endIndex == startIndex) {
+            if(document.getCharacterElement(textPane.getCaretPosition()).getAttributes().getAttribute(StyleConstants.FontSize) instanceof Integer size) {
+                return size;
+            }
+            return -1;
+        }
+
+        int fontSize = -1;
+
+        for(int i = startIndex; i < endIndex; i++) {
+            if(document.getCharacterElement(i).getAttributes().getAttribute(StyleConstants.FontSize) instanceof Integer size) {
+                if(fontSize == -1) {
+                    fontSize = size;
+                }
+                else if(fontSize != size) {
+                    return -1;
+                }
+            }
+        }
+
+        return fontSize;
+    }
+
+    public void setSelectedFontFamily(String family) {
+        //Check that the formatting is valid for this file type
+        if(!ValidFormattingSet.isFormatValid(fileFormat, StyleConstants.FontSize)) {
+            return;
+        }
+
+        int startIndex = textPane.getSelectionStart();
+        int endIndex = textPane.getSelectionEnd();
+
+        //If no selection is picked, get the entire word
+        if(endIndex == startIndex) {
+            int wordStart = textPane.getCaretPosition();
+            int wordEnd = wordStart + 1;
+
+            while(wordStart > 0 && !Character.isWhitespace(textPane.getText().charAt(wordStart - 1))) {
+                wordStart--;
+            }
+
+            while(wordEnd < textPane.getText().length() && !Character.isWhitespace(textPane.getText().charAt(wordEnd))) {
+                wordEnd++;
+            }
+
+            startIndex = wordStart;
+            endIndex = wordEnd;
+        }
+
+        SimpleAttributeSet format = new SimpleAttributeSet();
+        format.addAttribute(StyleConstants.FontFamily, family);
+
+        document.setCharacterAttributes(startIndex, endIndex - startIndex, format, false);
+
+        if(saved) {
+            saved = false;
+            tab.notSavedIndicator();
+        }
+    }
+
+    public String getSelectedFontFamily() {
+        int startIndex = textPane.getSelectionStart();
+        int endIndex = textPane.getSelectionEnd();
+
+        //If there is no selection, return the styling at the current caret position
+        if(endIndex == startIndex) {
+            if(document.getCharacterElement(textPane.getCaretPosition()).getAttributes().getAttribute(StyleConstants.FontSize) instanceof String family) {
+                return family;
+            }
+            return null;
+        }
+
+        String familyName = null;
+
+        for(int i = startIndex; i < endIndex; i++) {
+            if(document.getCharacterElement(i).getAttributes().getAttribute(StyleConstants.FontSize) instanceof String family) {
+                if(familyName == null) {
+                    familyName = family;
+                }
+                else if(!familyName.equals(family)) {
+                    return null;
+                }
+            }
+        }
+
+        return familyName;
+    }
 }
