@@ -50,6 +50,8 @@ public class App implements KeyListener, WindowListener {
         Dimension screenSize = tk.getScreenSize();
 
         topMenu = new MenuToolBar(tabList);
+        
+        topMenu.loadOptions();
 
         JToolBar toolBar = createCardToolBar();
 
