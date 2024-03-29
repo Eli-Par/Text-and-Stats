@@ -440,7 +440,7 @@ public class EditorPanel extends JPanel implements DocumentListener{
 
     public void setSelectedFontFamily(String family) {
         //Check that the formatting is valid for this file type
-        if(!ValidFormattingSet.isFormatValid(fileFormat, StyleConstants.FontSize)) {
+        if(!ValidFormattingSet.isFormatValid(fileFormat, StyleConstants.FontFamily)) {
             return;
         }
 
