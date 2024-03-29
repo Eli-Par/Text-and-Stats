@@ -308,4 +308,35 @@ public class EditorPanel extends JPanel implements DocumentListener{
             e.printStackTrace();
         }
     }
+
+    public void toggleBoldSelected() {
+
+        int startIndex = textPane.getSelectionStart();
+        int endIndex = textPane.getSelectionEnd();
+
+        boolean setBold = ! isSelectionBold();
+        SimpleAttributeSet style = new SimpleAttributeSet();
+        style.addAttribute(StyleConstants.Bold, setBold);
+        document.setCharacterAttributes(startIndex, endIndex - startIndex, style, false);
+
+        if(saved) {
+            saved = false;
+            tab.notSavedIndicator();
+        }
+    }
+
+    public boolean isSelectionBold() {
+        int startIndex = textPane.getSelectionStart();
+        int endIndex = textPane.getSelectionEnd();
+
+        int boldCount = 0;
+
+        for(int i = startIndex; i < endIndex; i++) {
+            if((Boolean) document.getCharacterElement(i).getAttributes().getAttribute(StyleConstants.Bold)) {
+                boldCount++;
+            }
+        }
+
+        return boldCount > (endIndex - startIndex) / 2;
+    }
 }
