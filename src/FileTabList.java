@@ -1,15 +1,12 @@
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
-import java.util.*;
 
 import javax.swing.*;
 
 public class FileTabList extends JPanel implements MouseListener{
 
     private JTabbedPane tabbedPane = new JTabbedPane();
-    
-    private ArrayList<TabPanel> tabs = new ArrayList<>();
 
     private String currentCardName = "Editor";
 
@@ -32,7 +29,6 @@ public class FileTabList extends JPanel implements MouseListener{
         tab.setParent(tabbedPane);
         tab.addKeyListener(app);
         tab.getEditor().getTextPane().setFont(getFont());
-        tabs.add(tab);
         tabbedPane.addTab(tab.getTitle(), tab);
         tabbedPane.setSelectedComponent(tab);
 
@@ -80,6 +76,16 @@ public class FileTabList extends JPanel implements MouseListener{
 
     }
 
+    public void closeExisting(String path) {
+        for(Component component : tabbedPane.getComponents()) {
+            if(component instanceof TabPanel tab) {
+                if(tab.matchesPath(path)) {
+                    tabbedPane.remove(component);
+                }
+            }
+        }
+    }
+
     public EditorPanel getCurrentEditor() {
         Component component = tabbedPane.getSelectedComponent();
         if(component instanceof TabPanel panel) {
@@ -120,8 +126,11 @@ public class FileTabList extends JPanel implements MouseListener{
 
     //Change all tabs to show the screen with the specified name
     public void changeCards(String name) {
-        for(TabPanel tabPanel : tabs) {
-            tabPanel.changeCard(name);
+
+        for(Component component : tabbedPane.getComponents()) {
+            if(component instanceof TabPanel panel) {
+                panel.changeCard(name);
+            }
         }
 
         currentCardName = name;
@@ -129,8 +138,11 @@ public class FileTabList extends JPanel implements MouseListener{
 
     //Called when the app is being closed
     public void closing() {
-        for(TabPanel panel : tabs) {
-            panel.getEditor().closing();
+
+        for(Component component : tabbedPane.getComponents()) {
+            if(component instanceof TabPanel panel) {
+                panel.getEditor().closing();
+            }
         }
     }
 
@@ -158,9 +170,11 @@ public class FileTabList extends JPanel implements MouseListener{
 
                 JMenuItem deleteButton = new JMenuItem("Remove Tab");
                 deleteButton.addActionListener(event -> {
-                    tabs.get(index).getEditor().closing();
-                    tabbedPane.remove(index);
-                    tabs.remove(index);
+                    if(tabbedPane.getComponentAt(index) instanceof TabPanel panel) {
+                        panel.getEditor().closing();
+                        tabbedPane.remove(index);
+                    }
+                    
                 });
                 popupMenu.add(deleteButton);
 
@@ -169,28 +183,18 @@ public class FileTabList extends JPanel implements MouseListener{
         }
     }
 
-    //Remove all tabs from the JTabbedPanel but do not remove them from the tabs ArrayList
-    private void resetAllTabs() {
-        while(tabbedPane.getTabCount() > 0) {
-            tabbedPane.removeTabAt(0);
-        }
-    }
-
-    //Add all tabs from the ArrayList back into the JTabbedPanel
-    private void addAllTabs() {
-        for(TabPanel panel : tabs) {
-            tabbedPane.addTab((panel.getEditor().isSaved() ? "" : "*") + panel.getTitle(), panel);
-        }
-    }
-
     //If any tab has a matching absolute path, select it and return true, otherwise return false
     public boolean tryOpeningPath(String path) {
 
-        for(int i = 0; i < tabs.size(); i++) {
-            if(tabs.get(i).matchesPath(path)) {
-                tabbedPane.setSelectedIndex(i);
-                return true;
+        Component components[] = tabbedPane.getComponents();
+        for(int i = 0; i < components.length; i++) {
+            if(components[i] instanceof TabPanel tab) {
+                if(tab.matchesPath(path)) {
+                    tabbedPane.setSelectedIndex(i);
+                    return true;
+                }
             }
+            
         }
 
         return false;

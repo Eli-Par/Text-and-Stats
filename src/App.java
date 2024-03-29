@@ -201,7 +201,9 @@ public class App implements KeyListener, WindowListener {
         for(File f : farr) {
             if(!checkOpenedFile(f, true))
                 return;
-            loadFile(f);
+            if(!tabList.tryOpeningPath(f.getAbsolutePath())) {
+                loadFile(f);
+            }
         }
 
     }
@@ -334,6 +336,8 @@ public class App implements KeyListener, WindowListener {
                     continue;
 
             }
+
+            tabList.closeExisting(f.getAbsolutePath());
 
             File old = ed.getPath();
             ed.setPath(f);
