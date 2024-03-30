@@ -22,6 +22,7 @@ public abstract class AsyncTabFactory extends SwingWorker<TabPanel, Object>{
     protected final void done() {
         try {
             TabPanel panel = get();
+            panel.textChanged();
             tabCreated(panel);
         }
         catch(InterruptedException exception) {

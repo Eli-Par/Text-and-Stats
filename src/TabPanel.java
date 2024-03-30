@@ -51,8 +51,6 @@ public class TabPanel extends JPanel {
             windowPanel.add(panelNames[i], panels[i]);
         }
         this.add(windowPanel);
-
-        textChanged();
     }
 
     public String getTitle() {
