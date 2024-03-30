@@ -385,8 +385,14 @@ public class MenuToolBar extends JMenuBar {
         String title = f.getName();
         opts.lastOpenLocation = f.getParent();
 
-        TabPanel tabPanel = new TabPanel(f, title);
-        tabList.addTab(tabPanel);
+        AsyncTabFactory factory = new AsyncTabFactory(f, title) {
+            @Override
+            protected void tabCreated(TabPanel panel) {
+                tabList.addTab(panel);
+            }
+        };
+
+        factory.execute();
 
     }
     
