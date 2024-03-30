@@ -502,4 +502,41 @@ public class EditorPanel extends JPanel implements DocumentListener{
 
         return familyName;
     }
+
+    public void setSelectedTextColor(Color color) {
+        //Check that the formatting is valid for this file type
+        if(!ValidFormattingSet.isFormatValid(fileFormat, StyleConstants.Foreground)) {
+            return;
+        }
+
+        int startIndex = textPane.getSelectionStart();
+        int endIndex = textPane.getSelectionEnd();
+
+        //If no selection is picked, get the entire word
+        if(endIndex == startIndex) {
+            int wordStart = textPane.getCaretPosition();
+            int wordEnd = wordStart + 1;
+
+            while(wordStart > 0 && !Character.isWhitespace(textPane.getText().charAt(wordStart - 1))) {
+                wordStart--;
+            }
+
+            while(wordEnd < textPane.getText().length() && !Character.isWhitespace(textPane.getText().charAt(wordEnd))) {
+                wordEnd++;
+            }
+
+            startIndex = wordStart;
+            endIndex = wordEnd;
+        }
+
+        SimpleAttributeSet format = new SimpleAttributeSet();
+        format.addAttribute(StyleConstants.Foreground, color);
+
+        document.setCharacterAttributes(startIndex, endIndex - startIndex, format, false);
+
+        if(saved) {
+            saved = false;
+            tab.notSavedIndicator();
+        }
+    }
 }
