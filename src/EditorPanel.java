@@ -3,7 +3,6 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.*;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 import javax.swing.*;
@@ -198,12 +197,6 @@ public class EditorPanel extends JPanel implements DocumentListener{
     @Override
     public void changedUpdate(DocumentEvent e) {
         //Do nothing
-    }
-
-    @Override
-    public void addKeyListener(KeyListener l) {
-        super.addKeyListener(l);
-        textPane.addKeyListener(l);
     }
 
     //@TODO Phase out accessing the text externally

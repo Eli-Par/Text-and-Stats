@@ -1,15 +1,12 @@
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
-import java.util.*;
 
 import javax.swing.*;
 
 public class FileTabList extends JPanel implements MouseListener{
 
     private JTabbedPane tabbedPane = new JTabbedPane();
-    
-    private ArrayList<TabPanel> tabs = new ArrayList<>();
 
     private String currentCardName = "Editor";
 
@@ -20,8 +17,6 @@ public class FileTabList extends JPanel implements MouseListener{
         app = a;
         this.setLayout(new BorderLayout());
         this.add(tabbedPane);
-        addKeyListener(app);
-        tabbedPane.addKeyListener(app);
 
         tabbedPane.addMouseListener(this);
 
@@ -30,9 +25,7 @@ public class FileTabList extends JPanel implements MouseListener{
     public void addTab(TabPanel tab) {
 
         tab.setParent(tabbedPane);
-        tab.addKeyListener(app);
         tab.getEditor().getTextPane().setFont(getFont());
-        tabs.add(tab);
         tabbedPane.addTab(tab.getTitle(), tab);
         tabbedPane.setSelectedComponent(tab);
 
@@ -42,8 +35,8 @@ public class FileTabList extends JPanel implements MouseListener{
     public void setEditorFont(Font font) {
 
         setFont(font);
-        app.opts.fontFamily = font.getFamily();
-        app.opts.fontSize = font.getSize();
+        app.topMenu.opts.fontFamily = font.getFamily();
+        app.topMenu.opts.fontSize = font.getSize();
 
         for(Component c : tabbedPane.getComponents()) {
             TabPanel t = (TabPanel)c;
@@ -80,6 +73,29 @@ public class FileTabList extends JPanel implements MouseListener{
 
     }
 
+    public void closeExisting(String path) {
+        for(Component component : tabbedPane.getComponents()) {
+            if(component instanceof TabPanel tab) {
+                if(tab.matchesPath(path)) {
+                    tabbedPane.remove(component);
+                }
+            }
+        }
+    }
+
+    public TabPanel getTabByPath(String path) {
+
+        for (Component component : tabbedPane.getComponents()) {
+            if (component instanceof TabPanel tab) {
+                if (tab.matchesPath(path))
+                    return tab;
+            }
+        }
+
+        return null;
+
+    }
+
     public EditorPanel getCurrentEditor() {
         Component component = tabbedPane.getSelectedComponent();
         if(component instanceof TabPanel panel) {
@@ -93,10 +109,40 @@ public class FileTabList extends JPanel implements MouseListener{
         return tabbedPane;
     }
 
+    public void moveTab(int ind, int cnt) {
+
+        if (ind < 0)
+            return;
+
+        int tot = tabbedPane.getTabCount();
+        int dest = ((ind + cnt) % tot + tot) % tot;
+        boolean sel = ind == tabbedPane.getSelectedIndex();
+        Component c = tabbedPane.getComponentAt(ind);
+        tabbedPane.remove(ind);
+        tabbedPane.insertTab(c.getName(), null, c, null, dest);
+
+        if (sel)
+            tabbedPane.setSelectedIndex(dest);
+
+    }
+
+    public void moveLeft() {
+        int ind = tabbedPane.getSelectedIndex();
+        moveTab(ind, -1);
+    }
+
+    public void moveRight() {
+        int ind = tabbedPane.getSelectedIndex();
+        moveTab(ind, 1);
+    }
+
     //Change all tabs to show the screen with the specified name
     public void changeCards(String name) {
-        for(TabPanel tabPanel : tabs) {
-            tabPanel.changeCard(name);
+
+        for(Component component : tabbedPane.getComponents()) {
+            if(component instanceof TabPanel panel) {
+                panel.changeCard(name);
+            }
         }
 
         currentCardName = name;
@@ -104,8 +150,11 @@ public class FileTabList extends JPanel implements MouseListener{
 
     //Called when the app is being closed
     public void closing() {
-        for(TabPanel panel : tabs) {
-            panel.getEditor().closing();
+
+        for(Component component : tabbedPane.getComponents()) {
+            if(component instanceof TabPanel panel) {
+                panel.getEditor().closing();
+            }
         }
     }
 
@@ -122,65 +171,22 @@ public class FileTabList extends JPanel implements MouseListener{
                 JPopupMenu popupMenu = new JPopupMenu();
 
                 JMenuItem rightMoveButton = new JMenuItem("Move Right");
-                rightMoveButton.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent event) {
-                        if(index < tabbedPane.getTabCount() - 1) {
-                            int selectedIndex = tabbedPane.getSelectedIndex();
-
-                            resetAllTabs();
-
-                            TabPanel panel = tabs.remove(index);
-                            tabs.add(index + 1, panel);
-
-                            addAllTabs();
-
-                            if(index == selectedIndex) tabbedPane.setSelectedIndex(index + 1);
-                            else tabbedPane.setSelectedIndex(selectedIndex);
-                        }
-                    }
-                });
-
-                if(index >= tabbedPane.getTabCount() - 1) {
-                    rightMoveButton.setEnabled(false);
-                }
+                rightMoveButton.addActionListener(event -> moveRight());
 
                 popupMenu.add(rightMoveButton);
 
                 JMenuItem leftMoveButton = new JMenuItem("Move Left");
-                leftMoveButton.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent event) {
-                        if(index > 0) {
-                            int selectedIndex = tabbedPane.getSelectedIndex();
-
-                            resetAllTabs();
-
-                            TabPanel panel = tabs.remove(index);
-                            tabs.add(index - 1, panel);
-
-                            addAllTabs();
-
-                            if(index == selectedIndex) tabbedPane.setSelectedIndex(index - 1);
-                            else tabbedPane.setSelectedIndex(selectedIndex);
-                        }
-                    }
-                });
-
-                if(index == 0) {
-                    leftMoveButton.setEnabled(false);
-                }
+                leftMoveButton.addActionListener(event -> moveLeft());
 
                 popupMenu.add(leftMoveButton);
 
                 JMenuItem deleteButton = new JMenuItem("Remove Tab");
-                deleteButton.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent event) {
-                        tabs.get(index).getEditor().closing();
+                deleteButton.addActionListener(event -> {
+                    if(tabbedPane.getComponentAt(index) instanceof TabPanel panel) {
+                        panel.getEditor().closing();
                         tabbedPane.remove(index);
-                        tabs.remove(index);
                     }
+                    
                 });
                 popupMenu.add(deleteButton);
 
@@ -189,28 +195,18 @@ public class FileTabList extends JPanel implements MouseListener{
         }
     }
 
-    //Remove all tabs from the JTabbedPanel but do not remove them from the tabs ArrayList
-    private void resetAllTabs() {
-        while(tabbedPane.getTabCount() > 0) {
-            tabbedPane.removeTabAt(0);
-        }
-    }
-
-    //Add all tabs from the ArrayList back into the JTabbedPanel
-    private void addAllTabs() {
-        for(TabPanel panel : tabs) {
-            tabbedPane.addTab((panel.getEditor().isSaved() ? "" : "*") + panel.getTitle(), panel);
-        }
-    }
-
     //If any tab has a matching absolute path, select it and return true, otherwise return false
     public boolean tryOpeningPath(String path) {
 
-        for(int i = 0; i < tabs.size(); i++) {
-            if(tabs.get(i).matchesPath(path)) {
-                tabbedPane.setSelectedIndex(i);
-                return true;
+        Component components[] = tabbedPane.getComponents();
+        for(int i = 0; i < components.length; i++) {
+            if(components[i] instanceof TabPanel tab) {
+                if(tab.matchesPath(path)) {
+                    tabbedPane.setSelectedIndex(i);
+                    return true;
+                }
             }
+            
         }
 
         return false;
