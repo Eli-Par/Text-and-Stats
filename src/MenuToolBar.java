@@ -40,6 +40,8 @@ public class MenuToolBar extends JMenuBar {
         JMenuItem zoomIn = new JMenuItem("Zoom In");
         JMenuItem zoomOut = new JMenuItem("Zoom Out");
         JMenuItem zoomDefault = new JMenuItem("Zoom Reset");
+        JMenuItem moveLeft = new JMenuItem("Move Tab Left");
+        JMenuItem moveRight = new JMenuItem("Move Tab Right");
 
         JMenuItem find = new JMenuItem("Find");
         JMenuItem replaceFirst = new JMenuItem("Replace First");
@@ -55,6 +57,9 @@ public class MenuToolBar extends JMenuBar {
         zoomIn.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_ADD, InputEvent.CTRL_DOWN_MASK));
         zoomOut.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_SUBTRACT, InputEvent.CTRL_DOWN_MASK));
         zoomDefault.setAccelerator(KeyStroke.getKeyStroke("control 0"));
+
+        moveRight.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, InputEvent.CTRL_DOWN_MASK));
+        moveLeft.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, InputEvent.CTRL_DOWN_MASK));
 
         find.setAccelerator(KeyStroke.getKeyStroke("control F"));
         replaceAll.setAccelerator(KeyStroke.getKeyStroke("control R"));
@@ -73,6 +78,8 @@ public class MenuToolBar extends JMenuBar {
         vMenu.add(zoomIn);
         vMenu.add(zoomOut);
         vMenu.add(zoomDefault);
+        vMenu.add(moveLeft);
+        vMenu.add(moveRight);
 
         editMenu.setFont(MENU_FONT);
         editMenu.add(find);
@@ -101,6 +108,8 @@ public class MenuToolBar extends JMenuBar {
         zoomIn.addActionListener(this::onZoomIn);
         zoomOut.addActionListener(this::onZoomOut);
         zoomDefault.addActionListener(this::onZoomReset);
+        moveLeft.addActionListener(e -> tabList.moveLeft());
+        moveRight.addActionListener(e -> tabList.moveRight());
         
     }
     
@@ -165,7 +174,10 @@ public class MenuToolBar extends JMenuBar {
         for(File f : farr) {
             if(!checkOpenedFile(f, true))
                 return;
-            loadFile(f);
+
+            if(!tabList.tryOpeningPath(f.getAbsolutePath())) {
+                loadFile(f);
+            }
         }
 
     }
@@ -190,6 +202,10 @@ public class MenuToolBar extends JMenuBar {
         if(option == JOptionPane.OK_OPTION){
             tabList.getCurrentEditor().replaceAll(findTf.getText(), replaceTf.getText());
         }
+    }
+
+    public void onFindAndReplace(ActionEvent e) {
+
     }
 
     public void onUndo(ActionEvent e){
@@ -294,15 +310,21 @@ public class MenuToolBar extends JMenuBar {
 
             }
 
-            ed.setPath(f);
+            TabPanel tab = tabList.getTabByPath(f.getAbsolutePath());
+            if(tab != null) {
+                tab.getEditor().getTextPane().setText(ed.getTextPane().getText());
+                ed = tab.getEditor();
+                tabList.getTabbedPane().setSelectedComponent(tab);
+            } else {
+                ed.setPath(f);
+                tabList.getTabbedPane().setTitleAt(tabList.getTabbedPane().getSelectedIndex(), f.getName());
+            }
 
             try {
                 ed.save();
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
-
-            tabList.getTabbedPane().setTitleAt(tabList.getTabbedPane().getSelectedIndex(), f.getName());
 
         }
 

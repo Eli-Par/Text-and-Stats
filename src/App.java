@@ -3,7 +3,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 
-public class App implements KeyListener, WindowListener {
+public class App implements WindowListener {
 
     public static final String TITLE = "Text Buddy";
 
@@ -63,7 +63,6 @@ public class App implements KeyListener, WindowListener {
 
         frame.add(topPanel, BorderLayout.NORTH);
         frame.add(tabList);
-        frame.addKeyListener(this);
 
         // panel.setSize(WIDTH, HEIGHT);
         // panel.setPreferredSize(panel.getSize());
@@ -81,43 +80,8 @@ public class App implements KeyListener, WindowListener {
 
     }
 
-    /**
-     * Invoked when a key has been released.
-     * See the class description for {@link KeyEvent} for a definition of
-     * a key released event.
-     *
-     * @param e the event to be processed
-     */
-    @Override
-    public void keyReleased(KeyEvent e) {
-    }
-
     public static void main(String[] args) {
         new App().init(args);
-    }
-
-    /**
-     * Invoked when a key has been typed.
-     * See the class description for {@link KeyEvent} for a definition of
-     * a key typed event.
-     *
-     * @param e the event to be processed
-     */
-    @Override
-    public void keyTyped(KeyEvent e) {
-
-    }
-
-    /**
-     * Invoked when a key has been pressed.
-     * See the class description for {@link KeyEvent} for a definition of
-     * a key pressed event.
-     *
-     * @param e the event to be processed
-     */
-    @Override
-    public void keyPressed(KeyEvent e) {
-
     }
 
     /**
