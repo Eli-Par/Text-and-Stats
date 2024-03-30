@@ -18,6 +18,8 @@ public class FileTabList extends JPanel implements MouseListener{
         this.setLayout(new BorderLayout());
         this.add(tabbedPane);
 
+        tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
+
         tabbedPane.addMouseListener(this);
 
     }
