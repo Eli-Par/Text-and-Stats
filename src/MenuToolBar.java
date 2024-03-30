@@ -156,6 +156,8 @@ public class MenuToolBar extends JMenuBar {
 
         File[]farr = fileSelector( "Open");
 
+        if(farr == null) return;
+
         for(File f : farr) {
             if(!checkOpenedFile(f, false))
                 continue;
@@ -170,6 +172,8 @@ public class MenuToolBar extends JMenuBar {
     public void onNew(ActionEvent e) {
 
         File[]farr = fileSelector( "New");
+
+        if(farr == null) return;
 
         for(File f : farr) {
             if(!checkOpenedFile(f, true))
