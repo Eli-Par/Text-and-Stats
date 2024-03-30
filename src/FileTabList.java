@@ -42,8 +42,8 @@ public class FileTabList extends JPanel implements MouseListener{
     public void setEditorFont(Font font) {
 
         setFont(font);
-        app.opts.fontFamily = font.getFamily();
-        app.opts.fontSize = font.getSize();
+        app.topMenu.opts.fontFamily = font.getFamily();
+        app.topMenu.opts.fontSize = font.getSize();
 
         for(Component c : tabbedPane.getComponents()) {
             TabPanel t = (TabPanel)c;
