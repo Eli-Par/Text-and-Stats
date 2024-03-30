@@ -20,17 +20,14 @@ public class TabPanel extends JPanel {
 
     public Parser parser;
 
-    File file;
-
     public TabPanel(File path, String title) {
 
         super();
 
-        file = path;
-
         panels  = new JPanel[4];
         panelNames = new String[4];
         this.title = title;
+        setName(this.title);
         parser = new TextParser();
         parent = null;
 
@@ -64,15 +61,6 @@ public class TabPanel extends JPanel {
 
     public void setParent(JTabbedPane p) {
         parent = p;
-    }
-
-    @Override
-    public void addKeyListener(KeyListener l) {
-
-        super.addKeyListener(l);
-        for (JPanel p : panels)
-            p.addKeyListener(l);
-
     }
 
     public void notSavedIndicator() {
@@ -117,7 +105,7 @@ public class TabPanel extends JPanel {
     }
 
     public boolean matchesPath(String path) {
-        return file.getAbsolutePath().equals(path);
+        return getEditor().getPath().getAbsolutePath().equals(path);
     }
 
 }

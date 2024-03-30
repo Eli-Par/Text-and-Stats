@@ -199,12 +199,6 @@ public class EditorPanel extends JPanel implements DocumentListener{
         //Do nothing
     }
 
-    @Override
-    public void addKeyListener(KeyListener l) {
-        super.addKeyListener(l);
-        textPane.addKeyListener(l);
-    }
-
     //@TODO Phase out accessing the text externally
     public JTextPane getTextPane() {
         return textPane;
