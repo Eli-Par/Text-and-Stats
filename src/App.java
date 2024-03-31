@@ -13,25 +13,25 @@ public class App implements WindowListener {
     public MenuToolBar topMenu;
 
 
-    public JToolBar createCardToolBar() {
-        JToolBar toolBar = new JToolBar();
-        toolBar.setFloatable(false);
+    // public JToolBar createCardToolBar() {
+    //     JToolBar toolBar = new JToolBar();
+    //     toolBar.setFloatable(false);
 
-        JPanel barPanel = new JPanel();
-        barPanel.setLayout(new BoxLayout(barPanel, BoxLayout.X_AXIS));
+    //     JPanel barPanel = new JPanel();
+    //     barPanel.setLayout(new BoxLayout(barPanel, BoxLayout.X_AXIS));
 
-        barPanel.add(new PageSwitchButton(tabList, "Editor", "Editor"));
-        barPanel.add(Box.createHorizontalStrut(5));
-        barPanel.add(new PageSwitchButton(tabList, "Word Stats", "WordStats"));
-        barPanel.add(Box.createHorizontalStrut(5));
-        barPanel.add(new PageSwitchButton(tabList, "Char Stats", "CharStats"));
-        barPanel.add(Box.createHorizontalStrut(5));
-        barPanel.add(new PageSwitchButton(tabList, "Sentence Stats", "SentStats"));
+    //     barPanel.add(new PageSwitchButton(tabList, "Editor", "Editor"));
+    //     barPanel.add(Box.createHorizontalStrut(5));
+    //     barPanel.add(new PageSwitchButton(tabList, "Word Stats", "WordStats"));
+    //     barPanel.add(Box.createHorizontalStrut(5));
+    //     barPanel.add(new PageSwitchButton(tabList, "Char Stats", "CharStats"));
+    //     barPanel.add(Box.createHorizontalStrut(5));
+    //     barPanel.add(new PageSwitchButton(tabList, "Sentence Stats", "SentStats"));
 
-        toolBar.add(barPanel);
+    //     toolBar.add(barPanel);
 
-        return toolBar;
-    }
+    //     return toolBar;
+    // }
 
     public App() {
 
@@ -53,7 +53,7 @@ public class App implements WindowListener {
         
         topMenu.loadOptions();
 
-        JToolBar toolBar = createCardToolBar();
+        JToolBar toolBar = new FormattingToolBar(tabList);
 
         JPanel topPanel = new JPanel();
         topPanel.setLayout(new BorderLayout());
