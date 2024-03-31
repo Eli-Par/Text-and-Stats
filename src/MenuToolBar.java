@@ -12,6 +12,7 @@ import static util.algobase.lower_bound;
 import java.awt.*;
 
 import javax.swing.*;
+import javax.swing.text.Highlighter;
 
 
 public class MenuToolBar extends JMenuBar {
@@ -191,10 +192,24 @@ public class MenuToolBar extends JMenuBar {
     }
     public void onFind(ActionEvent e){
         JTextField tf = new JTextField();
-        int option = JOptionPane.showConfirmDialog(null, tf, "Find", JOptionPane.OK_CANCEL_OPTION);
-        if (option == JOptionPane.OK_OPTION) {
-            String text = tf.getText();
-            tabList.getCurrentEditor().find(text);
+        JButton up = new JButton("↑");
+        JButton down = new JButton("↓");
+        JButton find = new JButton("Find");
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(2, 2));
+        panel.add(tf);
+        panel.add(find);
+        panel.add(up);
+        panel.add(down);
+
+        up.addActionListener(actionEvent -> tabList.getCurrentEditor().nav(-1));
+        down.addActionListener(actionEvent -> tabList.getCurrentEditor().nav(1));
+        find.addActionListener(actionEvent -> tabList.getCurrentEditor().find(tf.getText()));
+
+        int option = JOptionPane.showConfirmDialog(null, panel, "Find", JOptionPane.OK_CANCEL_OPTION);
+        if ((option == JOptionPane.OK_OPTION || option == JOptionPane.CANCEL_OPTION) && EditorPanel.getTextPane() != null) {
+            Highlighter h = EditorPanel.getTextPane().getHighlighter();
+            h.removeAllHighlights();
         }
     }
 

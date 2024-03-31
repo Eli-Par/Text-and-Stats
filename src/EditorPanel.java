@@ -39,9 +39,14 @@ public class EditorPanel extends JPanel implements DocumentListener{
 
     private DefaultStyledDocument document;
 
-    private JTextPane textPane;
+    private static JTextPane textPane;
 
     private DocumentFormatter formatter;
+
+    String findText;
+    int currI = 0;
+    Highlighter.Highlight[] highlights;
+    boolean first = true;
 
     public EditorPanel(TabPanel tab, File file) {
 
@@ -208,13 +213,14 @@ public class EditorPanel extends JPanel implements DocumentListener{
     }
 
     //@TODO Phase out accessing the text externally
-    public JTextPane getTextPane() {
+    public static JTextPane getTextPane() {
         return textPane;
     }
 
     public void find(String text){
         // get the text
         String content = getPlainText();
+        findText = text;
         // create a highlighter to highlight the text
         Highlighter h = textPane.getHighlighter();
         Highlighter.HighlightPainter painter = new DefaultHighlighter.DefaultHighlightPainter(Color.CYAN);
@@ -222,12 +228,6 @@ public class EditorPanel extends JPanel implements DocumentListener{
 
         // loop through all occurrences and highlight them
         int i = content.indexOf(text);
-        boolean caretNotSet = true;
-        if((i > textPane.getCaretPosition() || i == 0 && textPane.getCaretPosition() == 0) && caretNotSet) 
-        {
-            textPane.setCaretPosition(i);
-            caretNotSet = false;
-        }
         while(i != -1){
             try{
                 h.addHighlight(i, i+text.length(), painter);
@@ -235,25 +235,42 @@ public class EditorPanel extends JPanel implements DocumentListener{
                 e.printStackTrace();
             }
             i = content.indexOf(text, i+1);
-            if(i > textPane.getCaretPosition() && caretNotSet) 
-        {
-            textPane.setCaretPosition(i);
-            caretNotSet = false;
         }
+        currI = 0;
+        first = true;
+        textPane.requestFocus();
+        highlights = h.getHighlights();
+    }
+
+    /**
+     * @param dir -1 for backwards, 1 for forwards
+     */
+    public void nav(int dir){
+
+        Highlighter h = textPane.getHighlighter();
+        Highlighter.HighlightPainter painter = new DefaultHighlighter.DefaultHighlightPainter(Color.CYAN);
+        h.removeAllHighlights();
+        if(highlights.length == 0) return;
+
+        try {
+            // cycle forwards until end then jump back to top
+            if (dir == 1) {
+                if (currI >= highlights.length-1) currI = 0;
+                else if(first != true) currI++;
+                h.addHighlight(highlights[currI].getStartOffset(), highlights[currI].getEndOffset(), painter);
+            // cycle backwards until start then jump back to bottom
+            } else if (dir == -1) {
+                if (currI <= 0) currI = highlights.length - 1;
+                else currI--;
+                h.addHighlight(highlights[currI].getStartOffset(), highlights[currI].getEndOffset(), painter);
+            }
+            textPane.setCaretPosition(highlights[currI].getStartOffset());
+            first = false;
+
+        }catch (BadLocationException e){
+            e.printStackTrace();
         }
-
-        // delete highlighted text when mouse is clicked
-        textPane.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                h.removeAllHighlights();
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                h.removeAllHighlights();
-            }
-        });
+        textPane.requestFocusInWindow();
     }
 
     public void replaceFirst(String find, String replace){
