@@ -49,11 +49,10 @@ public class App implements WindowListener {
         Toolkit tk = Toolkit.getDefaultToolkit();
         Dimension screenSize = tk.getScreenSize();
 
-        topMenu = new MenuToolBar(tabList);
+        FormattingToolBar toolBar = new FormattingToolBar(tabList);
+        topMenu = new MenuToolBar(tabList, toolBar);
         
         topMenu.loadOptions();
-
-        JToolBar toolBar = new FormattingToolBar(tabList);
 
         JPanel topPanel = new JPanel();
         topPanel.setLayout(new BorderLayout());

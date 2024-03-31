@@ -181,7 +181,8 @@ public class DocumentFormatter {
 
         //If there is no selection, return the styling at the current caret position
         if(endIndex == startIndex) {
-            if(document.getCharacterElement(textPane.getCaretPosition()).getAttributes().getAttribute(StyleConstants.FontSize) instanceof String family) {
+            int caretPosition = textPane.getCaretPosition();
+            if(document.getCharacterElement(caretPosition).getAttributes().getAttribute(StyleConstants.FontFamily) instanceof String family) {
                 return family;
             }
             return null;
@@ -190,7 +191,7 @@ public class DocumentFormatter {
         String familyName = null;
 
         for(int i = startIndex; i < endIndex; i++) {
-            if(document.getCharacterElement(i).getAttributes().getAttribute(StyleConstants.FontSize) instanceof String family) {
+            if(document.getCharacterElement(i).getAttributes().getAttribute(StyleConstants.FontFamily) instanceof String family) {
                 if(familyName == null) {
                     familyName = family;
                 }

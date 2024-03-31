@@ -106,6 +106,10 @@ public class EditorPanel extends JPanel implements DocumentListener{
         return formatter;
     }
 
+    public Format getFileFormat() {
+        return fileFormat;
+    }
+
     //Updates the format of the editor panel based on the file extension
     private void updateFormat(File file) {
         if(file.getName().contains(".")) {

@@ -20,10 +20,12 @@ public class MenuToolBar extends JMenuBar {
     public static final String SETTINGS_PATH = System.getProperty("user.home") + "/.comp2800-settings";
     public static Font MENU_FONT = new Font("Tahoma", Font.PLAIN, 16);
 
-    
+    private FormattingToolBar formattingToolBar;
+
     UserOptions opts;
-    public MenuToolBar(FileTabList tl) {
+    public MenuToolBar(FileTabList tl, FormattingToolBar formattingToolBar) {
         tabList = tl;
+        this.formattingToolBar = formattingToolBar;
         opts = new UserOptions();
 
         JMenu fileMenu = new JMenu("File");
@@ -385,7 +387,7 @@ public class MenuToolBar extends JMenuBar {
         String title = f.getName();
         opts.lastOpenLocation = f.getParent();
 
-        AsyncTabFactory factory = new AsyncTabFactory(f, title) {
+        AsyncTabFactory factory = new AsyncTabFactory(formattingToolBar, f, title) {
             @Override
             protected void tabCreated(TabPanel panel) {
                 tabList.addTab(panel);
