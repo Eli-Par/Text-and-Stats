@@ -21,6 +21,36 @@ public class FormattingToolBar extends JToolBar implements ChangeListener, Caret
     private boolean internalFamilyChange = false;
     private boolean internalSizeChange = false;
 
+    private Action boldAction = new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            EditorPanel editorPanel = tabList.getCurrentEditor();
+            if(editorPanel != null) {
+                editorPanel.getFormatter().toggleFormatSelected(StyleConstants.Bold);
+            }
+        }
+    };
+
+    private Action italicAction = new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            EditorPanel editorPanel = tabList.getCurrentEditor();
+            if(editorPanel != null) {
+                editorPanel.getFormatter().toggleFormatSelected(StyleConstants.Italic);
+            }
+        }
+    };
+
+    private Action underlineAction = new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            EditorPanel editorPanel = tabList.getCurrentEditor();
+            if(editorPanel != null) {
+                editorPanel.getFormatter().toggleFormatSelected(StyleConstants.Underline);
+            }
+        }
+    };
+
     public FormattingToolBar(FileTabList tabList) {
 
         this.tabList = tabList;
@@ -63,17 +93,26 @@ public class FormattingToolBar extends JToolBar implements ChangeListener, Caret
         boldButton = new StylingButton("B", BUTTON_SIZE);
         this.add(boldButton);
         this.add(Box.createHorizontalStrut(SPACE_WIDTH));
-        boldButton.addActionListener(this::boldButton);
+        boldButton.addActionListener(boldAction);
+        boldButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("control B"), "boldAction");
+        boldButton.getActionMap().put("boldAction", boldAction);
+        boldButton.setToolTipText("Bold");
 
         italicButton = new StylingButton("I", BUTTON_SIZE);
         this.add(italicButton);
         this.add(Box.createHorizontalStrut(SPACE_WIDTH));
-        italicButton.addActionListener(this::italicButton);
+        italicButton.addActionListener(italicAction);
+        italicButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("control I"), "italicAction");
+        italicButton.getActionMap().put("italicAction", italicAction);
+        italicButton.setToolTipText("Italic");
 
         underlineButton = new StylingButton("U", BUTTON_SIZE);
         this.add(underlineButton);
         this.add(Box.createHorizontalStrut(SPACE_WIDTH));
-        underlineButton.addActionListener(this::underlineButton);
+        underlineButton.addActionListener(underlineAction);
+        underlineButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("control U"), "underlineAction");
+        underlineButton.getActionMap().put("underlineAction", underlineAction);
+        underlineButton.setToolTipText("Underline");
 
         this.add(new StylingButton("CS", BUTTON_SIZE));
 
@@ -127,27 +166,6 @@ public class FormattingToolBar extends JToolBar implements ChangeListener, Caret
                 if(fontSize != -1) fontSizeBox.setSelectedItem(fontSize);
                 else fontSizeBox.setSelectedItem("");
             }
-        }
-    }
-
-    public void boldButton(ActionEvent event) {
-        EditorPanel editorPanel = tabList.getCurrentEditor();
-        if(editorPanel != null) {
-            editorPanel.getFormatter().toggleFormatSelected(StyleConstants.Bold);
-        }
-    }
-
-    public void italicButton(ActionEvent event) {
-        EditorPanel editorPanel = tabList.getCurrentEditor();
-        if(editorPanel != null) {
-            editorPanel.getFormatter().toggleFormatSelected(StyleConstants.Italic);
-        }
-    }
-
-    public void underlineButton(ActionEvent event) {
-        EditorPanel editorPanel = tabList.getCurrentEditor();
-        if(editorPanel != null) {
-            editorPanel.getFormatter().toggleFormatSelected(StyleConstants.Underline);
         }
     }
 
