@@ -27,6 +27,7 @@ public class FormattingToolBar extends JToolBar implements ChangeListener, Caret
             EditorPanel editorPanel = tabList.getCurrentEditor();
             if(editorPanel != null) {
                 editorPanel.getFormatter().toggleFormatSelected(StyleConstants.Bold);
+                updateButtonState(StyleConstants.Bold, boldButton);
             }
         }
     };
@@ -37,6 +38,7 @@ public class FormattingToolBar extends JToolBar implements ChangeListener, Caret
             EditorPanel editorPanel = tabList.getCurrentEditor();
             if(editorPanel != null) {
                 editorPanel.getFormatter().toggleFormatSelected(StyleConstants.Italic);
+                updateButtonState(StyleConstants.Italic, italicButton);
             }
         }
     };
@@ -47,6 +49,7 @@ public class FormattingToolBar extends JToolBar implements ChangeListener, Caret
             EditorPanel editorPanel = tabList.getCurrentEditor();
             if(editorPanel != null) {
                 editorPanel.getFormatter().toggleFormatSelected(StyleConstants.Underline);
+                updateButtonState(StyleConstants.Underline, underlineButton);
             }
         }
     };
@@ -169,6 +172,15 @@ public class FormattingToolBar extends JToolBar implements ChangeListener, Caret
                 if(fontSize != -1) fontSizeBox.setSelectedItem(fontSize);
                 else fontSizeBox.setSelectedItem("");
             }
+            
+        }
+    }
+    public void updateButtonState(Object sc, JButton b){
+        EditorPanel editorPanel = tabList.getCurrentEditor();
+        if(editorPanel.getFormatter().isSelectionFormatted(sc)){
+            b.setBackground(Color.GRAY);
+        }else {
+            b.setBackground(UIManager.getColor("Button.background")); 
         }
     }
 
