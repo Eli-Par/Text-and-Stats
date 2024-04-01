@@ -51,6 +51,7 @@ public class App implements WindowListener {
 
         FormattingToolBar toolBar = new FormattingToolBar(tabList);
         topMenu = new MenuToolBar(tabList, toolBar);
+        tabList.addChangeListener(topMenu);
         
         topMenu.loadOptions();
 

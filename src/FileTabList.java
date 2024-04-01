@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import javax.swing.*;
 import javax.swing.event.ChangeListener;
+import javax.swing.text.Highlighter;
 
 public class FileTabList extends JPanel implements MouseListener{
 
@@ -214,6 +215,15 @@ public class FileTabList extends JPanel implements MouseListener{
         }
 
         return false;
+    }
+
+    public void removeAllHighlights() {
+        for(Component component : tabbedPane.getComponents()) {
+            if(component instanceof TabPanel panel) {
+                Highlighter h = panel.getEditor().getTextPane().getHighlighter();
+                h.removeAllHighlights();
+            }
+        }
     }
 
     public void addChangeListener(ChangeListener listener) {
