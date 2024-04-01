@@ -3,6 +3,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.*;
+import javax.swing.colorchooser.AbstractColorChooserPanel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -24,6 +25,12 @@ public class ColorDialog extends JDialog {
 
         if(colorChooser == null) {
             colorChooser = new JColorChooser();
+
+            AbstractColorChooserPanel[] colorPanels = colorChooser.getChooserPanels();
+            for(AbstractColorChooserPanel cp : colorPanels) {
+               cp.setColorTransparencySelectionEnabled(false);
+            }
+
             JPanel panel = new JPanel();
             panel.add(previewLabel);
             colorChooser.setPreviewPanel(panel);
