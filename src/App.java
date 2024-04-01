@@ -1,4 +1,7 @@
 import javax.swing.*;
+
+import com.formdev.flatlaf.FlatLightLaf;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
@@ -81,6 +84,9 @@ public class App implements WindowListener {
     }
 
     public static void main(String[] args) {
+
+        FlatLightLaf.setup();
+
         new App().init(args);
     }
 
