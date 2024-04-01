@@ -8,14 +8,20 @@ public abstract class AsyncTabFactory extends SwingWorker<TabPanel, Object>{
     private File file;
     private String title;
 
-    public AsyncTabFactory(File file, String title) {
+    private FormattingToolBar toolBar;
+
+    public AsyncTabFactory(FormattingToolBar toolBar, File file, String title) {
         this.file = file;
         this.title = title;
+
+        this.toolBar = toolBar;
     }
 
     @Override
     protected final TabPanel doInBackground() throws Exception {
-        return new TabPanel(file, title);
+        TabPanel panel = new TabPanel(file, title);
+        panel.getEditor().getTextPane().addCaretListener(toolBar);
+        return panel;
     }
 
     @Override

@@ -1,5 +1,4 @@
 import java.awt.*;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.*;
@@ -83,6 +82,16 @@ public class EditorPanel extends JPanel implements DocumentListener{
             exception.printStackTrace();
         }
 
+        //Remove the ending character since an extra newline is added
+        if(editorKit instanceof RTFEditorKit) {
+            try {
+                document.replace(document.getLength() - 1, 1, "", null);
+            }
+            catch(Exception exception) {
+                exception.printStackTrace();
+            }
+        }
+
         //Add a scroll bar
         JScrollPane scroll = new JScrollPane(textPane);
         scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
@@ -104,6 +113,10 @@ public class EditorPanel extends JPanel implements DocumentListener{
 
     public DocumentFormatter getFormatter() {
         return formatter;
+    }
+
+    public Format getFileFormat() {
+        return fileFormat;
     }
 
     //Updates the format of the editor panel based on the file extension

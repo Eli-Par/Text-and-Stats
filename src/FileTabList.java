@@ -3,6 +3,7 @@ import java.awt.event.*;
 import java.io.IOException;
 
 import javax.swing.*;
+import javax.swing.event.ChangeListener;
 
 public class FileTabList extends JPanel implements MouseListener{
 
@@ -41,8 +42,9 @@ public class FileTabList extends JPanel implements MouseListener{
         app.topMenu.opts.fontSize = font.getSize();
 
         for(Component c : tabbedPane.getComponents()) {
-            TabPanel t = (TabPanel)c;
-            t.getEditor().getTextPane().setFont(font);
+            if(c instanceof TabPanel t) {
+                t.getEditor().getTextPane().setFont(font);
+            }
         }
 
     }
@@ -212,6 +214,10 @@ public class FileTabList extends JPanel implements MouseListener{
         }
 
         return false;
+    }
+
+    public void addChangeListener(ChangeListener listener) {
+        tabbedPane.addChangeListener(listener);
     }
 
     @Override
