@@ -82,6 +82,16 @@ public class EditorPanel extends JPanel implements DocumentListener{
             exception.printStackTrace();
         }
 
+        //Remove the ending character since an extra newline is added
+        if(editorKit instanceof RTFEditorKit) {
+            try {
+                document.replace(document.getLength() - 1, 1, "", null);
+            }
+            catch(Exception exception) {
+                exception.printStackTrace();
+            }
+        }
+
         //Add a scroll bar
         JScrollPane scroll = new JScrollPane(textPane);
         scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
