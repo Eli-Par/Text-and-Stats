@@ -172,13 +172,17 @@ public class FormattingToolBar extends JToolBar implements ChangeListener, Caret
                 if(fontSize != -1) fontSizeBox.setSelectedItem(fontSize);
                 else fontSizeBox.setSelectedItem("");
             }
+
+            updateButtonState(StyleConstants.Bold, boldButton);
+            updateButtonState(StyleConstants.Italic, italicButton);
+            updateButtonState(StyleConstants.Underline, underlineButton);
             
         }
     }
     public void updateButtonState(Object sc, JButton b){
         EditorPanel editorPanel = tabList.getCurrentEditor();
         if(editorPanel.getFormatter().isSelectionFormatted(sc)){
-            b.setBackground(Color.GRAY);
+            b.setBackground(Color.LIGHT_GRAY);
         }else {
             b.setBackground(UIManager.getColor("Button.background")); 
         }
