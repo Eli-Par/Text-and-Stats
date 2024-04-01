@@ -10,6 +10,8 @@ public class DocumentFormatter {
     private DefaultStyledDocument document;
     private EditorPanel.Format fileFormat;
     private EditorPanel panel;
+    
+    public static final int FONT_SIZES[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72, 80};
 
     public DocumentFormatter(JTextPane textPane, DefaultStyledDocument document, EditorPanel.Format fileFormat, EditorPanel panel) {
         this.textPane = textPane;
@@ -62,7 +64,9 @@ public class DocumentFormatter {
 
         //If there is no selection, return the styling at the current caret position
         if(endIndex == startIndex) {
-            if(document.getCharacterElement(textPane.getCaretPosition()).getAttributes().getAttribute(attributeKey) instanceof Boolean isFormatted) {
+            int caretPosition = textPane.getCaretPosition();
+            if(caretPosition == document.getLength()) caretPosition = document.getLength() - 1;
+            if(document.getCharacterElement(caretPosition).getAttributes().getAttribute(attributeKey) instanceof Boolean isFormatted) {
                 return isFormatted;
             }
             return false;
@@ -119,7 +123,9 @@ public class DocumentFormatter {
 
         //If there is no selection, return the styling at the current caret position
         if(endIndex == startIndex) {
-            if(document.getCharacterElement(textPane.getCaretPosition()).getAttributes().getAttribute(StyleConstants.FontSize) instanceof Integer size) {
+            int caretPosition = textPane.getCaretPosition();
+            if(caretPosition == document.getLength()) caretPosition = document.getLength() - 1;
+            if(document.getCharacterElement(caretPosition).getAttributes().getAttribute(StyleConstants.FontSize) instanceof Integer size) {
                 return size;
             }
             return -1;
@@ -155,7 +161,7 @@ public class DocumentFormatter {
             int wordStart = textPane.getCaretPosition();
             int wordEnd = wordStart + 1;
 
-            while(wordStart > 0 && !Character.isWhitespace(textPane.getText().charAt(wordStart - 1))) {
+            while(wordStart > 0 && !Character.isWhitespace(textPane.getText().charAt(wordStart - 2))) {
                 wordStart--;
             }
 
@@ -181,7 +187,9 @@ public class DocumentFormatter {
 
         //If there is no selection, return the styling at the current caret position
         if(endIndex == startIndex) {
-            if(document.getCharacterElement(textPane.getCaretPosition()).getAttributes().getAttribute(StyleConstants.FontSize) instanceof String family) {
+            int caretPosition = textPane.getCaretPosition();
+            if(caretPosition == document.getLength()) caretPosition = document.getLength() - 1;
+            if(document.getCharacterElement(caretPosition).getAttributes().getAttribute(StyleConstants.FontFamily) instanceof String family) {
                 return family;
             }
             return null;
@@ -190,7 +198,7 @@ public class DocumentFormatter {
         String familyName = null;
 
         for(int i = startIndex; i < endIndex; i++) {
-            if(document.getCharacterElement(i).getAttributes().getAttribute(StyleConstants.FontSize) instanceof String family) {
+            if(document.getCharacterElement(i).getAttributes().getAttribute(StyleConstants.FontFamily) instanceof String family) {
                 if(familyName == null) {
                     familyName = family;
                 }
@@ -233,6 +241,139 @@ public class DocumentFormatter {
         format.addAttribute(StyleConstants.Foreground, color);
 
         document.setCharacterAttributes(startIndex, endIndex - startIndex, format, false);
+
+        panel.signalEdit();
+    }
+
+    public void increaseFontSize() {
+        //Check that the formatting is valid for this file type
+        if(!ValidFormattingSet.isFormatValid(fileFormat, StyleConstants.FontSize)) {
+            return;
+        }
+
+        int startIndex = textPane.getSelectionStart();
+        int endIndex = textPane.getSelectionEnd();
+
+        //If no selection is picked, get the entire word
+        if(endIndex == startIndex) {
+            int wordStart = textPane.getCaretPosition();
+            int wordEnd = wordStart + 1;
+
+            while(wordStart > 0 && !Character.isWhitespace(textPane.getText().charAt(wordStart - 1))) {
+                wordStart--;
+            }
+
+            while(wordEnd < textPane.getText().length() && !Character.isWhitespace(textPane.getText().charAt(wordEnd))) {
+                wordEnd++;
+            }
+
+            startIndex = wordStart;
+            endIndex = wordEnd;
+        }
+
+        int setSize = 100;
+        
+        for(int i = startIndex; i < endIndex; i++) {
+            if(document.getCharacterElement(i).getAttributes().getAttribute(StyleConstants.FontSize) instanceof Integer currSize) {
+                int nextSize = currSize + 1;
+                
+                if(nextSize > 80) {
+                    int lastDigit = currSize % 10;
+                    nextSize = (currSize - lastDigit) + 10;
+                }
+                else {
+                    for(int validSize : FONT_SIZES) {
+                        if(validSize >= nextSize) {
+                            nextSize = validSize;
+                            break;
+                        }
+                    }
+                }
+
+                if(nextSize - currSize < setSize) {
+                    setSize = nextSize - currSize;
+                }
+
+                // SimpleAttributeSet format = new SimpleAttributeSet();
+                // format.addAttribute(StyleConstants.FontSize, nextSize);
+                // document.setCharacterAttributes(i, 1, format, false);
+            }
+        }
+
+        for(int i = startIndex; i < endIndex; i++) {
+            if(document.getCharacterElement(i).getAttributes().getAttribute(StyleConstants.FontSize) instanceof Integer currSize) {
+                SimpleAttributeSet format = new SimpleAttributeSet();
+                format.addAttribute(StyleConstants.FontSize, setSize + currSize);
+                document.setCharacterAttributes(i, 1, format, false);
+            }
+        }
+
+        panel.signalEdit();
+    }
+
+    public void decreaseFontSize() {
+        //Check that the formatting is valid for this file type
+        if(!ValidFormattingSet.isFormatValid(fileFormat, StyleConstants.FontSize)) {
+            return;
+        }
+
+        int startIndex = textPane.getSelectionStart();
+        int endIndex = textPane.getSelectionEnd();
+
+        //If no selection is picked, get the entire word
+        if(endIndex == startIndex) {
+            int wordStart = textPane.getCaretPosition();
+            int wordEnd = wordStart + 1;
+
+            while(wordStart > 0 && !Character.isWhitespace(textPane.getText().charAt(wordStart - 1))) {
+                wordStart--;
+            }
+
+            while(wordEnd < textPane.getText().length() && !Character.isWhitespace(textPane.getText().charAt(wordEnd))) {
+                wordEnd++;
+            }
+
+            startIndex = wordStart;
+            endIndex = wordEnd;
+        }
+
+        int setSize = 100;
+        
+        for(int i = startIndex; i < endIndex; i++) {
+            if(document.getCharacterElement(i).getAttributes().getAttribute(StyleConstants.FontSize) instanceof Integer currSize) {
+                int nextSize = currSize - 1;
+                
+                if(nextSize > 80) {
+                    int lastDigit = currSize % 10;
+                    nextSize = (currSize - lastDigit) - 10;
+                }
+                else {
+                    for(int k = FONT_SIZES.length - 1; k >= 0; k--) {
+                        int validSize = FONT_SIZES[k];
+                        if(validSize <= nextSize) {
+                            nextSize = validSize;
+                            break;
+                        }
+                    }
+                }
+
+                if(currSize - nextSize < setSize) {
+                    setSize = currSize - nextSize;
+                }
+
+                // SimpleAttributeSet format = new SimpleAttributeSet();
+                // format.addAttribute(StyleConstants.FontSize, nextSize);
+                // document.setCharacterAttributes(i, 1, format, false);
+            }
+        }
+
+        for(int i = startIndex; i < endIndex; i++) {
+            if(document.getCharacterElement(i).getAttributes().getAttribute(StyleConstants.FontSize) instanceof Integer currSize) {
+                SimpleAttributeSet format = new SimpleAttributeSet();
+                format.addAttribute(StyleConstants.FontSize, currSize - setSize);
+                document.setCharacterAttributes(i, 1, format, false);
+            }
+        }
 
         panel.signalEdit();
     }
