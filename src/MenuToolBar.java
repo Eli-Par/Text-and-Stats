@@ -210,20 +210,25 @@ public class MenuToolBar extends JMenuBar {
         panel.add(down);
         dialog.add(panel);
 
-        up.addActionListener(actionEvent -> tabList.getCurrentEditor().nav(-1));
-        down.addActionListener(actionEvent -> tabList.getCurrentEditor().nav(1));
-        find.addActionListener(actionEvent -> tabList.getCurrentEditor().find(findTF.getText()));
+        if(tabList.getCurrentEditor() != null) {
+            up.addActionListener(actionEvent -> tabList.getCurrentEditor().nav(-1));
+            down.addActionListener(actionEvent -> tabList.getCurrentEditor().nav(1));
+            find.addActionListener(actionEvent -> tabList.getCurrentEditor().find(findTF.getText()));
+        }
 
         dialog.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 dialog = null;
-                Highlighter h = tabList.getCurrentEditor().getTextPane().getHighlighter();
-                h.removeAllHighlights();
+                if(tabList.getCurrentEditor() != null){
+                    Highlighter h = tabList.getCurrentEditor().getTextPane().getHighlighter();
+                    h.removeAllHighlights();
+                }
             }
         });
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         dialog.pack();
+        dialog.setResizable(false);
         dialog.setLocationRelativeTo(null);
         dialog.setVisible(true);
     }
@@ -239,15 +244,15 @@ public class MenuToolBar extends JMenuBar {
         JTextField replaceTF = new JTextField();
         JButton confirm = new JButton("Confirm");
 
-        panel.setLayout(new GridLayout(3, 2));
+        panel.setLayout(new GridLayout(5, 1));
         panel.add(new JLabel("Find: "));
         panel.add(findTF);
         panel.add(new JLabel("Replace with: "));
         panel.add(replaceTF);
-        panel.add(new JLabel(""));
         panel.add(confirm);
 
-        confirm.addActionListener(actionEvent -> tabList.getCurrentEditor().replaceAll(findTF.getText(), replaceTF.getText()));
+        if(tabList.getCurrentEditor() != null) confirm.addActionListener(actionEvent -> tabList.getCurrentEditor().replaceAll(findTF.getText(), replaceTF.getText()));
+
         dialog.add(panel);
         dialog.addWindowListener(new WindowAdapter() {
             @Override
@@ -256,14 +261,15 @@ public class MenuToolBar extends JMenuBar {
             }
         });
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        dialog.pack();
+        dialog.setSize(200, 150);
+        dialog.setResizable(false);
         dialog.setLocationRelativeTo(null);
         dialog.setVisible(true);
 
     }
 
     public void onFindAndReplace(ActionEvent e) {
-        if(dialog != null) dialog.dispose();
+        if (dialog != null) dialog.dispose();
 
         dialog = new JDialog((Frame) null, "Find and Replace", false);
 
@@ -283,22 +289,26 @@ public class MenuToolBar extends JMenuBar {
         panel.add(replaceTF);
         panel.add(replace);
         dialog.add(panel);
-
-        up.addActionListener(actionEvent -> tabList.getCurrentEditor().nav(-1));
-        down.addActionListener(actionEvent -> tabList.getCurrentEditor().nav(1));
-        find.addActionListener(actionEvent -> tabList.getCurrentEditor().find(findTF.getText()));
-        replace.addActionListener(actionEvent -> tabList.getCurrentEditor().replaceInstance(replaceTF.getText()));
+        if(tabList.getCurrentEditor() != null){
+            up.addActionListener(actionEvent -> tabList.getCurrentEditor().nav(-1));
+            down.addActionListener(actionEvent -> tabList.getCurrentEditor().nav(1));
+            find.addActionListener(actionEvent -> tabList.getCurrentEditor().find(findTF.getText()));
+            replace.addActionListener(actionEvent -> tabList.getCurrentEditor().replaceInstance(replaceTF.getText()));
+        }
 
         dialog.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                dialog = null;
-               Highlighter h = tabList.getCurrentEditor().getTextPane().getHighlighter();
-               h.removeAllHighlights();
+                if(tabList.getCurrentEditor() != null){
+                    Highlighter h = tabList.getCurrentEditor().getTextPane().getHighlighter();
+                    h.removeAllHighlights();
+                }
             }
             });
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         dialog.pack();
+        dialog.setResizable(false);
         dialog.setLocationRelativeTo(null);
         dialog.setVisible(true);
     }
