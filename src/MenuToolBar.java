@@ -48,6 +48,7 @@ public class MenuToolBar extends JMenuBar {
         JMenuItem replaceAll = new JMenuItem("Replace All");
         JMenuItem undo = new JMenuItem("Undo");
         JMenuItem redo = new JMenuItem("Redo");
+        JMenuItem autosave = new JMenuItem("Enable Autosave");
 
         save.setAccelerator(KeyStroke.getKeyStroke("control S"));
         open.setAccelerator(KeyStroke.getKeyStroke("control O"));
@@ -87,6 +88,7 @@ public class MenuToolBar extends JMenuBar {
         editMenu.add(replaceAll);
         editMenu.add(undo);
         editMenu.add(redo);
+        editMenu.add(autosave);
         
         this.add(fileMenu);
         this.add(editMenu);
@@ -104,6 +106,13 @@ public class MenuToolBar extends JMenuBar {
         replaceAll.addActionListener(this::onReplaceAll);
         undo.addActionListener(this::onUndo);
         redo.addActionListener(this::onRedo);
+        autosave.addActionListener(e -> {
+
+            String s = autosave.getText();
+            tabList.toggleAutosave();
+            autosave.setText(s.length() == 15 ? "Disable Autosave" : "Enable Autosave");
+
+        });
 
         zoomIn.addActionListener(this::onZoomIn);
         zoomOut.addActionListener(this::onZoomOut);

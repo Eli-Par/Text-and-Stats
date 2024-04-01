@@ -43,6 +43,8 @@ public class EditorPanel extends JPanel implements DocumentListener{
 
     private DocumentFormatter formatter;
 
+    private boolean autosave;
+
     public EditorPanel(TabPanel tab, File file) {
 
         super();
@@ -125,7 +127,8 @@ public class EditorPanel extends JPanel implements DocumentListener{
         }
     }
 
-    public void toggleWordWrap() {
+    public void toggleAutosave() {
+        autosave = !autosave;
     }
 
     public void setPath(File p) {
@@ -181,25 +184,31 @@ public class EditorPanel extends JPanel implements DocumentListener{
         return saved;
     }
 
-    @Override
-    public void insertUpdate(DocumentEvent e) {
+    public void checkSaving() {
 
-        tab.textChanged();
-        if (saved) {
+        if(autosave) {
+            try {
+                save();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else if (saved) {
             tab.notSavedIndicator();
             saved = false;
         }
+
+    }
+
+    @Override
+    public void insertUpdate(DocumentEvent e) {
+        tab.textChanged();
+        checkSaving();
     }
 
     @Override
     public void removeUpdate(DocumentEvent e) {
-
         tab.textChanged();
-        if (saved) {
-            tab.notSavedIndicator();
-            saved = false;
-        }
-
+        checkSaving();
     }
 
     @Override
