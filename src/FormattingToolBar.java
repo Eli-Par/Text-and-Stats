@@ -71,12 +71,15 @@ public class FormattingToolBar extends JToolBar implements ChangeListener, Caret
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         String availableFonts[] = ge.getAvailableFontFamilyNames();
         String fonts[] = new String[availableFonts.length + 1];
+
         for(int i = 0; i < availableFonts.length; i++) fonts[i] = availableFonts[i];
-        availableFonts[availableFonts.length - 1] = "---";
-        fontFamilyBox = new JComboBox<>(availableFonts);
+        fonts[availableFonts.length - 1] = "---";
+
+        fontFamilyBox = new JComboBox<>(fonts);
         this.add(fontFamilyBox);
         this.add(Box.createHorizontalStrut(SPACE_WIDTH));
         fontFamilyBox.addActionListener(this::fontFamilyChange);
+        fontFamilyBox.setRenderer(new FontListCellRenderer());
 
         fontSizeBox = new JComboBox<>(new Integer[] {8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72});
         fontSizeBox.setEditable(true);
@@ -90,7 +93,7 @@ public class FormattingToolBar extends JToolBar implements ChangeListener, Caret
         this.add(new StylingButton("F-", BUTTON_SIZE));
         this.add(Box.createHorizontalStrut(SPACE_WIDTH));
 
-        boldButton = new StylingButton("B", BUTTON_SIZE);
+        boldButton = new StylingButton("<html><b>B</b></html>", BUTTON_SIZE);
         this.add(boldButton);
         this.add(Box.createHorizontalStrut(SPACE_WIDTH));
         boldButton.addActionListener(boldAction);
@@ -98,7 +101,7 @@ public class FormattingToolBar extends JToolBar implements ChangeListener, Caret
         boldButton.getActionMap().put("boldAction", boldAction);
         boldButton.setToolTipText("Bold");
 
-        italicButton = new StylingButton("I", BUTTON_SIZE);
+        italicButton = new StylingButton("<html><i>I</i></html>", BUTTON_SIZE);
         this.add(italicButton);
         this.add(Box.createHorizontalStrut(SPACE_WIDTH));
         italicButton.addActionListener(italicAction);
@@ -106,7 +109,7 @@ public class FormattingToolBar extends JToolBar implements ChangeListener, Caret
         italicButton.getActionMap().put("italicAction", italicAction);
         italicButton.setToolTipText("Italic");
 
-        underlineButton = new StylingButton("U", BUTTON_SIZE);
+        underlineButton = new StylingButton("<html><u>U</u></html>", BUTTON_SIZE);
         this.add(underlineButton);
         this.add(Box.createHorizontalStrut(SPACE_WIDTH));
         underlineButton.addActionListener(underlineAction);
