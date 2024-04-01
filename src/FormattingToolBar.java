@@ -14,6 +14,8 @@ public class FormattingToolBar extends JToolBar implements ChangeListener, Caret
 
     private JComboBox<String> fontFamilyBox;
     private JComboBox<Integer> fontSizeBox;
+    private StylingButton increaseFontButton;
+    private StylingButton decreaseFontButton;
     private StylingButton boldButton;
     private StylingButton italicButton;
     private StylingButton underlineButton;
@@ -84,11 +86,15 @@ public class FormattingToolBar extends JToolBar implements ChangeListener, Caret
         this.add(Box.createHorizontalStrut(SPACE_WIDTH));
         fontSizeBox.addActionListener(this::fontSizeChange);
 
-        this.add(new StylingButton("F+", BUTTON_SIZE));
+        increaseFontButton = new StylingButton("F+", BUTTON_SIZE);
+        this.add(increaseFontButton);
         this.add(Box.createHorizontalStrut(SPACE_WIDTH));
+        increaseFontButton.addActionListener(this::increaseFontSize);
 
-        this.add(new StylingButton("F-", BUTTON_SIZE));
+        decreaseFontButton = new StylingButton("F-", BUTTON_SIZE);
+        this.add(decreaseFontButton);
         this.add(Box.createHorizontalStrut(SPACE_WIDTH));
+        decreaseFontButton.addActionListener(this::decreaseFontSize);
 
         boldButton = new StylingButton("B", BUTTON_SIZE);
         this.add(boldButton);
@@ -123,6 +129,8 @@ public class FormattingToolBar extends JToolBar implements ChangeListener, Caret
 
         fontFamilyBox.setEnabled(false);
         fontSizeBox.setEnabled(false);
+        increaseFontButton.setEnabled(false);
+        decreaseFontButton.setEnabled(false);
         boldButton.setEnabled(false);
         italicButton.setEnabled(false);
         underlineButton.setEnabled(false);
@@ -147,6 +155,8 @@ public class FormattingToolBar extends JToolBar implements ChangeListener, Caret
 
             fontFamilyBox.setEnabled(ValidFormattingSet.isFormatValid(fileFormat, StyleConstants.FontFamily));
             fontSizeBox.setEnabled(ValidFormattingSet.isFormatValid(fileFormat, StyleConstants.FontSize));
+            increaseFontButton.setEnabled(ValidFormattingSet.isFormatValid(fileFormat, StyleConstants.FontSize));
+            decreaseFontButton.setEnabled(ValidFormattingSet.isFormatValid(fileFormat, StyleConstants.FontSize));
             boldButton.setEnabled(ValidFormattingSet.isFormatValid(fileFormat, StyleConstants.Bold));
             italicButton.setEnabled(ValidFormattingSet.isFormatValid(fileFormat, StyleConstants.Italic));
             underlineButton.setEnabled(ValidFormattingSet.isFormatValid(fileFormat, StyleConstants.Underline));
@@ -200,6 +210,22 @@ public class FormattingToolBar extends JToolBar implements ChangeListener, Caret
             else {
                 fontSizeBox.setSelectedIndex(0);
             }
+        }
+    }
+
+    public void increaseFontSize(ActionEvent event) {
+        EditorPanel editorPanel = tabList.getCurrentEditor();
+        if(editorPanel != null) {
+            editorPanel.getFormatter().increaseFontSize();
+            updateToolbar();
+        }
+    }
+
+    public void decreaseFontSize(ActionEvent event) {
+        EditorPanel editorPanel = tabList.getCurrentEditor();
+        if(editorPanel != null) {
+            editorPanel.getFormatter().decreaseFontSize();
+            updateToolbar();
         }
     }
 }

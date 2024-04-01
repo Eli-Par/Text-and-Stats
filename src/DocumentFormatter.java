@@ -10,6 +10,8 @@ public class DocumentFormatter {
     private DefaultStyledDocument document;
     private EditorPanel.Format fileFormat;
     private EditorPanel panel;
+    
+    public static final int FONT_SIZES[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72, 80};
 
     public DocumentFormatter(JTextPane textPane, DefaultStyledDocument document, EditorPanel.Format fileFormat, EditorPanel panel) {
         this.textPane = textPane;
@@ -234,6 +236,113 @@ public class DocumentFormatter {
         format.addAttribute(StyleConstants.Foreground, color);
 
         document.setCharacterAttributes(startIndex, endIndex - startIndex, format, false);
+
+        panel.signalEdit();
+    }
+
+    public void increaseFontSize() {
+        //Check that the formatting is valid for this file type
+        if(!ValidFormattingSet.isFormatValid(fileFormat, StyleConstants.FontSize)) {
+            return;
+        }
+
+        int startIndex = textPane.getSelectionStart();
+        int endIndex = textPane.getSelectionEnd();
+
+        //If no selection is picked, get the entire word
+        if(endIndex == startIndex) {
+            int wordStart = textPane.getCaretPosition();
+            int wordEnd = wordStart + 1;
+
+            while(wordStart > 0 && !Character.isWhitespace(textPane.getText().charAt(wordStart - 1))) {
+                wordStart--;
+            }
+
+            while(wordEnd < textPane.getText().length() && !Character.isWhitespace(textPane.getText().charAt(wordEnd))) {
+                wordEnd++;
+            }
+
+            startIndex = wordStart;
+            endIndex = wordEnd;
+        }
+
+        
+        for(int i = startIndex; i < endIndex; i++) {
+            if(document.getCharacterElement(i).getAttributes().getAttribute(StyleConstants.FontSize) instanceof Integer currSize) {
+                int nextSize = currSize + 1;
+                
+                if(nextSize > 80) {
+                    int lastDigit = currSize % 10;
+                    nextSize = (currSize - lastDigit) + 10;
+                }
+                else {
+                    for(int validSize : FONT_SIZES) {
+                        if(validSize >= nextSize) {
+                            nextSize = validSize;
+                            break;
+                        }
+                    }
+                }
+
+                SimpleAttributeSet format = new SimpleAttributeSet();
+                format.addAttribute(StyleConstants.FontSize, nextSize);
+                document.setCharacterAttributes(i, 1, format, false);
+            }
+        }
+
+        panel.signalEdit();
+    }
+
+    public void decreaseFontSize() {
+        //Check that the formatting is valid for this file type
+        if(!ValidFormattingSet.isFormatValid(fileFormat, StyleConstants.FontSize)) {
+            return;
+        }
+
+        int startIndex = textPane.getSelectionStart();
+        int endIndex = textPane.getSelectionEnd();
+
+        //If no selection is picked, get the entire word
+        if(endIndex == startIndex) {
+            int wordStart = textPane.getCaretPosition();
+            int wordEnd = wordStart + 1;
+
+            while(wordStart > 0 && !Character.isWhitespace(textPane.getText().charAt(wordStart - 1))) {
+                wordStart--;
+            }
+
+            while(wordEnd < textPane.getText().length() && !Character.isWhitespace(textPane.getText().charAt(wordEnd))) {
+                wordEnd++;
+            }
+
+            startIndex = wordStart;
+            endIndex = wordEnd;
+        }
+
+        
+        for(int i = startIndex; i < endIndex; i++) {
+            if(document.getCharacterElement(i).getAttributes().getAttribute(StyleConstants.FontSize) instanceof Integer currSize) {
+                int nextSize = currSize - 1;
+                
+                if(nextSize > 80) {
+                    int lastDigit = currSize % 10;
+                    nextSize = (currSize - lastDigit) - 10;
+                }
+                else {
+                    for(int k = FONT_SIZES.length - 1; k >= 0; k--) {
+                        int validSize = FONT_SIZES[k];
+                        if(validSize <= nextSize) {
+                            nextSize = validSize;
+                            break;
+                        }
+                    }
+                }
+
+                SimpleAttributeSet format = new SimpleAttributeSet();
+                format.addAttribute(StyleConstants.FontSize, nextSize);
+                document.setCharacterAttributes(i, 1, format, false);
+            }
+        }
 
         panel.signalEdit();
     }
