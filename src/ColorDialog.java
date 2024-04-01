@@ -10,7 +10,7 @@ public class ColorDialog extends JDialog {
 
     private static JColorChooser colorChooser = null;
 
-    private JLabel previewLabel = new JLabel("This is sample text!");
+    private JLabel previewLabel = new JLabel(" This is sample text! ");
 
     private JDialog dialog;
 
@@ -30,6 +30,7 @@ public class ColorDialog extends JDialog {
 
             previewLabel.setOpaque(true);
             previewLabel.setBackground(Color.WHITE);
+            previewLabel.setFont(new Font("Sans-Serif", Font.PLAIN, 16));
 
             colorChooser.getSelectionModel().addChangeListener(new ChangeListener() {
                 @Override
