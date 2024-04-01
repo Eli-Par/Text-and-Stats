@@ -4,7 +4,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.nio.file.OpenOption;
 import java.util.Scanner;
 
 import static util.GUI.boolQuery;
@@ -13,10 +12,11 @@ import static util.algobase.lower_bound;
 import java.awt.*;
 
 import javax.swing.*;
+import javax.swing.event.*;
 import javax.swing.text.Highlighter;
 
 
-public class MenuToolBar extends JMenuBar {
+public class MenuToolBar extends JMenuBar implements ChangeListener {
     
     private static FileTabList tabList;
     public static final String SETTINGS_PATH = System.getProperty("user.home") + "/.comp2800-settings";
@@ -508,6 +508,15 @@ public class MenuToolBar extends JMenuBar {
 
         factory.execute();
 
+    }
+
+    @Override
+    public void stateChanged(ChangeEvent e) {
+        if(dialog != null) {
+            tabList.removeAllHighlights();
+            dialog.dispose();
+            dialog = null;
+        }
     }
     
 }
