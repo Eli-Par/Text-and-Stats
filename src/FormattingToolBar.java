@@ -19,9 +19,12 @@ public class FormattingToolBar extends JToolBar implements ChangeListener, Caret
     private StylingButton boldButton;
     private StylingButton italicButton;
     private StylingButton underlineButton;
+    private StylingButton colorButton;
 
     private boolean internalFamilyChange = false;
     private boolean internalSizeChange = false;
+
+    private static ColorDialog colorDialog = null;
 
     private Action boldAction = new AbstractAction() {
         @Override
@@ -120,7 +123,9 @@ public class FormattingToolBar extends JToolBar implements ChangeListener, Caret
         underlineButton.getActionMap().put("underlineAction", underlineAction);
         underlineButton.setToolTipText("Underline");
 
-        this.add(new StylingButton("CS", BUTTON_SIZE));
+        colorButton = new StylingButton("CS", BUTTON_SIZE);
+        this.add(colorButton);
+        colorButton.addActionListener(this::colorAction);
 
         fontFamilyBox.setMaximumSize(fontFamilyBox.getPreferredSize());
         fontSizeBox.setMaximumSize(fontSizeBox.getPreferredSize());
@@ -134,12 +139,18 @@ public class FormattingToolBar extends JToolBar implements ChangeListener, Caret
         boldButton.setEnabled(false);
         italicButton.setEnabled(false);
         underlineButton.setEnabled(false);
+        colorButton.setEnabled(false);
     }
 
     @Override
     public void stateChanged(ChangeEvent e) {
         //Update active state buttons
         updateToolbar();
+
+        if(colorDialog != null) {
+            colorDialog.dispose();
+            colorDialog = null;
+        }
     }
 
     @Override
@@ -160,6 +171,7 @@ public class FormattingToolBar extends JToolBar implements ChangeListener, Caret
             boldButton.setEnabled(ValidFormattingSet.isFormatValid(fileFormat, StyleConstants.Bold));
             italicButton.setEnabled(ValidFormattingSet.isFormatValid(fileFormat, StyleConstants.Italic));
             underlineButton.setEnabled(ValidFormattingSet.isFormatValid(fileFormat, StyleConstants.Underline));
+            colorButton.setEnabled(ValidFormattingSet.isFormatValid(fileFormat, StyleConstants.Foreground));
 
             if(ValidFormattingSet.isFormatValid(fileFormat, StyleConstants.FontFamily)) {
                 String fontName = editorPanel.getFormatter().getSelectedFontFamily();
@@ -226,6 +238,14 @@ public class FormattingToolBar extends JToolBar implements ChangeListener, Caret
         if(editorPanel != null) {
             editorPanel.getFormatter().decreaseFontSize();
             updateToolbar();
+        }
+    }
+
+    public void colorAction(ActionEvent event) {
+        EditorPanel editorPanel = tabList.getCurrentEditor();
+        if(editorPanel != null) {
+            if(colorDialog == null) colorDialog = new ColorDialog(editorPanel.getFormatter());
+            else colorDialog.setVisible(true);
         }
     }
 }
