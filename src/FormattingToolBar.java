@@ -27,6 +27,7 @@ public class FormattingToolBar extends JToolBar implements ChangeListener, Caret
             EditorPanel editorPanel = tabList.getCurrentEditor();
             if(editorPanel != null) {
                 editorPanel.getFormatter().toggleFormatSelected(StyleConstants.Bold);
+                updateButtonState(StyleConstants.Bold, boldButton);
             }
         }
     };
@@ -37,6 +38,7 @@ public class FormattingToolBar extends JToolBar implements ChangeListener, Caret
             EditorPanel editorPanel = tabList.getCurrentEditor();
             if(editorPanel != null) {
                 editorPanel.getFormatter().toggleFormatSelected(StyleConstants.Italic);
+                updateButtonState(StyleConstants.Italic, italicButton);
             }
         }
     };
@@ -47,6 +49,7 @@ public class FormattingToolBar extends JToolBar implements ChangeListener, Caret
             EditorPanel editorPanel = tabList.getCurrentEditor();
             if(editorPanel != null) {
                 editorPanel.getFormatter().toggleFormatSelected(StyleConstants.Underline);
+                updateButtonState(StyleConstants.Underline, underlineButton);
             }
         }
     };
@@ -71,12 +74,15 @@ public class FormattingToolBar extends JToolBar implements ChangeListener, Caret
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         String availableFonts[] = ge.getAvailableFontFamilyNames();
         String fonts[] = new String[availableFonts.length + 1];
+
         for(int i = 0; i < availableFonts.length; i++) fonts[i] = availableFonts[i];
-        availableFonts[availableFonts.length - 1] = "---";
-        fontFamilyBox = new JComboBox<>(availableFonts);
+        fonts[availableFonts.length - 1] = "---";
+
+        fontFamilyBox = new JComboBox<>(fonts);
         this.add(fontFamilyBox);
         this.add(Box.createHorizontalStrut(SPACE_WIDTH));
         fontFamilyBox.addActionListener(this::fontFamilyChange);
+        fontFamilyBox.setRenderer(new FontListCellRenderer());
 
         fontSizeBox = new JComboBox<>(new Integer[] {8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72});
         fontSizeBox.setEditable(true);
@@ -90,7 +96,7 @@ public class FormattingToolBar extends JToolBar implements ChangeListener, Caret
         this.add(new StylingButton("F-", BUTTON_SIZE));
         this.add(Box.createHorizontalStrut(SPACE_WIDTH));
 
-        boldButton = new StylingButton("B", BUTTON_SIZE);
+        boldButton = new StylingButton("<html><b>B</b></html>", BUTTON_SIZE);
         this.add(boldButton);
         this.add(Box.createHorizontalStrut(SPACE_WIDTH));
         boldButton.addActionListener(boldAction);
@@ -98,7 +104,7 @@ public class FormattingToolBar extends JToolBar implements ChangeListener, Caret
         boldButton.getActionMap().put("boldAction", boldAction);
         boldButton.setToolTipText("Bold");
 
-        italicButton = new StylingButton("I", BUTTON_SIZE);
+        italicButton = new StylingButton("<html><i>I</i></html>", BUTTON_SIZE);
         this.add(italicButton);
         this.add(Box.createHorizontalStrut(SPACE_WIDTH));
         italicButton.addActionListener(italicAction);
@@ -106,7 +112,7 @@ public class FormattingToolBar extends JToolBar implements ChangeListener, Caret
         italicButton.getActionMap().put("italicAction", italicAction);
         italicButton.setToolTipText("Italic");
 
-        underlineButton = new StylingButton("U", BUTTON_SIZE);
+        underlineButton = new StylingButton("<html><u>U</u></html>", BUTTON_SIZE);
         this.add(underlineButton);
         this.add(Box.createHorizontalStrut(SPACE_WIDTH));
         underlineButton.addActionListener(underlineAction);
@@ -166,6 +172,19 @@ public class FormattingToolBar extends JToolBar implements ChangeListener, Caret
                 if(fontSize != -1) fontSizeBox.setSelectedItem(fontSize);
                 else fontSizeBox.setSelectedItem("");
             }
+
+            updateButtonState(StyleConstants.Bold, boldButton);
+            updateButtonState(StyleConstants.Italic, italicButton);
+            updateButtonState(StyleConstants.Underline, underlineButton);
+            
+        }
+    }
+    public void updateButtonState(Object sc, JButton b){
+        EditorPanel editorPanel = tabList.getCurrentEditor();
+        if(editorPanel.getFormatter().isSelectionFormatted(sc)){
+            b.setBackground(Color.LIGHT_GRAY);
+        }else {
+            b.setBackground(UIManager.getColor("Button.background")); 
         }
     }
 
