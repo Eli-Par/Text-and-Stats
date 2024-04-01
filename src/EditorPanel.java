@@ -39,7 +39,7 @@ public class EditorPanel extends JPanel implements DocumentListener{
 
     private DefaultStyledDocument document;
 
-    private static JTextPane textPane;
+    private JTextPane textPane;
 
     private DocumentFormatter formatter;
 
@@ -213,7 +213,7 @@ public class EditorPanel extends JPanel implements DocumentListener{
     }
 
     //@TODO Phase out accessing the text externally
-    public static JTextPane getTextPane() {
+    public JTextPane getTextPane() {
         return textPane;
     }
 
@@ -238,7 +238,6 @@ public class EditorPanel extends JPanel implements DocumentListener{
         }
         currI = 0;
         first = true;
-        textPane.requestFocus();
         highlights = h.getHighlights();
     }
 
@@ -256,7 +255,7 @@ public class EditorPanel extends JPanel implements DocumentListener{
             // cycle forwards until end then jump back to top
             if (dir == 1) {
                 if (currI >= highlights.length-1) currI = 0;
-                else if(first != true) currI++;
+                else if(!first) currI++;
                 h.addHighlight(highlights[currI].getStartOffset(), highlights[currI].getEndOffset(), painter);
             // cycle backwards until start then jump back to bottom
             } else if (dir == -1) {
@@ -270,23 +269,18 @@ public class EditorPanel extends JPanel implements DocumentListener{
         }catch (BadLocationException e){
             e.printStackTrace();
         }
-        textPane.requestFocusInWindow();
     }
 
-    public void replaceFirst(String find, String replace){
-        // get the text
-        String content = getPlainText();
-
-        // find the first occurrence of find and replace it with replace
-        int i = content.indexOf(find);
-        if(i != -1){
-            //content = content.substring(0, i) + replace + content.substring(i+find.length());
-            //textPane.setText(content);
-            try {
-                document.replace(i, find.length(), replace, null);
-            }
-            catch(BadLocationException exception) {
-
+    public void replaceInstance(String replace){
+        int start = highlights[currI].getStartOffset();
+        int end = highlights[currI].getEndOffset();
+        if(start < end){
+            try{
+                document.replace(start, (end-start), replace, null);
+                Highlighter h = textPane.getHighlighter();
+                h.removeAllHighlights();
+            }catch (BadLocationException e) {
+                e.printStackTrace();
             }
         }
     }
@@ -294,8 +288,6 @@ public class EditorPanel extends JPanel implements DocumentListener{
     public void replaceAll(String find, String replace){
         // get the text and replace all occurrences of find
         String content = getPlainText();
-        // content = content.replaceAll(find, replace);
-        // textPane.setText(content);
 
         int i = content.indexOf(find);
         while(i != -1) {
