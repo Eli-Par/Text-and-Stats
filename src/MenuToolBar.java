@@ -240,16 +240,36 @@ public class MenuToolBar extends JMenuBar {
         dialog = new JDialog((Frame) null, "Replace All", false);
 
         JPanel panel = new JPanel();
-        JTextField findTF = new JTextField();
-        JTextField replaceTF = new JTextField();
+        JTextField findTF = new JTextField(30);
+        JTextField replaceTF = new JTextField(30);
         JButton confirm = new JButton("Confirm");
 
-        panel.setLayout(new GridLayout(5, 1));
-        panel.add(new JLabel("Find: "));
-        panel.add(findTF);
-        panel.add(new JLabel("Replace with: "));
-        panel.add(replaceTF);
-        panel.add(confirm);
+        panel.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.insets = new Insets(5, 5, 5, 5);
+        panel.add(new JLabel("Find: "), gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.weightx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        panel.add(findTF, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.weightx = 0;
+        gbc.fill = GridBagConstraints.NONE;
+        panel.add(new JLabel("Replace with: "), gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbc.weightx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        panel.add(replaceTF, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.gridwidth = 2;
+        gbc.fill = GridBagConstraints.NONE;
+        panel.add(confirm, gbc);
 
         if(tabList.getCurrentEditor() != null) confirm.addActionListener(actionEvent -> tabList.getCurrentEditor().replaceAll(findTF.getText(), replaceTF.getText()));
 
@@ -261,7 +281,7 @@ public class MenuToolBar extends JMenuBar {
             }
         });
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        dialog.setSize(200, 150);
+        dialog.pack();
         dialog.setResizable(false);
         dialog.setLocationRelativeTo(null);
         dialog.setVisible(true);
