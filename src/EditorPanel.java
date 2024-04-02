@@ -336,5 +336,21 @@ public class EditorPanel extends JPanel implements DocumentListener{
             tab.notSavedIndicator();
         }       
     }
+    public Color getTextColor(){
+        int caretPosition = textPane.getCaretPosition();
+        Element element = document.getCharacterElement(caretPosition);
+        AttributeSet attributes = element.getAttributes();
+        Color color = StyleConstants.getForeground(attributes);
+        float[] values = new float[3];
+        values = Color.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(), values);
+        if(values[0] > 40/360f && values[0] < 68/360f){
+            values[0] = 40/360f;
+        }else if(values[0] >= 68/360f && values[0] < 100/360f){
+            values[0] = 100/360f;
+        }
+        Color finalColor = new Color(Color.HSBtoRGB(values[0], 1, 1));
+
+        return finalColor;
+    }
 
 }

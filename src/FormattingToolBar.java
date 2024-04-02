@@ -129,12 +129,7 @@ public class FormattingToolBar extends JToolBar implements ChangeListener, Caret
         underlineButton.getActionMap().put("underlineAction", underlineAction);
         underlineButton.setToolTipText("Underline");
 
-        ImageIcon paintIcon = new ImageIcon("img/bucket.png");
-
-        Image scaledImage = paintIcon.getImage().getScaledInstance(BUTTON_SIZE-10, BUTTON_SIZE-10, Image.SCALE_SMOOTH);
-        Icon scaledPaintIcon = new ImageIcon(scaledImage);
-
-        colorButton = new StylingButton(scaledPaintIcon, BUTTON_SIZE);
+        colorButton = new StylingButton("A", BUTTON_SIZE);
         this.add(colorButton);
         colorButton.addActionListener(this::colorAction);
 
@@ -203,7 +198,8 @@ public class FormattingToolBar extends JToolBar implements ChangeListener, Caret
             updateButtonState(StyleConstants.Bold, boldButton);
             updateButtonState(StyleConstants.Italic, italicButton);
             updateButtonState(StyleConstants.Underline, underlineButton);
-            
+            Color textColor = editorPanel.getTextColor();
+            colorButton.setText("<html><font color='" + String.format("#%06x", textColor.getRGB() & 0xFFFFFF) + "'><u><b>A</b></u></font></html>");
         }
     }
     public void updateButtonState(Object sc, JButton b){
@@ -270,6 +266,7 @@ public class FormattingToolBar extends JToolBar implements ChangeListener, Caret
         if(editorPanel != null) {
             if(colorDialog == null) colorDialog = new ColorDialog(editorPanel.getFormatter());
             else colorDialog.setVisible(true);
+
         }
     }
 }
