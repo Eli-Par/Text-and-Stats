@@ -146,6 +146,9 @@ public class FormattingToolBar extends JToolBar implements ChangeListener, Caret
         italicButton.setEnabled(false);
         underlineButton.setEnabled(false);
         colorButton.setEnabled(false);
+
+        fontFamilyBox.setFocusable(false);
+        fontSizeBox.setFocusable(false);
     }
 
     @Override
