@@ -69,7 +69,7 @@ public class FormattingToolBar extends JToolBar implements ChangeListener, Caret
         this.add(Box.createHorizontalStrut(SPACE_WIDTH));
         this.add(new PageSwitchButton(tabList, "Word Stats", "WordStats"));
         this.add(Box.createHorizontalStrut(SPACE_WIDTH));
-        this.add(new PageSwitchButton(tabList, "Char Stats", "CharStats"));
+        this.add(new PageSwitchButton(tabList, "Character Stats", "CharStats"));
         this.add(Box.createHorizontalStrut(SPACE_WIDTH));
         this.add(new PageSwitchButton(tabList, "Sentence Stats", "SentStats"));
 
