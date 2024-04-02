@@ -5,6 +5,8 @@ import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.text.StyleConstants;
 
+import com.formdev.flatlaf.FlatLaf;
+
 public class FormattingToolBar extends JToolBar implements ChangeListener, CaretListener {
     
     private FileTabList tabList;
@@ -208,7 +210,8 @@ public class FormattingToolBar extends JToolBar implements ChangeListener, Caret
     public void updateButtonState(Object sc, JButton b){
         EditorPanel editorPanel = tabList.getCurrentEditor();
         if(editorPanel.getFormatter().isSelectionFormatted(sc)){
-            b.setBackground(Color.LIGHT_GRAY);
+            if(App.isDarkMode) b.setBackground(Color.GRAY);
+            else b.setBackground(Color.LIGHT_GRAY);
         }else {
             b.setBackground(UIManager.getColor("Button.background")); 
         }

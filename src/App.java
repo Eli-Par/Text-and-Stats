@@ -1,5 +1,6 @@
 import javax.swing.*;
 
+import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 
@@ -15,6 +16,10 @@ public class App implements WindowListener {
 
     private static FileTabList tabList;
     public MenuToolBar topMenu;
+
+    public static boolean isDarkMode = true;
+
+    public static JFrame frame;
 
 
     // public JToolBar createCardToolBar() {
@@ -45,7 +50,7 @@ public class App implements WindowListener {
 
     public void init(String[]args) {
 
-        JFrame frame = new JFrame(TITLE);
+        frame = new JFrame(TITLE);
         ImageIcon icon = new ImageIcon("img/TextBuddyIcon.png");
         frame.setIconImage(icon.getImage());
         // JPanel panel = new JPanel();
@@ -87,9 +92,21 @@ public class App implements WindowListener {
     public static void main(String[] args) {
 
         FlatLaf.registerCustomDefaultsSource( "themes" );
-        FlatLightLaf.setup();
+        loadLight();
 
         new App().init(args);
+    }
+
+    public static void loadDark() {
+        FlatDarkLaf.setup();
+        isDarkMode = true;
+        if(frame != null) SwingUtilities.updateComponentTreeUI(frame);
+    }
+
+    public static void loadLight() {
+        FlatLightLaf.setup();
+        isDarkMode = false;
+        if(frame != null) SwingUtilities.updateComponentTreeUI(frame);
     }
 
     /**
