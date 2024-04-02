@@ -201,17 +201,45 @@ public class MenuToolBar extends JMenuBar implements ChangeListener {
         dialog = new JDialog((Frame) null, "Find", false);
 
         JPanel panel = new JPanel();
+        JPanel buttons = new JPanel();
         JTextField findTF = new JTextField();
         JButton up = new JButton("↑");
         JButton down = new JButton("↓");
-        JButton find = new JButton("Find \uD83D\uDD0D");
+        JButton find = new JButton("\uD83D\uDD0D");
 
-        panel.setLayout(new GridLayout(2, 2));
-        panel.add(findTF);
-        panel.add(find);
-        panel.add(up);
-        panel.add(down);
-        dialog.add(panel);
+        panel.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 1;
+        gbc.gridwidth = GridBagConstraints.RELATIVE;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        panel.add(findTF, gbc);
+
+        gbc.gridx = 6;
+        gbc.gridy = 0;
+        gbc.gridwidth = 0;
+        gbc.weightx = -1;
+        gbc.fill = GridBagConstraints.NONE;
+        panel.add(find, gbc);
+
+        buttons.setLayout(new GridBagLayout());
+        GridBagConstraints gbc2 = new GridBagConstraints();
+        gbc2.insets = new Insets(5, 5, 5, 5);
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        buttons.add(up, gbc2);
+
+        gbc.gridx = 2;
+        gbc.gridy = 0;
+        buttons.add(down, gbc2);
+
+        dialog.add(panel, BorderLayout.NORTH);
+        dialog.add(buttons, BorderLayout.SOUTH);
 
         if(tabList.getCurrentEditor() != null) {
             up.addActionListener(actionEvent -> tabList.getCurrentEditor().nav(-1));
@@ -230,7 +258,7 @@ public class MenuToolBar extends JMenuBar implements ChangeListener {
             }
         });
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        dialog.pack();
+        dialog.setSize(300, 110);
         dialog.setResizable(false);
         dialog.setLocationRelativeTo(null);
         dialog.setVisible(true);
@@ -297,21 +325,61 @@ public class MenuToolBar extends JMenuBar implements ChangeListener {
         dialog = new JDialog((Frame) null, "Find and Replace", false);
 
         JPanel panel = new JPanel();
+        JPanel buttons = new JPanel();
         JTextField findTF = new JTextField();
         JTextField replaceTF = new JTextField();
         JButton up = new JButton("↑");
         JButton down = new JButton("↓");
-        JButton find = new JButton("Find \uD83D\uDD0D");
+        JButton find = new JButton("     \uD83D\uDD0D     ");
         JButton replace = new JButton("Replace");
 
-        panel.setLayout(new GridLayout(3, 2));
-        panel.add(findTF);
-        panel.add(find);
-        panel.add(up);
-        panel.add(down);
-        panel.add(replaceTF);
-        panel.add(replace);
-        dialog.add(panel);
+        panel.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 1;
+        gbc.gridwidth = GridBagConstraints.RELATIVE;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        panel.add(findTF, gbc);
+
+        gbc.gridx = 6;
+        gbc.gridy = 0;
+        gbc.gridwidth = 0;
+        gbc.weightx = -1;
+        gbc.fill = GridBagConstraints.NONE;
+        panel.add(find, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.weightx = 1;
+        gbc.gridwidth = GridBagConstraints.RELATIVE;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        panel.add(replaceTF, gbc);
+
+        gbc.gridx = 6;
+        gbc.gridy = 1;
+        gbc.gridwidth = 0;
+        gbc.weightx = -1;
+        gbc.fill = GridBagConstraints.NONE;
+        panel.add(replace, gbc);
+
+        buttons.setLayout(new GridBagLayout());
+        GridBagConstraints gbc2 = new GridBagConstraints();
+        gbc2.insets = new Insets(5, 5, 5, 5);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        buttons.add(up, gbc2);
+
+        gbc.gridx = 2;
+        gbc.gridy = 0;
+        buttons.add(down, gbc2);
+
+        dialog.add(panel, BorderLayout.NORTH);
+        dialog.add(buttons, BorderLayout.SOUTH);
+
         if(tabList.getCurrentEditor() != null){
             up.addActionListener(actionEvent -> tabList.getCurrentEditor().nav(-1));
             down.addActionListener(actionEvent -> tabList.getCurrentEditor().nav(1));
@@ -330,7 +398,7 @@ public class MenuToolBar extends JMenuBar implements ChangeListener {
             }
             });
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        dialog.pack();
+        dialog.setSize(300, 145);
         dialog.setResizable(false);
         dialog.setLocationRelativeTo(null);
         dialog.setVisible(true);
