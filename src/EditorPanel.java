@@ -287,7 +287,7 @@ public class EditorPanel extends JPanel implements DocumentListener{
         int end = highlights[currI].getEndOffset();
         if(start < end){
             try{
-                document.replace(start, (end-start), replace, null);
+                document.replace(start, (end-start), replace, formatter.getConsistentFormat(document, start, end));
                 Highlighter h = textPane.getHighlighter();
                 h.removeAllHighlights();
             }catch (BadLocationException e) {
@@ -303,7 +303,7 @@ public class EditorPanel extends JPanel implements DocumentListener{
         int i = content.indexOf(find);
         while(i != -1) {
             try {
-                document.replace(i, find.length(), replace, null);
+                document.replace(i, find.length(), replace, formatter.getConsistentFormat(document, i, i + find.length()));
             }
             catch(BadLocationException exception) {
 
