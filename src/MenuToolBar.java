@@ -13,6 +13,8 @@ import java.awt.*;
 
 import javax.swing.*;
 import javax.swing.event.*;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.Element;
 import javax.swing.text.Highlighter;
 
 
@@ -499,6 +501,12 @@ public class MenuToolBar extends JMenuBar implements ChangeListener {
             TabPanel tab = tabList.getTabByPath(f.getAbsolutePath());
             if(tab != null) {
                 tab.getEditor().getTextPane().setText(ed.getTextPane().getText());
+
+                for(int i = 0; i < ed.getTextPane().getText().length(); i++) {
+                    AttributeSet attributes = ed.getTextPane().getStyledDocument().getCharacterElement(i).getAttributes();
+                    tab.getEditor().getTextPane().getStyledDocument().setCharacterAttributes(i, 1, attributes, true);
+                }
+
                 ed = tab.getEditor();
                 tabList.getTabbedPane().setSelectedComponent(tab);
             } else {

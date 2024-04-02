@@ -4,6 +4,7 @@ import javax.swing.JTextPane;
 import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 
 public class DocumentFormatter {
     private JTextPane textPane;
@@ -64,8 +65,8 @@ public class DocumentFormatter {
 
         //If there is no selection, return the styling at the current caret position
         if(endIndex == startIndex) {
-            int caretPosition = textPane.getCaretPosition();
-            if(caretPosition == document.getLength()) caretPosition = document.getLength() - 1;
+            int caretPosition = textPane.getCaretPosition() - 1;
+            if(caretPosition < 0) caretPosition = 0;
             if(document.getCharacterElement(caretPosition).getAttributes().getAttribute(attributeKey) instanceof Boolean isFormatted) {
                 return isFormatted;
             }
@@ -123,8 +124,8 @@ public class DocumentFormatter {
 
         //If there is no selection, return the styling at the current caret position
         if(endIndex == startIndex) {
-            int caretPosition = textPane.getCaretPosition();
-            if(caretPosition == document.getLength()) caretPosition = document.getLength() - 1;
+            int caretPosition = textPane.getCaretPosition() - 1;
+            if(caretPosition < 0) caretPosition = 0;
             if(document.getCharacterElement(caretPosition).getAttributes().getAttribute(StyleConstants.FontSize) instanceof Integer size) {
                 return size;
             }
@@ -187,8 +188,8 @@ public class DocumentFormatter {
 
         //If there is no selection, return the styling at the current caret position
         if(endIndex == startIndex) {
-            int caretPosition = textPane.getCaretPosition();
-            if(caretPosition == document.getLength()) caretPosition = document.getLength() - 1;
+            int caretPosition = textPane.getCaretPosition() - 1;
+            if(caretPosition < 0) caretPosition = 0;
             if(document.getCharacterElement(caretPosition).getAttributes().getAttribute(StyleConstants.FontFamily) instanceof String family) {
                 return family;
             }
@@ -376,6 +377,32 @@ public class DocumentFormatter {
         }
 
         panel.signalEdit();
+    }
+
+    public SimpleAttributeSet getConsistentFormat(StyledDocument document, int startIndex, int endIndex) {
+
+        SimpleAttributeSet set = new SimpleAttributeSet();
+
+        addAttributeToFormat(set, StyleConstants.Bold, document, startIndex, endIndex);
+        addAttributeToFormat(set, StyleConstants.Italic, document, startIndex, endIndex);
+        addAttributeToFormat(set, StyleConstants.Underline, document, startIndex, endIndex);
+        addAttributeToFormat(set, StyleConstants.FontSize, document, startIndex, endIndex);
+        addAttributeToFormat(set, StyleConstants.FontFamily, document, startIndex, endIndex);
+        addAttributeToFormat(set, StyleConstants.Foreground, document, startIndex, endIndex);
+
+        return set;
+    }
+
+    private void addAttributeToFormat(SimpleAttributeSet set, Object key, StyledDocument document, int startIndex, int endIndex) {
+        Object value = document.getCharacterElement(startIndex).getAttributes().getAttribute(key);
+        for(int i = startIndex + 1; i < endIndex; i++) {
+            Object charVal = document.getCharacterElement(i).getAttributes().getAttribute(key);
+            if(!value.equals(charVal)) {
+                return;
+            }
+        }
+
+        set.addAttribute(key, value);
     }
 
 }
