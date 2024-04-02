@@ -32,7 +32,7 @@ public class BarGraph extends JPanel {
             if( keys[i] == null) continue;
             int barHeight = (int) ((double) data[i] / getMaxValue(data) * panelHeight);
             int y = panelHeight - barHeight;
-            g.setColor(new Color(121, 222, 205));
+            g.setColor(new Color(0x1f, 0xc4, 0xae));
             g.fillRect(x, y, barWidth, barHeight);
             g.setColor(Color.black);
             g.drawRect(x, y, barWidth, barHeight);
