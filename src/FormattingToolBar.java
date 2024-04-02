@@ -129,7 +129,12 @@ public class FormattingToolBar extends JToolBar implements ChangeListener, Caret
         underlineButton.getActionMap().put("underlineAction", underlineAction);
         underlineButton.setToolTipText("Underline");
 
-        colorButton = new StylingButton("CS", BUTTON_SIZE);
+        ImageIcon paintIcon = new ImageIcon("img/bucket.png");
+
+        Image scaledImage = paintIcon.getImage().getScaledInstance(BUTTON_SIZE-10, BUTTON_SIZE-10, Image.SCALE_SMOOTH);
+        Icon scaledPaintIcon = new ImageIcon(scaledImage);
+
+        colorButton = new StylingButton(scaledPaintIcon, BUTTON_SIZE);
         this.add(colorButton);
         colorButton.addActionListener(this::colorAction);
 

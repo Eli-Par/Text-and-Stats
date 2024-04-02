@@ -10,5 +10,12 @@ public class StylingButton extends JButton {
         this.setPreferredSize(new Dimension(size, size));
         this.setMaximumSize(new Dimension(size, size));
     }
+    public StylingButton(Icon icon, int size){
+        super(icon);
+
+        this.setPreferredSize(new Dimension(size, size));
+        this.setMaximumSize(new Dimension(size, size));
+
+    }
 
 }
