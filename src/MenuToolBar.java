@@ -71,8 +71,8 @@ public class MenuToolBar extends JMenuBar implements ChangeListener {
         zoomOut.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_SUBTRACT, InputEvent.CTRL_DOWN_MASK));
         zoomDefault.setAccelerator(KeyStroke.getKeyStroke("control 0"));
 
-        moveRight.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, InputEvent.CTRL_DOWN_MASK));
-        moveLeft.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, InputEvent.CTRL_DOWN_MASK));
+        //moveRight.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, InputEvent.CTRL_DOWN_MASK));
+        //moveLeft.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, InputEvent.CTRL_DOWN_MASK));
 
         find.setAccelerator(KeyStroke.getKeyStroke("control F"));
         replaceAll.setAccelerator(KeyStroke.getKeyStroke("control R"));
@@ -99,8 +99,8 @@ public class MenuToolBar extends JMenuBar implements ChangeListener {
         vMenu.add(lightModeButton);
         vMenu.add(darkModeButton);
 
-        vMenu.add(moveLeft);
-        vMenu.add(moveRight);
+        //vMenu.add(moveLeft);
+        //vMenu.add(moveRight);
 
         editMenu.setFont(MENU_FONT);
         editMenu.add(find);
@@ -139,8 +139,29 @@ public class MenuToolBar extends JMenuBar implements ChangeListener {
         zoomIn.addActionListener(this::onZoomIn);
         zoomOut.addActionListener(this::onZoomOut);
         zoomDefault.addActionListener(this::onZoomReset);
-        moveLeft.addActionListener(e -> tabList.moveLeft());
-        moveRight.addActionListener(e -> tabList.moveRight());
+
+        Action tabLeftAction = new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                tabList.moveLeft();
+            }
+        };
+
+        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, InputEvent.CTRL_DOWN_MASK), "leftTab");
+        this.getActionMap().put("leftTab", tabLeftAction);
+
+        Action tabRightAction = new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                tabList.moveRight();
+            }
+        };
+
+        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, InputEvent.CTRL_DOWN_MASK), "rightTab");
+        this.getActionMap().put("rightTab", tabRightAction);
+
+        //moveLeft.addActionListener(e -> tabList.moveLeft());
+        //moveRight.addActionListener(e -> tabList.moveRight());
 
         lightModeButton.setSelected(true);
         lightModeButton.addActionListener(new ActionListener() {
