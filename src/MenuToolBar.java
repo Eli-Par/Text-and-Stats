@@ -40,10 +40,10 @@ public class MenuToolBar extends JMenuBar implements ChangeListener {
         JMenuItem saveAs = new JMenuItem("Save As");
         JMenuItem ne = new JMenuItem("New Text File");
 
-        JMenuItem font = new JMenuItem("Font");
-        JMenuItem zoomIn = new JMenuItem("Zoom In");
-        JMenuItem zoomOut = new JMenuItem("Zoom Out");
-        JMenuItem zoomDefault = new JMenuItem("Zoom Reset");
+        JMenuItem font = new JMenuItem("Plain Text Font");
+        JMenuItem zoomIn = new JMenuItem("Zoom In Plain Text");
+        JMenuItem zoomOut = new JMenuItem("Zoom Out Plain Text");
+        JMenuItem zoomDefault = new JMenuItem("Zoom Reset Plain Text");
 
         JRadioButtonMenuItem lightModeButton = new JRadioButtonMenuItem("Light Mode");
         JRadioButtonMenuItem darkModeButton = new JRadioButtonMenuItem("Dark Mode");
@@ -93,6 +93,9 @@ public class MenuToolBar extends JMenuBar implements ChangeListener {
         vMenu.add(zoomDefault);
 
         vMenu.addSeparator();
+        vMenu.add(autosave);
+
+        vMenu.addSeparator();
         vMenu.add(lightModeButton);
         vMenu.add(darkModeButton);
 
@@ -105,7 +108,7 @@ public class MenuToolBar extends JMenuBar implements ChangeListener {
         editMenu.add(replaceAll);
         editMenu.add(undo);
         editMenu.add(redo);
-        editMenu.add(autosave);
+        //editMenu.add(autosave);
         
         this.add(fileMenu);
         this.add(editMenu);
