@@ -142,19 +142,9 @@ public class MenuToolBar extends JMenuBar implements ChangeListener {
         moveRight.addActionListener(e -> tabList.moveRight());
 
         lightModeButton.setSelected(true);
-        lightModeButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                App.loadLight();
-            }
-        });
+        lightModeButton.addActionListener(e -> App.loadLight());
 
-        darkModeButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                App.loadDark();
-            }
-        });
+        darkModeButton.addActionListener(e -> App.loadDark());
         
     }
     
