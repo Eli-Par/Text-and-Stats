@@ -1,11 +1,7 @@
 import java.awt.event.*;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
-import java.util.Objects;
-import java.util.Scanner;
 
 import static util.GUI.boolQuery;
 import static util.algobase.lower_bound;
@@ -29,10 +25,10 @@ public class MenuToolBar extends JMenuBar implements ChangeListener {
     private FormattingToolBar formattingToolBar;
 
     UserOptions opts;
-    public MenuToolBar(FileTabList tl, FormattingToolBar formattingToolBar) {
+    public MenuToolBar(UserOptions opts, FileTabList tl, FormattingToolBar formattingToolBar) {
+        this.opts = opts;
         tabList = tl;
         this.formattingToolBar = formattingToolBar;
-        opts = new UserOptions();
 
         JMenu fileMenu = new JMenu("File");
         JMenu vMenu = new JMenu("View");
@@ -44,10 +40,10 @@ public class MenuToolBar extends JMenuBar implements ChangeListener {
         JMenuItem saveAs = new JMenuItem("Save As");
         JMenuItem ne = new JMenuItem("New Text File");
 
-        JMenuItem font = new JMenuItem("Font");
-        JMenuItem zoomIn = new JMenuItem("Zoom In");
-        JMenuItem zoomOut = new JMenuItem("Zoom Out");
-        JMenuItem zoomDefault = new JMenuItem("Zoom Reset");
+        JMenuItem font = new JMenuItem("Plain Text Font");
+        JMenuItem zoomIn = new JMenuItem("Zoom In Plain Text");
+        JMenuItem zoomOut = new JMenuItem("Zoom Out Plain Text");
+        JMenuItem zoomDefault = new JMenuItem("Zoom Reset Plain Text");
 
         JRadioButtonMenuItem lightModeButton = new JRadioButtonMenuItem("Light Mode");
         JRadioButtonMenuItem darkModeButton = new JRadioButtonMenuItem("Dark Mode");
@@ -75,8 +71,8 @@ public class MenuToolBar extends JMenuBar implements ChangeListener {
         zoomOut.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_SUBTRACT, InputEvent.CTRL_DOWN_MASK));
         zoomDefault.setAccelerator(KeyStroke.getKeyStroke("control 0"));
 
-        moveRight.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, InputEvent.CTRL_DOWN_MASK));
-        moveLeft.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, InputEvent.CTRL_DOWN_MASK));
+        //moveRight.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, InputEvent.CTRL_DOWN_MASK));
+        //moveLeft.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, InputEvent.CTRL_DOWN_MASK));
 
         find.setAccelerator(KeyStroke.getKeyStroke("control F"));
         replaceAll.setAccelerator(KeyStroke.getKeyStroke("control R"));
@@ -97,11 +93,14 @@ public class MenuToolBar extends JMenuBar implements ChangeListener {
         vMenu.add(zoomDefault);
 
         vMenu.addSeparator();
+        vMenu.add(autosave);
+
+        vMenu.addSeparator();
         vMenu.add(lightModeButton);
         vMenu.add(darkModeButton);
 
-        vMenu.add(moveLeft);
-        vMenu.add(moveRight);
+        //vMenu.add(moveLeft);
+        //vMenu.add(moveRight);
 
         editMenu.setFont(MENU_FONT);
         editMenu.add(find);
@@ -109,7 +108,7 @@ public class MenuToolBar extends JMenuBar implements ChangeListener {
         editMenu.add(replaceAll);
         editMenu.add(undo);
         editMenu.add(redo);
-        editMenu.add(autosave);
+        //editMenu.add(autosave);
         
         this.add(fileMenu);
         this.add(editMenu);
@@ -135,11 +134,34 @@ public class MenuToolBar extends JMenuBar implements ChangeListener {
 
         });
 
+        autosave.setText(opts.useAutoSave ? "Disable Autosave" : "Enable Autosave");
+
         zoomIn.addActionListener(this::onZoomIn);
         zoomOut.addActionListener(this::onZoomOut);
         zoomDefault.addActionListener(this::onZoomReset);
-        moveLeft.addActionListener(e -> tabList.moveLeft());
-        moveRight.addActionListener(e -> tabList.moveRight());
+
+        Action tabLeftAction = new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                tabList.moveLeft();
+            }
+        };
+
+        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, InputEvent.CTRL_DOWN_MASK), "leftTab");
+        this.getActionMap().put("leftTab", tabLeftAction);
+
+        Action tabRightAction = new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                tabList.moveRight();
+            }
+        };
+
+        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, InputEvent.CTRL_DOWN_MASK), "rightTab");
+        this.getActionMap().put("rightTab", tabRightAction);
+
+        //moveLeft.addActionListener(e -> tabList.moveLeft());
+        //moveRight.addActionListener(e -> tabList.moveRight());
 
         lightModeButton.setSelected(true);
         lightModeButton.addActionListener(new ActionListener() {
@@ -156,45 +178,6 @@ public class MenuToolBar extends JMenuBar implements ChangeListener {
             }
         });
         
-    }
-    
-    public void saveOptions() {
-
-        try {
-
-            PrintStream out = new PrintStream(new FileOutputStream(SETTINGS_PATH));
-
-            out.println(opts.lastOpenLocation);
-            out.println(opts.fontFamily);
-            out.println(opts.fontSize);
-
-            out.close();
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    public void loadOptions() {
-
-        opts.lastOpenLocation = System.getProperty("user.home");
-        opts.fontSize = 12;
-
-        try {
-
-            Scanner scanner = new Scanner(new File(SETTINGS_PATH));
-
-            opts.lastOpenLocation = scanner.nextLine();
-            opts.fontFamily = scanner.nextLine();
-            opts.fontSize = scanner.nextInt();
-
-            scanner.close();
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
     }
 
     public void onOpen(ActionEvent e) {

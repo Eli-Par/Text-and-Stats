@@ -14,7 +14,11 @@ public class FileTabList extends JPanel implements MouseListener{
 
     private App app;
 
-    public FileTabList(App a) {
+    public static boolean useAutoSave = false;
+
+    public FileTabList(App a, boolean autoSave) {
+
+        useAutoSave = autoSave;
 
         app = a;
         this.setLayout(new BorderLayout());
@@ -52,10 +56,14 @@ public class FileTabList extends JPanel implements MouseListener{
 
     public void toggleAutosave() {
 
+        useAutoSave = !useAutoSave;
+        App.opts.useAutoSave = useAutoSave;
+
+        if(!useAutoSave) return;
+
         for (Component panel : tabbedPane.getComponents()) {
             if (panel instanceof TabPanel tPanel) {
 
-                tPanel.getEditor().toggleAutosave();
                 try {
                     tPanel.save();
                 } catch (IOException e) {

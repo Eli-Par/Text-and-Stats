@@ -7,6 +7,7 @@ import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.util.Scanner;
 
 public class App implements WindowListener {
 
@@ -22,30 +23,60 @@ public class App implements WindowListener {
 
     public static JFrame frame;
 
-
-    // public JToolBar createCardToolBar() {
-    //     JToolBar toolBar = new JToolBar();
-    //     toolBar.setFloatable(false);
-
-    //     JPanel barPanel = new JPanel();
-    //     barPanel.setLayout(new BoxLayout(barPanel, BoxLayout.X_AXIS));
-
-    //     barPanel.add(new PageSwitchButton(tabList, "Editor", "Editor"));
-    //     barPanel.add(Box.createHorizontalStrut(5));
-    //     barPanel.add(new PageSwitchButton(tabList, "Word Stats", "WordStats"));
-    //     barPanel.add(Box.createHorizontalStrut(5));
-    //     barPanel.add(new PageSwitchButton(tabList, "Char Stats", "CharStats"));
-    //     barPanel.add(Box.createHorizontalStrut(5));
-    //     barPanel.add(new PageSwitchButton(tabList, "Sentence Stats", "SentStats"));
-
-    //     toolBar.add(barPanel);
-
-    //     return toolBar;
-    // }
+    public static UserOptions opts = new UserOptions();
 
     public App() {
 
-        tabList = new FileTabList(this);
+        loadOptions();
+
+        FlatLaf.registerCustomDefaultsSource( "themes" );
+        if(opts.isDarkMode) loadDark();
+        else loadLight();
+
+        tabList = new FileTabList(this, opts.useAutoSave);
+
+    }
+
+    public void loadOptions() {
+
+        opts.lastOpenLocation = System.getProperty("user.home");
+        opts.fontSize = 12;
+
+        try {
+
+            Scanner scanner = new Scanner(new File(MenuToolBar.SETTINGS_PATH));
+
+            opts.lastOpenLocation = scanner.nextLine();
+            opts.fontFamily = scanner.nextLine();
+            opts.fontSize = scanner.nextInt();
+            opts.isDarkMode = scanner.nextBoolean();
+            opts.useAutoSave = scanner.nextBoolean();
+
+            scanner.close();
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void saveOptions() {
+
+        try {
+
+            PrintStream out = new PrintStream(new FileOutputStream(MenuToolBar.SETTINGS_PATH));
+
+            out.println(opts.lastOpenLocation);
+            out.println(opts.fontFamily);
+            out.println(opts.fontSize);
+            out.println(opts.isDarkMode);
+            out.println(opts.useAutoSave);
+
+            out.close();
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -61,10 +92,8 @@ public class App implements WindowListener {
         Dimension screenSize = tk.getScreenSize();
 
         formattingToolBar = new FormattingToolBar(tabList);
-        topMenu = new MenuToolBar(tabList, formattingToolBar);
+        topMenu = new MenuToolBar(opts, tabList, formattingToolBar);
         tabList.addChangeListener(topMenu);
-        
-        topMenu.loadOptions();
 
         JPanel topPanel = new JPanel();
         topPanel.setLayout(new BorderLayout());
@@ -74,6 +103,7 @@ public class App implements WindowListener {
 
         frame.add(topPanel, BorderLayout.NORTH);
         frame.add(tabList);
+        tabList.setFont(new Font(opts.fontFamily, Font.PLAIN, opts.fontSize));
 
         // panel.setSize(WIDTH, HEIGHT);
         // panel.setPreferredSize(panel.getSize());
@@ -93,15 +123,13 @@ public class App implements WindowListener {
 
     public static void main(String[] args) {
 
-        FlatLaf.registerCustomDefaultsSource( "themes" );
-        loadLight();
-
         new App().init(args);
     }
 
     public static void loadDark() {
         FlatDarkLaf.setup();
         isDarkMode = true;
+        opts.isDarkMode = true;
         if(frame != null) SwingUtilities.updateComponentTreeUI(frame);
         if(formattingToolBar != null) formattingToolBar.updateToolbar();
     }
@@ -109,6 +137,7 @@ public class App implements WindowListener {
     public static void loadLight() {
         FlatLightLaf.setup();
         isDarkMode = false;
+        opts.isDarkMode = false;
         if(frame != null) SwingUtilities.updateComponentTreeUI(frame);
         if(formattingToolBar != null) formattingToolBar.updateToolbar();
     }
@@ -131,7 +160,7 @@ public class App implements WindowListener {
      */
     @Override
     public void windowClosing(WindowEvent e) {
-        topMenu.saveOptions();
+        saveOptions();
         tabList.closing();
     }
 
