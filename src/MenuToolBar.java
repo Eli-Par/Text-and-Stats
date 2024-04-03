@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.Objects;
 import java.util.Scanner;
 
 import static util.GUI.boolQuery;
@@ -246,7 +247,34 @@ public class MenuToolBar extends JMenuBar implements ChangeListener {
         if(tabList.getCurrentEditor() != null) {
             up.addActionListener(actionEvent -> tabList.getCurrentEditor().nav(-1));
             down.addActionListener(actionEvent -> tabList.getCurrentEditor().nav(1));
-            find.addActionListener(actionEvent -> tabList.getCurrentEditor().find(findTF.getText()));
+            find.addActionListener(actionEvent -> {
+                tabList.getCurrentEditor().find(findTF.getText());
+                up.setEnabled(true);
+                down.setEnabled(true);
+            });
+
+            up.setEnabled(false);
+            down.setEnabled(false);
+
+            findTF.getDocument().addDocumentListener(new DocumentListener() {
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    up.setEnabled(false);
+                    down.setEnabled(false);
+                }
+
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    up.setEnabled(false);
+                    down.setEnabled(false);
+                }
+
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    up.setEnabled(false);
+                    down.setEnabled(false);
+                }
+            });
         }
 
         dialog.addWindowListener(new WindowAdapter() {
@@ -385,8 +413,40 @@ public class MenuToolBar extends JMenuBar implements ChangeListener {
         if(tabList.getCurrentEditor() != null){
             up.addActionListener(actionEvent -> tabList.getCurrentEditor().nav(-1));
             down.addActionListener(actionEvent -> tabList.getCurrentEditor().nav(1));
-            find.addActionListener(actionEvent -> tabList.getCurrentEditor().find(findTF.getText()));
+            find.addActionListener(actionEvent -> {
+                tabList.getCurrentEditor().find(findTF.getText());
+                up.setEnabled(true);
+                down.setEnabled(true);
+                replace.setEnabled(true);
+            });
             replace.addActionListener(actionEvent -> tabList.getCurrentEditor().replaceInstance(replaceTF.getText()));
+
+            up.setEnabled(false);
+            down.setEnabled(false);
+            replace.setEnabled(false);
+
+            findTF.getDocument().addDocumentListener(new DocumentListener() {
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    up.setEnabled(false);
+                    down.setEnabled(false);
+                    replace.setEnabled(false);
+                }
+
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    up.setEnabled(false);
+                    down.setEnabled(false);
+                    replace.setEnabled(false);
+                }
+
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    up.setEnabled(false);
+                    down.setEnabled(false);
+                    replace.setEnabled(false);
+                }
+            });
         }
 
         dialog.addWindowListener(new WindowAdapter() {
