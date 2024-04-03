@@ -101,6 +101,8 @@ public class FormattingToolBar extends JPanel implements ChangeListener, CaretLi
 
         //this.add(new VerticalLine(20, 30, 1.5f, Color.GRAY));
 
+        bar.add(Box.createHorizontalStrut(SPACE_WIDTH));
+
         //Formatting buttons
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         String availableFonts[] = ge.getAvailableFontFamilyNames();
