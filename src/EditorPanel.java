@@ -1,6 +1,7 @@
 import java.awt.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -229,13 +230,21 @@ public class EditorPanel extends JPanel implements DocumentListener{
     }
 
     public void find(String text){
-        // get the text
-        String content = getPlainText();
-        findText = text;
+
         // create a highlighter to highlight the text
         Highlighter h = textPane.getHighlighter();
         Highlighter.HighlightPainter painter = new DefaultHighlighter.DefaultHighlightPainter(Color.CYAN);
         h.removeAllHighlights();
+
+        findText = text;
+
+        if(Objects.equals(text, "")){
+            highlights = null;
+            return;
+        }
+
+        // get the text
+        String content = getPlainText();
 
         // loop through all occurrences and highlight them
         int i = content.indexOf(text);
@@ -260,6 +269,7 @@ public class EditorPanel extends JPanel implements DocumentListener{
         Highlighter h = textPane.getHighlighter();
         Highlighter.HighlightPainter painter = new DefaultHighlighter.DefaultHighlightPainter(Color.CYAN);
         h.removeAllHighlights();
+        if(highlights == null) return;
         if(highlights.length == 0) return;
 
         try {
@@ -283,6 +293,9 @@ public class EditorPanel extends JPanel implements DocumentListener{
     }
 
     public void replaceInstance(String replace){
+
+        if(Objects.equals(replace, "")) return;
+
         int start = highlights[currI].getStartOffset();
         int end = highlights[currI].getEndOffset();
         if(start < end){
@@ -297,6 +310,10 @@ public class EditorPanel extends JPanel implements DocumentListener{
     }
 
     public void replaceAll(String find, String replace){
+
+        if(Objects.equals(find, "")) return;
+        if(Objects.equals(replace, "")) return;
+
         // get the text and replace all occurrences of find
         String content = getPlainText();
 
