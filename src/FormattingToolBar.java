@@ -5,7 +5,7 @@ import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.text.StyleConstants;
 
-public class FormattingToolBar extends JToolBar implements ChangeListener, CaretListener {
+public class FormattingToolBar extends JPanel implements ChangeListener, CaretListener {
     
     private FileTabList tabList;
 
@@ -69,19 +69,37 @@ public class FormattingToolBar extends JToolBar implements ChangeListener, Caret
 
     public FormattingToolBar(FileTabList tabList) {
 
+        this.setLayout(new GridBagLayout());
+
         this.tabList = tabList;
 
-        this.setFloatable(false);
+        //this.setFloatable(false);
 
-        this.add(new PageSwitchButton(tabList, "Editor", "Editor"));
-        this.add(Box.createHorizontalStrut(SPACE_WIDTH));
-        this.add(new PageSwitchButton(tabList, "Word Stats", "WordStats"));
-        this.add(Box.createHorizontalStrut(SPACE_WIDTH));
-        this.add(new PageSwitchButton(tabList, "Character Stats", "CharStats"));
-        this.add(Box.createHorizontalStrut(SPACE_WIDTH));
-        this.add(new PageSwitchButton(tabList, "Sentence Stats", "SentStats"));
+        JPanel viewPanel = new JPanel();
+        viewPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        PageSwitchButton editorButton = new PageSwitchButton(tabList, "Editor", "Editor");
+        editorButton.setSelected(true);
+        viewPanel.add(editorButton);
+        viewPanel.add(Box.createHorizontalStrut(SPACE_WIDTH));
+        viewPanel.add(new PageSwitchButton(tabList, "Word Stats", "WordStats"));
+        viewPanel.add(Box.createHorizontalStrut(SPACE_WIDTH));
+        viewPanel.add(new PageSwitchButton(tabList, "Character Stats", "CharStats"));
+        viewPanel.add(Box.createHorizontalStrut(SPACE_WIDTH));
+        viewPanel.add(new PageSwitchButton(tabList, "Sentence Stats", "SentStats"));
 
-        this.add(new VerticalLine(20, 30, 1.5f, Color.GRAY));
+        GridBagConstraints gbc2 = new GridBagConstraints();
+        gbc2.gridx = 0;
+        gbc2.gridy = 0;
+        gbc2.weightx = 1;
+        gbc2.fill = GridBagConstraints.HORIZONTAL;
+        this.add(viewPanel, gbc2);
+
+        JToolBar bar = new JToolBar();
+        gbc2.gridy = 1;
+        this.add(bar, gbc2);
+        bar.setFloatable(false);
+
+        //this.add(new VerticalLine(20, 30, 1.5f, Color.GRAY));
 
         //Formatting buttons
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -92,59 +110,59 @@ public class FormattingToolBar extends JToolBar implements ChangeListener, Caret
         fonts[availableFonts.length - 1] = "---";
 
         fontFamilyBox = new JComboBox<>(fonts);
-        this.add(fontFamilyBox);
-        this.add(Box.createHorizontalStrut(SPACE_WIDTH));
+        bar.add(fontFamilyBox);
+        bar.add(Box.createHorizontalStrut(SPACE_WIDTH));
         fontFamilyBox.addActionListener(this::fontFamilyChange);
         fontFamilyBox.setRenderer(new FontListCellRenderer());
 
         fontSizeBox = new JComboBox<>(new Integer[] {8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72});
         fontSizeBox.setEditable(true);
-        this.add(fontSizeBox);
-        this.add(Box.createHorizontalStrut(SPACE_WIDTH));
+        bar.add(fontSizeBox);
+        bar.add(Box.createHorizontalStrut(SPACE_WIDTH));
         fontSizeBox.addActionListener(this::fontSizeChange);
 
         increaseFontButton = new StylingButton("F+", BUTTON_SIZE);
-        this.add(increaseFontButton);
-        this.add(Box.createHorizontalStrut(SPACE_WIDTH));
+        bar.add(increaseFontButton);
+        bar.add(Box.createHorizontalStrut(SPACE_WIDTH));
         increaseFontButton.addActionListener(this::increaseFontSize);
 
         decreaseFontButton = new StylingButton("F-", BUTTON_SIZE);
-        this.add(decreaseFontButton);
-        this.add(Box.createHorizontalStrut(SPACE_WIDTH));
+        bar.add(decreaseFontButton);
+        bar.add(Box.createHorizontalStrut(SPACE_WIDTH));
         decreaseFontButton.addActionListener(this::decreaseFontSize);
 
         boldButton = new StylingButton("<html><b>B</b></html>", BUTTON_SIZE);
-        this.add(boldButton);
-        this.add(Box.createHorizontalStrut(SPACE_WIDTH));
+        bar.add(boldButton);
+        bar.add(Box.createHorizontalStrut(SPACE_WIDTH));
         boldButton.addActionListener(boldAction);
         boldButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("control B"), "boldAction");
         boldButton.getActionMap().put("boldAction", boldAction);
         boldButton.setToolTipText("Bold");
 
         italicButton = new StylingButton("<html><i>I</i></html>", BUTTON_SIZE);
-        this.add(italicButton);
-        this.add(Box.createHorizontalStrut(SPACE_WIDTH));
+        bar.add(italicButton);
+        bar.add(Box.createHorizontalStrut(SPACE_WIDTH));
         italicButton.addActionListener(italicAction);
         italicButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("control I"), "italicAction");
         italicButton.getActionMap().put("italicAction", italicAction);
         italicButton.setToolTipText("Italic");
 
         underlineButton = new StylingButton("<html><u>U</u></html>", BUTTON_SIZE);
-        this.add(underlineButton);
-        this.add(Box.createHorizontalStrut(SPACE_WIDTH));
+        bar.add(underlineButton);
+        bar.add(Box.createHorizontalStrut(SPACE_WIDTH));
         underlineButton.addActionListener(underlineAction);
         underlineButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("control U"), "underlineAction");
         underlineButton.getActionMap().put("underlineAction", underlineAction);
         underlineButton.setToolTipText("Underline");
 
         colorButton = new StylingButton("A", BUTTON_SIZE);
-        this.add(colorButton);
+        bar.add(colorButton);
         colorButton.addActionListener(this::colorAction);
 
-        this.add(Box.createHorizontalStrut(SPACE_WIDTH));
+        bar.add(Box.createHorizontalStrut(SPACE_WIDTH));
 
         alignmentPanel = new JPanel();
-        this.add(alignmentPanel);
+        bar.add(alignmentPanel);
         alignmentPanel.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -297,7 +315,7 @@ public class FormattingToolBar extends JToolBar implements ChangeListener, Caret
     public void updateButtonState(Object sc, JButton b){
         EditorPanel editorPanel = tabList.getCurrentEditor();
         if(editorPanel.getFormatter().isSelectionFormatted(sc)){
-            if(App.isDarkMode) b.setBackground(Color.GRAY);
+            if(App.isDarkMode) b.setBackground(new Color(80, 80, 80));
             else b.setBackground(Color.LIGHT_GRAY);
         }else {
             b.setBackground(UIManager.getColor("Button.background")); 
