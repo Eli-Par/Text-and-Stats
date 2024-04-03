@@ -296,6 +296,8 @@ public class EditorPanel extends JPanel implements DocumentListener{
 
         if(Objects.equals(replace, "")) return;
 
+        if(highlights.length == 0) return;
+
         int start = highlights[currI].getStartOffset();
         int end = highlights[currI].getEndOffset();
         if(start < end){
