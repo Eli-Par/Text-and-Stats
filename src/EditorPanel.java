@@ -1,9 +1,7 @@
 import java.awt.*;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -45,6 +43,11 @@ public class EditorPanel extends JPanel implements DocumentListener{
 
     private boolean autosave;
 
+    String findText;
+    int currI = 0;
+    Highlighter.Highlight[] highlights;
+    boolean first = true;
+
     public EditorPanel(TabPanel tab, File file) {
 
         super();
@@ -85,6 +88,16 @@ public class EditorPanel extends JPanel implements DocumentListener{
             exception.printStackTrace();
         }
 
+        //Remove the ending character since an extra newline is added
+        if(editorKit instanceof RTFEditorKit) {
+            try {
+                document.replace(document.getLength() - 1, 1, "", null);
+            }
+            catch(Exception exception) {
+                exception.printStackTrace();
+            }
+        }
+
         //Add a scroll bar
         JScrollPane scroll = new JScrollPane(textPane);
         scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
@@ -106,6 +119,10 @@ public class EditorPanel extends JPanel implements DocumentListener{
 
     public DocumentFormatter getFormatter() {
         return formatter;
+    }
+
+    public Format getFileFormat() {
+        return fileFormat;
     }
 
     //Updates the format of the editor panel based on the file extension
@@ -222,21 +239,24 @@ public class EditorPanel extends JPanel implements DocumentListener{
     }
 
     public void find(String text){
-        // get the text
-        String content = getPlainText();
+
         // create a highlighter to highlight the text
         Highlighter h = textPane.getHighlighter();
         Highlighter.HighlightPainter painter = new DefaultHighlighter.DefaultHighlightPainter(Color.CYAN);
         h.removeAllHighlights();
 
+        findText = text;
+
+        if(Objects.equals(text, "")){
+            highlights = null;
+            return;
+        }
+
+        // get the text
+        String content = getPlainText();
+
         // loop through all occurrences and highlight them
         int i = content.indexOf(text);
-        boolean caretNotSet = true;
-        if((i > textPane.getCaretPosition() || i == 0 && textPane.getCaretPosition() == 0) && caretNotSet) 
-        {
-            textPane.setCaretPosition(i);
-            caretNotSet = false;
-        }
         while(i != -1){
             try{
                 h.addHighlight(i, i+text.length(), painter);
@@ -244,55 +264,74 @@ public class EditorPanel extends JPanel implements DocumentListener{
                 e.printStackTrace();
             }
             i = content.indexOf(text, i+1);
-            if(i > textPane.getCaretPosition() && caretNotSet) 
-        {
-            textPane.setCaretPosition(i);
-            caretNotSet = false;
         }
-        }
-
-        // delete highlighted text when mouse is clicked
-        textPane.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                h.removeAllHighlights();
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                h.removeAllHighlights();
-            }
-        });
+        currI = 0;
+        first = true;
+        highlights = h.getHighlights();
     }
 
-    public void replaceFirst(String find, String replace){
-        // get the text
-        String content = getPlainText();
+    /**
+     * @param dir -1 for backwards, 1 for forwards
+     */
+    public void nav(int dir){
 
-        // find the first occurrence of find and replace it with replace
-        int i = content.indexOf(find);
-        if(i != -1){
-            //content = content.substring(0, i) + replace + content.substring(i+find.length());
-            //textPane.setText(content);
-            try {
-                document.replace(i, find.length(), replace, null);
+        Highlighter h = textPane.getHighlighter();
+        Highlighter.HighlightPainter painter = new DefaultHighlighter.DefaultHighlightPainter(Color.CYAN);
+        h.removeAllHighlights();
+        if(highlights == null) return;
+        if(highlights.length == 0) return;
+
+        try {
+            // cycle forwards until end then jump back to top
+            if (dir == 1) {
+                if (currI >= highlights.length-1) currI = 0;
+                else if(!first) currI++;
+                h.addHighlight(highlights[currI].getStartOffset(), highlights[currI].getEndOffset(), painter);
+            // cycle backwards until start then jump back to bottom
+            } else if (dir == -1) {
+                if (currI <= 0) currI = highlights.length - 1;
+                else currI--;
+                h.addHighlight(highlights[currI].getStartOffset(), highlights[currI].getEndOffset(), painter);
             }
-            catch(BadLocationException exception) {
+            textPane.setCaretPosition(highlights[currI].getStartOffset());
+            first = false;
 
+        }catch (BadLocationException e){
+            e.printStackTrace();
+        }
+    }
+
+    public void replaceInstance(String replace){
+
+        if(Objects.equals(replace, "")) return;
+
+        if(highlights.length == 0) return;
+
+        int start = highlights[currI].getStartOffset();
+        int end = highlights[currI].getEndOffset();
+        if(start < end){
+            try{
+                document.replace(start, (end-start), replace, formatter.getConsistentFormat(document, start, end));
+                Highlighter h = textPane.getHighlighter();
+                h.removeAllHighlights();
+            }catch (BadLocationException e) {
+                e.printStackTrace();
             }
         }
     }
 
     public void replaceAll(String find, String replace){
+
+        if(Objects.equals(find, "")) return;
+        if(Objects.equals(replace, "")) return;
+
         // get the text and replace all occurrences of find
         String content = getPlainText();
-        // content = content.replaceAll(find, replace);
-        // textPane.setText(content);
 
         int i = content.indexOf(find);
         while(i != -1) {
             try {
-                document.replace(i, find.length(), replace, null);
+                document.replace(i, find.length(), replace, formatter.getConsistentFormat(document, i, i + find.length()));
             }
             catch(BadLocationException exception) {
 
@@ -324,6 +363,22 @@ public class EditorPanel extends JPanel implements DocumentListener{
             saved = false;
             tab.notSavedIndicator();
         }       
+    }
+    public Color getTextColor(){
+        int caretPosition = textPane.getCaretPosition();
+        Element element = document.getCharacterElement(caretPosition);
+        AttributeSet attributes = element.getAttributes();
+        Color color = StyleConstants.getForeground(attributes);
+        float[] values = new float[3];
+        values = Color.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(), values);
+        if(values[0] > 40/360f && values[0] < 68/360f){
+            values[0] = 40/360f;
+        }else if(values[0] >= 68/360f && values[0] < 100/360f){
+            values[0] = 100/360f;
+        }
+        Color finalColor = new Color(Color.HSBtoRGB(values[0], 1, 1));
+
+        return finalColor;
     }
 
 }

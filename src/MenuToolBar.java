@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.Objects;
 import java.util.Scanner;
 
 import static util.GUI.boolQuery;
@@ -12,18 +13,26 @@ import static util.algobase.lower_bound;
 import java.awt.*;
 
 import javax.swing.*;
+import javax.swing.event.*;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.Element;
+import javax.swing.text.Highlighter;
 
 
-public class MenuToolBar extends JMenuBar {
+public class MenuToolBar extends JMenuBar implements ChangeListener {
     
     private static FileTabList tabList;
     public static final String SETTINGS_PATH = System.getProperty("user.home") + "/.comp2800-settings";
     public static Font MENU_FONT = new Font("Tahoma", Font.PLAIN, 16);
+  
+    private JDialog dialog = null;
 
-    
+    private FormattingToolBar formattingToolBar;
+
     UserOptions opts;
-    public MenuToolBar(FileTabList tl) {
+    public MenuToolBar(FileTabList tl, FormattingToolBar formattingToolBar) {
         tabList = tl;
+        this.formattingToolBar = formattingToolBar;
         opts = new UserOptions();
 
         JMenu fileMenu = new JMenu("File");
@@ -44,7 +53,7 @@ public class MenuToolBar extends JMenuBar {
         JMenuItem moveRight = new JMenuItem("Move Tab Right");
 
         JMenuItem find = new JMenuItem("Find");
-        JMenuItem replaceFirst = new JMenuItem("Replace First");
+        JMenuItem findAndReplace = new JMenuItem("Find and Replace");
         JMenuItem replaceAll = new JMenuItem("Replace All");
         JMenuItem undo = new JMenuItem("Undo");
         JMenuItem redo = new JMenuItem("Redo");
@@ -84,7 +93,7 @@ public class MenuToolBar extends JMenuBar {
 
         editMenu.setFont(MENU_FONT);
         editMenu.add(find);
-        editMenu.add(replaceFirst);
+        editMenu.add(findAndReplace);
         editMenu.add(replaceAll);
         editMenu.add(undo);
         editMenu.add(redo);
@@ -102,7 +111,7 @@ public class MenuToolBar extends JMenuBar {
         font.addActionListener(this::fontSetter);
 
         find.addActionListener(this::onFind);
-        replaceFirst.addActionListener(this::replaceFirst);
+        findAndReplace.addActionListener(this::onFindAndReplace);
         replaceAll.addActionListener(this::onReplaceAll);
         undo.addActionListener(this::onUndo);
         redo.addActionListener(this::onRedo);
@@ -198,27 +207,272 @@ public class MenuToolBar extends JMenuBar {
     public void fontSetter(ActionEvent e) {
         new FontSetter(tabList);
     }
+
     public void onFind(ActionEvent e){
-        JTextField tf = new JTextField();
-        int option = JOptionPane.showConfirmDialog(null, tf, "Find", JOptionPane.OK_CANCEL_OPTION);
-        if (option == JOptionPane.OK_OPTION) {
-            String text = tf.getText();
-            tabList.getCurrentEditor().find(text);
+        if(dialog != null) dialog.dispose();
+        dialog = new JDialog((Frame) null, "Find", false);
+
+        JPanel panel = new JPanel();
+        JPanel buttons = new JPanel();
+        JTextField findTF = new JTextField();
+        JButton up = new JButton("↑");
+        JButton down = new JButton("↓");
+        JButton find = new JButton("\uD83D\uDD0D");
+
+        panel.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 1;
+        gbc.gridwidth = GridBagConstraints.RELATIVE;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        panel.add(findTF, gbc);
+
+        gbc.gridx = 6;
+        gbc.gridy = 0;
+        gbc.gridwidth = 0;
+        gbc.weightx = -1;
+        gbc.fill = GridBagConstraints.NONE;
+        panel.add(find, gbc);
+
+        buttons.setLayout(new GridBagLayout());
+        GridBagConstraints gbc2 = new GridBagConstraints();
+        gbc2.insets = new Insets(5, 5, 5, 5);
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        buttons.add(up, gbc2);
+
+        gbc.gridx = 2;
+        gbc.gridy = 0;
+        buttons.add(down, gbc2);
+
+        dialog.add(panel, BorderLayout.NORTH);
+        dialog.add(buttons, BorderLayout.SOUTH);
+
+        if(tabList.getCurrentEditor() != null) {
+            up.addActionListener(actionEvent -> tabList.getCurrentEditor().nav(-1));
+            down.addActionListener(actionEvent -> tabList.getCurrentEditor().nav(1));
+            find.addActionListener(actionEvent -> {
+                tabList.getCurrentEditor().find(findTF.getText());
+                up.setEnabled(true);
+                down.setEnabled(true);
+            });
+
+            up.setEnabled(false);
+            down.setEnabled(false);
+
+            findTF.getDocument().addDocumentListener(new DocumentListener() {
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    up.setEnabled(false);
+                    down.setEnabled(false);
+                }
+
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    up.setEnabled(false);
+                    down.setEnabled(false);
+                }
+
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    up.setEnabled(false);
+                    down.setEnabled(false);
+                }
+            });
         }
+
+        dialog.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                dialog = null;
+                if(tabList.getCurrentEditor() != null){
+                    Highlighter h = tabList.getCurrentEditor().getTextPane().getHighlighter();
+                    h.removeAllHighlights();
+                }
+            }
+        });
+        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        dialog.setSize(300, 110);
+        dialog.setResizable(false);
+        dialog.setLocationRelativeTo(null);
+        dialog.setVisible(true);
     }
 
     public void onReplaceAll(ActionEvent e){
-        JTextField findTf = new JTextField();
-        JTextField replaceTf = new JTextField();
-        Object[] msg = {"Find: ", findTf, "Replace with: ", replaceTf};
-        int option = JOptionPane.showConfirmDialog(null, msg , "Replace All", JOptionPane.OK_CANCEL_OPTION);
-        if(option == JOptionPane.OK_OPTION){
-            tabList.getCurrentEditor().replaceAll(findTf.getText(), replaceTf.getText());
-        }
+
+        if(dialog != null) dialog.dispose();
+
+        dialog = new JDialog((Frame) null, "Replace All", false);
+
+        JPanel panel = new JPanel();
+        JTextField findTF = new JTextField(30);
+        JTextField replaceTF = new JTextField(30);
+        JButton confirm = new JButton("Confirm");
+
+        panel.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.insets = new Insets(5, 5, 5, 5);
+        panel.add(new JLabel("Find: "), gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.weightx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        panel.add(findTF, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.weightx = 0;
+        gbc.fill = GridBagConstraints.NONE;
+        panel.add(new JLabel("Replace with: "), gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbc.weightx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        panel.add(replaceTF, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.gridwidth = 2;
+        gbc.fill = GridBagConstraints.NONE;
+        panel.add(confirm, gbc);
+
+        if(tabList.getCurrentEditor() != null) confirm.addActionListener(actionEvent -> tabList.getCurrentEditor().replaceAll(findTF.getText(), replaceTF.getText()));
+
+        dialog.add(panel);
+        dialog.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                dialog = null;
+            }
+        });
+        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        dialog.pack();
+        dialog.setResizable(false);
+        dialog.setLocationRelativeTo(null);
+        dialog.setVisible(true);
+
     }
 
     public void onFindAndReplace(ActionEvent e) {
+        if (dialog != null) dialog.dispose();
 
+        dialog = new JDialog((Frame) null, "Find and Replace", false);
+
+        JPanel panel = new JPanel();
+        JPanel buttons = new JPanel();
+        JTextField findTF = new JTextField();
+        JTextField replaceTF = new JTextField();
+        JButton up = new JButton("↑");
+        JButton down = new JButton("↓");
+        JButton find = new JButton("     \uD83D\uDD0D     ");
+        JButton replace = new JButton("Replace");
+
+        panel.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 1;
+        gbc.gridwidth = GridBagConstraints.RELATIVE;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        panel.add(findTF, gbc);
+
+        gbc.gridx = 6;
+        gbc.gridy = 0;
+        gbc.gridwidth = 0;
+        gbc.weightx = -1;
+        gbc.fill = GridBagConstraints.NONE;
+        panel.add(find, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.weightx = 1;
+        gbc.gridwidth = GridBagConstraints.RELATIVE;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        panel.add(replaceTF, gbc);
+
+        gbc.gridx = 6;
+        gbc.gridy = 1;
+        gbc.gridwidth = 0;
+        gbc.weightx = -1;
+        gbc.fill = GridBagConstraints.NONE;
+        panel.add(replace, gbc);
+
+        buttons.setLayout(new GridBagLayout());
+        GridBagConstraints gbc2 = new GridBagConstraints();
+        gbc2.insets = new Insets(5, 5, 5, 5);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        buttons.add(up, gbc2);
+
+        gbc.gridx = 2;
+        gbc.gridy = 0;
+        buttons.add(down, gbc2);
+
+        dialog.add(panel, BorderLayout.NORTH);
+        dialog.add(buttons, BorderLayout.SOUTH);
+
+        if(tabList.getCurrentEditor() != null){
+            up.addActionListener(actionEvent -> tabList.getCurrentEditor().nav(-1));
+            down.addActionListener(actionEvent -> tabList.getCurrentEditor().nav(1));
+            find.addActionListener(actionEvent -> {
+                tabList.getCurrentEditor().find(findTF.getText());
+                up.setEnabled(true);
+                down.setEnabled(true);
+                replace.setEnabled(true);
+            });
+            replace.addActionListener(actionEvent -> tabList.getCurrentEditor().replaceInstance(replaceTF.getText()));
+
+            up.setEnabled(false);
+            down.setEnabled(false);
+            replace.setEnabled(false);
+
+            findTF.getDocument().addDocumentListener(new DocumentListener() {
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    up.setEnabled(false);
+                    down.setEnabled(false);
+                    replace.setEnabled(false);
+                }
+
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    up.setEnabled(false);
+                    down.setEnabled(false);
+                    replace.setEnabled(false);
+                }
+
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    up.setEnabled(false);
+                    down.setEnabled(false);
+                    replace.setEnabled(false);
+                }
+            });
+        }
+
+        dialog.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+               dialog = null;
+                if(tabList.getCurrentEditor() != null){
+                    Highlighter h = tabList.getCurrentEditor().getTextPane().getHighlighter();
+                    h.removeAllHighlights();
+                }
+            }
+            });
+        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        dialog.setSize(300, 145);
+        dialog.setResizable(false);
+        dialog.setLocationRelativeTo(null);
+        dialog.setVisible(true);
     }
 
     public void onUndo(ActionEvent e){
@@ -227,16 +481,6 @@ public class MenuToolBar extends JMenuBar {
 
     public void onRedo(ActionEvent e){
         tabList.getCurrentEditor().redo();
-    }
-
-    public void replaceFirst(ActionEvent e){
-        JTextField findTf = new JTextField();
-        JTextField replaceTf = new JTextField();
-        Object[] msg = {"Find: ", findTf, "Replace with: ", replaceTf};
-        int option = JOptionPane.showConfirmDialog(null, msg, "Replace First Instance", JOptionPane.OK_CANCEL_OPTION);
-        if(option == JOptionPane.OK_OPTION){
-            tabList.getCurrentEditor().replaceFirst(findTf.getText(), replaceTf.getText());
-        }
     }
 
     public void onZoomIn(ActionEvent e) {
@@ -326,6 +570,12 @@ public class MenuToolBar extends JMenuBar {
             TabPanel tab = tabList.getTabByPath(f.getAbsolutePath());
             if(tab != null) {
                 tab.getEditor().getTextPane().setText(ed.getTextPane().getText());
+
+                for(int i = 0; i < ed.getTextPane().getText().length(); i++) {
+                    AttributeSet attributes = ed.getTextPane().getStyledDocument().getCharacterElement(i).getAttributes();
+                    tab.getEditor().getTextPane().getStyledDocument().setCharacterAttributes(i, 1, attributes, true);
+                }
+
                 ed = tab.getEditor();
                 tabList.getTabbedPane().setSelectedComponent(tab);
             } else {
@@ -394,7 +644,7 @@ public class MenuToolBar extends JMenuBar {
         String title = f.getName();
         opts.lastOpenLocation = f.getParent();
 
-        AsyncTabFactory factory = new AsyncTabFactory(f, title) {
+        AsyncTabFactory factory = new AsyncTabFactory(formattingToolBar, f, title) {
             @Override
             protected void tabCreated(TabPanel panel) {
                 tabList.addTab(panel);
@@ -403,6 +653,15 @@ public class MenuToolBar extends JMenuBar {
 
         factory.execute();
 
+    }
+
+    @Override
+    public void stateChanged(ChangeEvent e) {
+        if(dialog != null) {
+            tabList.removeAllHighlights();
+            dialog.dispose();
+            dialog = null;
+        }
     }
     
 }

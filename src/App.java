@@ -1,4 +1,8 @@
 import javax.swing.*;
+
+import com.formdev.flatlaf.FlatLaf;
+import com.formdev.flatlaf.FlatLightLaf;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
@@ -13,25 +17,25 @@ public class App implements WindowListener {
     public MenuToolBar topMenu;
 
 
-    public JToolBar createCardToolBar() {
-        JToolBar toolBar = new JToolBar();
-        toolBar.setFloatable(false);
+    // public JToolBar createCardToolBar() {
+    //     JToolBar toolBar = new JToolBar();
+    //     toolBar.setFloatable(false);
 
-        JPanel barPanel = new JPanel();
-        barPanel.setLayout(new BoxLayout(barPanel, BoxLayout.X_AXIS));
+    //     JPanel barPanel = new JPanel();
+    //     barPanel.setLayout(new BoxLayout(barPanel, BoxLayout.X_AXIS));
 
-        barPanel.add(new PageSwitchButton(tabList, "Editor", "Editor"));
-        barPanel.add(Box.createHorizontalStrut(5));
-        barPanel.add(new PageSwitchButton(tabList, "Word Stats", "WordStats"));
-        barPanel.add(Box.createHorizontalStrut(5));
-        barPanel.add(new PageSwitchButton(tabList, "Char Stats", "CharStats"));
-        barPanel.add(Box.createHorizontalStrut(5));
-        barPanel.add(new PageSwitchButton(tabList, "Sentence Stats", "SentStats"));
+    //     barPanel.add(new PageSwitchButton(tabList, "Editor", "Editor"));
+    //     barPanel.add(Box.createHorizontalStrut(5));
+    //     barPanel.add(new PageSwitchButton(tabList, "Word Stats", "WordStats"));
+    //     barPanel.add(Box.createHorizontalStrut(5));
+    //     barPanel.add(new PageSwitchButton(tabList, "Char Stats", "CharStats"));
+    //     barPanel.add(Box.createHorizontalStrut(5));
+    //     barPanel.add(new PageSwitchButton(tabList, "Sentence Stats", "SentStats"));
 
-        toolBar.add(barPanel);
+    //     toolBar.add(barPanel);
 
-        return toolBar;
-    }
+    //     return toolBar;
+    // }
 
     public App() {
 
@@ -49,11 +53,11 @@ public class App implements WindowListener {
         Toolkit tk = Toolkit.getDefaultToolkit();
         Dimension screenSize = tk.getScreenSize();
 
-        topMenu = new MenuToolBar(tabList);
+        FormattingToolBar toolBar = new FormattingToolBar(tabList);
+        topMenu = new MenuToolBar(tabList, toolBar);
+        tabList.addChangeListener(topMenu);
         
         topMenu.loadOptions();
-
-        JToolBar toolBar = createCardToolBar();
 
         JPanel topPanel = new JPanel();
         topPanel.setLayout(new BorderLayout());
@@ -81,6 +85,10 @@ public class App implements WindowListener {
     }
 
     public static void main(String[] args) {
+
+        FlatLaf.registerCustomDefaultsSource( "themes" );
+        FlatLightLaf.setup();
+
         new App().init(args);
     }
 
