@@ -41,8 +41,6 @@ public class EditorPanel extends JPanel implements DocumentListener{
 
     private DocumentFormatter formatter;
 
-    private boolean autosave;
-
     String findText;
     int currI = 0;
     Highlighter.Highlight[] highlights;
@@ -51,6 +49,8 @@ public class EditorPanel extends JPanel implements DocumentListener{
     public EditorPanel(TabPanel tab, File file) {
 
         super();
+
+        
 
         updateFormat(file); //Sets the fileFormat based on the inputted file
 
@@ -145,7 +145,7 @@ public class EditorPanel extends JPanel implements DocumentListener{
     }
 
     public void toggleAutosave() {
-        autosave = !autosave;
+        
     }
 
     public void setPath(File p) {
@@ -203,7 +203,7 @@ public class EditorPanel extends JPanel implements DocumentListener{
 
     public void checkSaving() {
 
-        if(autosave) {
+        if(FileTabList.useAutoSave) {
             try {
                 save();
             } catch (IOException e) {
@@ -359,10 +359,7 @@ public class EditorPanel extends JPanel implements DocumentListener{
     }
 
     public void signalEdit() {
-        if(saved) {
-            saved = false;
-            tab.notSavedIndicator();
-        }       
+        checkSaving();    
     }
     public Color getTextColor(){
         int caretPosition = textPane.getCaretPosition();

@@ -1,11 +1,7 @@
 import java.awt.event.*;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
-import java.util.Objects;
-import java.util.Scanner;
 
 import static util.GUI.boolQuery;
 import static util.algobase.lower_bound;
@@ -29,10 +25,10 @@ public class MenuToolBar extends JMenuBar implements ChangeListener {
     private FormattingToolBar formattingToolBar;
 
     UserOptions opts;
-    public MenuToolBar(FileTabList tl, FormattingToolBar formattingToolBar) {
+    public MenuToolBar(UserOptions opts, FileTabList tl, FormattingToolBar formattingToolBar) {
+        this.opts = opts;
         tabList = tl;
         this.formattingToolBar = formattingToolBar;
-        opts = new UserOptions();
 
         JMenu fileMenu = new JMenu("File");
         JMenu vMenu = new JMenu("View");
@@ -135,6 +131,8 @@ public class MenuToolBar extends JMenuBar implements ChangeListener {
 
         });
 
+        autosave.setText(opts.useAutoSave ? "Disable Autosave" : "Enable Autosave");
+
         zoomIn.addActionListener(this::onZoomIn);
         zoomOut.addActionListener(this::onZoomOut);
         zoomDefault.addActionListener(this::onZoomReset);
@@ -156,45 +154,6 @@ public class MenuToolBar extends JMenuBar implements ChangeListener {
             }
         });
         
-    }
-    
-    public void saveOptions() {
-
-        try {
-
-            PrintStream out = new PrintStream(new FileOutputStream(SETTINGS_PATH));
-
-            out.println(opts.lastOpenLocation);
-            out.println(opts.fontFamily);
-            out.println(opts.fontSize);
-
-            out.close();
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    public void loadOptions() {
-
-        opts.lastOpenLocation = System.getProperty("user.home");
-        opts.fontSize = 12;
-
-        try {
-
-            Scanner scanner = new Scanner(new File(SETTINGS_PATH));
-
-            opts.lastOpenLocation = scanner.nextLine();
-            opts.fontFamily = scanner.nextLine();
-            opts.fontSize = scanner.nextInt();
-
-            scanner.close();
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
     }
 
     public void onOpen(ActionEvent e) {
