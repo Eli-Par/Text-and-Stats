@@ -16,6 +16,7 @@ public class App implements WindowListener {
 
     private static FileTabList tabList;
     public MenuToolBar topMenu;
+    public static FormattingToolBar formattingToolBar;
 
     public static boolean isDarkMode = true;
 
@@ -58,8 +59,8 @@ public class App implements WindowListener {
         Toolkit tk = Toolkit.getDefaultToolkit();
         Dimension screenSize = tk.getScreenSize();
 
-        FormattingToolBar toolBar = new FormattingToolBar(tabList);
-        topMenu = new MenuToolBar(tabList, toolBar);
+        formattingToolBar = new FormattingToolBar(tabList);
+        topMenu = new MenuToolBar(tabList, formattingToolBar);
         tabList.addChangeListener(topMenu);
         
         topMenu.loadOptions();
@@ -68,7 +69,7 @@ public class App implements WindowListener {
         topPanel.setLayout(new BorderLayout());
 
         topPanel.add(topMenu, BorderLayout.NORTH);
-        topPanel.add(toolBar, BorderLayout.SOUTH);
+        topPanel.add(formattingToolBar, BorderLayout.SOUTH);
 
         frame.add(topPanel, BorderLayout.NORTH);
         frame.add(tabList);
@@ -101,12 +102,14 @@ public class App implements WindowListener {
         FlatDarkLaf.setup();
         isDarkMode = true;
         if(frame != null) SwingUtilities.updateComponentTreeUI(frame);
+        if(formattingToolBar != null) formattingToolBar.updateToolbar();
     }
 
     public static void loadLight() {
         FlatLightLaf.setup();
         isDarkMode = false;
         if(frame != null) SwingUtilities.updateComponentTreeUI(frame);
+        if(formattingToolBar != null) formattingToolBar.updateToolbar();
     }
 
     /**

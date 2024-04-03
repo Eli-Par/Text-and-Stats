@@ -5,8 +5,6 @@ import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.text.StyleConstants;
 
-import com.formdev.flatlaf.FlatLaf;
-
 public class FormattingToolBar extends JToolBar implements ChangeListener, CaretListener {
     
     private FileTabList tabList;
@@ -22,6 +20,14 @@ public class FormattingToolBar extends JToolBar implements ChangeListener, Caret
     private StylingButton italicButton;
     private StylingButton underlineButton;
     private StylingButton colorButton;
+
+    private JPanel alignmentPanel;
+    private JPanel alignButtonPanel;
+
+    private JLabel alignmentLabel;
+    private JRadioButton leftAlignButton;
+    private JRadioButton centreAlignButton;
+    private JRadioButton rightAlignButton;
 
     private boolean internalFamilyChange = false;
     private boolean internalSizeChange = false;
@@ -135,8 +141,41 @@ public class FormattingToolBar extends JToolBar implements ChangeListener, Caret
         this.add(colorButton);
         colorButton.addActionListener(this::colorAction);
 
+        this.add(Box.createHorizontalStrut(SPACE_WIDTH));
+
+        alignmentPanel = new JPanel();
+        this.add(alignmentPanel);
+        alignmentPanel.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        alignmentLabel = new JLabel("Alignment");
+        alignmentLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        alignmentPanel.add(alignmentLabel, gbc);
+
+        alignButtonPanel = new JPanel();
+        alignButtonPanel.setLayout(new BoxLayout(alignButtonPanel, BoxLayout.X_AXIS));
+        ButtonGroup alignmentGroup = new ButtonGroup();
+        leftAlignButton = new JRadioButton("Left");
+        leftAlignButton.addActionListener(this::leftAlign);
+        alignmentGroup.add(leftAlignButton);
+        alignButtonPanel.add(leftAlignButton);
+        centreAlignButton = new JRadioButton("Centre");
+        centreAlignButton.addActionListener(this::centreAlign);
+        alignmentGroup.add(centreAlignButton);
+        alignButtonPanel.add(centreAlignButton);
+        rightAlignButton = new JRadioButton("Right");
+        rightAlignButton.addActionListener(this::rightAlign);
+        alignmentGroup.add(rightAlignButton);
+        alignButtonPanel.add(rightAlignButton);
+        gbc.gridy = 1;
+        alignmentPanel.add(alignButtonPanel, gbc);
+
         fontFamilyBox.setMaximumSize(fontFamilyBox.getPreferredSize());
         fontSizeBox.setMaximumSize(fontSizeBox.getPreferredSize());
+        alignmentPanel.setMaximumSize(alignmentPanel.getPreferredSize());
 
         tabList.addChangeListener(this);
 
@@ -149,8 +188,19 @@ public class FormattingToolBar extends JToolBar implements ChangeListener, Caret
         underlineButton.setEnabled(false);
         colorButton.setEnabled(false);
 
+        setAlignEnabled(false);
+
         fontFamilyBox.setFocusable(false);
         fontSizeBox.setFocusable(false);
+
+        updateToolbar();
+    }
+
+    private void setAlignEnabled(boolean isEnabled) {
+        alignmentLabel.setEnabled(isEnabled);
+        leftAlignButton.setEnabled(isEnabled);
+        centreAlignButton.setEnabled(isEnabled);
+        rightAlignButton.setEnabled(isEnabled);
     }
 
     @Override
@@ -171,6 +221,16 @@ public class FormattingToolBar extends JToolBar implements ChangeListener, Caret
 
     public void updateToolbar() {
         //System.out.println("Updating toolbar");
+
+        if(App.isDarkMode) {
+            alignButtonPanel.setBackground(new Color(60, 60, 60));
+            alignmentPanel.setBackground(new Color(60, 60, 60));
+        }
+        else {
+            alignButtonPanel.setBackground(new Color(210, 210, 210));
+            alignmentPanel.setBackground(new Color(210, 210, 210));
+        }
+
         EditorPanel editorPanel = tabList.getCurrentEditor();
         if(editorPanel != null) {
             EditorPanel.Format fileFormat = editorPanel.getFileFormat();
@@ -183,6 +243,8 @@ public class FormattingToolBar extends JToolBar implements ChangeListener, Caret
             italicButton.setEnabled(ValidFormattingSet.isFormatValid(fileFormat, StyleConstants.Italic));
             underlineButton.setEnabled(ValidFormattingSet.isFormatValid(fileFormat, StyleConstants.Underline));
             colorButton.setEnabled(ValidFormattingSet.isFormatValid(fileFormat, StyleConstants.Foreground));
+
+            setAlignEnabled(ValidFormattingSet.isFormatValid(fileFormat, StyleConstants.Foreground));
 
             if(ValidFormattingSet.isFormatValid(fileFormat, StyleConstants.FontFamily)) {
                 String fontName = editorPanel.getFormatter().getSelectedFontFamily();
@@ -198,6 +260,31 @@ public class FormattingToolBar extends JToolBar implements ChangeListener, Caret
                 internalSizeChange = true;
                 if(fontSize != -1) fontSizeBox.setSelectedItem(fontSize);
                 else fontSizeBox.setSelectedItem("");
+            }
+
+            if(ValidFormattingSet.isFormatValid(fileFormat, StyleConstants.Alignment)) {
+                int align = editorPanel.getFormatter().getAlignment();
+                if(align == -1) {
+                    System.out.println("None");
+                    leftAlignButton.setSelected(false);
+                    centreAlignButton.setSelected(false);
+                    rightAlignButton.setSelected(false);
+                }
+                else if(align == StyleConstants.ALIGN_LEFT) {
+                    leftAlignButton.setSelected(true);
+                    centreAlignButton.setSelected(false);
+                    rightAlignButton.setSelected(false);
+                }
+                else if(align == StyleConstants.ALIGN_CENTER) {
+                    leftAlignButton.setSelected(false);
+                    centreAlignButton.setSelected(true);
+                    rightAlignButton.setSelected(false);
+                }
+                else if(align == StyleConstants.ALIGN_RIGHT) {
+                    leftAlignButton.setSelected(false);
+                    centreAlignButton.setSelected(false);
+                    rightAlignButton.setSelected(true);
+                }
             }
 
             updateButtonState(StyleConstants.Bold, boldButton);
@@ -273,6 +360,27 @@ public class FormattingToolBar extends JToolBar implements ChangeListener, Caret
             if(colorDialog == null) colorDialog = new ColorDialog(editorPanel.getFormatter());
             else colorDialog.setVisible(true);
 
+        }
+    }
+
+    public void leftAlign(ActionEvent event) {
+        EditorPanel editorPanel = tabList.getCurrentEditor();
+        if(editorPanel != null) {
+            editorPanel.getFormatter().setAlignment(StyleConstants.ALIGN_LEFT);
+        }
+    }
+
+    public void centreAlign(ActionEvent event) {
+        EditorPanel editorPanel = tabList.getCurrentEditor();
+        if(editorPanel != null) {
+            editorPanel.getFormatter().setAlignment(StyleConstants.ALIGN_CENTER);
+        }
+    }
+
+    public void rightAlign(ActionEvent event) {
+        EditorPanel editorPanel = tabList.getCurrentEditor();
+        if(editorPanel != null) {
+            editorPanel.getFormatter().setAlignment(StyleConstants.ALIGN_RIGHT);
         }
     }
 }

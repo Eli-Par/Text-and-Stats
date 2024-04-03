@@ -16,7 +16,8 @@ public abstract class ValidFormattingSet {
                                                     StyleConstants.Underline, 
                                                     StyleConstants.FontFamily, 
                                                     StyleConstants.FontSize, 
-                                                    StyleConstants.Foreground));
+                                                    StyleConstants.Foreground,
+                                                    StyleConstants.Alignment));
 
         formattingByFileType.put(EditorPanel.Format.PLAIN, Set.of( ) ); 
     }

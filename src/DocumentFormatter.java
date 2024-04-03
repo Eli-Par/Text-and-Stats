@@ -405,4 +405,54 @@ public class DocumentFormatter {
         set.addAttribute(key, value);
     }
 
+    public void setAlignment(Object type) {
+        if(!ValidFormattingSet.isFormatValid(fileFormat, StyleConstants.Alignment)) {
+            return;
+        }
+
+        int startIndex = textPane.getSelectionStart();
+        int endIndex = textPane.getSelectionEnd();
+
+        if(startIndex == endIndex) {
+            startIndex = textPane.getCaretPosition();
+            endIndex = startIndex + 1;
+        }
+
+        SimpleAttributeSet set = new SimpleAttributeSet();
+        set.addAttribute(StyleConstants.Alignment, type);
+        document.setParagraphAttributes(startIndex, endIndex - startIndex, set, false);
+
+        panel.signalEdit();
+    }
+
+    public int getAlignment() {
+        if(!ValidFormattingSet.isFormatValid(fileFormat, StyleConstants.Alignment)) {
+            return -1;
+        }
+
+        int startIndex = textPane.getSelectionStart();
+        int endIndex = textPane.getSelectionEnd();
+
+        if(startIndex == endIndex) {
+            startIndex = textPane.getCaretPosition();
+            endIndex = startIndex + 1;
+        }
+
+        if(document.getParagraphElement(startIndex).getAttributes().getAttribute(StyleConstants.Alignment) instanceof Integer align) {
+            for(int i = startIndex; i < endIndex; i++) {
+                if(document.getParagraphElement(i).getAttributes().getAttribute(StyleConstants.Alignment) instanceof Integer currAlign) {
+                    if(!currAlign.equals(align)) {
+                        System.out.println("Different align");
+                        return -1;
+                    }
+                }
+            }
+
+            return align;
+        }
+        else {
+            return -1;
+        }
+    }
+
 }
