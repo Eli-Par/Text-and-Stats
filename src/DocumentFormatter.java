@@ -395,6 +395,7 @@ public class DocumentFormatter {
 
     private void addAttributeToFormat(SimpleAttributeSet set, Object key, StyledDocument document, int startIndex, int endIndex) {
         Object value = document.getCharacterElement(startIndex).getAttributes().getAttribute(key);
+        if(value == null) return;
         for(int i = startIndex + 1; i < endIndex; i++) {
             Object charVal = document.getCharacterElement(i).getAttributes().getAttribute(key);
             if(!value.equals(charVal)) {
