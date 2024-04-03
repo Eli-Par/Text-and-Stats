@@ -15,7 +15,6 @@ import java.awt.*;
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.text.AttributeSet;
-import javax.swing.text.Element;
 import javax.swing.text.Highlighter;
 
 
@@ -49,6 +48,14 @@ public class MenuToolBar extends JMenuBar implements ChangeListener {
         JMenuItem zoomIn = new JMenuItem("Zoom In");
         JMenuItem zoomOut = new JMenuItem("Zoom Out");
         JMenuItem zoomDefault = new JMenuItem("Zoom Reset");
+
+        JRadioButtonMenuItem lightModeButton = new JRadioButtonMenuItem("Light Mode");
+        JRadioButtonMenuItem darkModeButton = new JRadioButtonMenuItem("Dark Mode");
+
+        ButtonGroup themeButtonGroup = new ButtonGroup();
+        themeButtonGroup.add(darkModeButton);
+        themeButtonGroup.add(lightModeButton);
+
         JMenuItem moveLeft = new JMenuItem("Move Tab Left");
         JMenuItem moveRight = new JMenuItem("Move Tab Right");
 
@@ -88,6 +95,11 @@ public class MenuToolBar extends JMenuBar implements ChangeListener {
         vMenu.add(zoomIn);
         vMenu.add(zoomOut);
         vMenu.add(zoomDefault);
+
+        vMenu.addSeparator();
+        vMenu.add(lightModeButton);
+        vMenu.add(darkModeButton);
+
         vMenu.add(moveLeft);
         vMenu.add(moveRight);
 
@@ -128,6 +140,21 @@ public class MenuToolBar extends JMenuBar implements ChangeListener {
         zoomDefault.addActionListener(this::onZoomReset);
         moveLeft.addActionListener(e -> tabList.moveLeft());
         moveRight.addActionListener(e -> tabList.moveRight());
+
+        lightModeButton.setSelected(true);
+        lightModeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                App.loadLight();
+            }
+        });
+
+        darkModeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                App.loadDark();
+            }
+        });
         
     }
     

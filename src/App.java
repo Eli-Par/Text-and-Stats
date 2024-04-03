@@ -1,5 +1,6 @@
 import javax.swing.*;
 
+import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 
@@ -15,6 +16,11 @@ public class App implements WindowListener {
 
     private static FileTabList tabList;
     public MenuToolBar topMenu;
+    public static FormattingToolBar formattingToolBar;
+
+    public static boolean isDarkMode = true;
+
+    public static JFrame frame;
 
 
     // public JToolBar createCardToolBar() {
@@ -45,7 +51,8 @@ public class App implements WindowListener {
 
     public void init(String[]args) {
 
-        JFrame frame = new JFrame(TITLE);
+        frame = new JFrame(TITLE);
+        frame.setMinimumSize(new Dimension(775, 300));
         ImageIcon icon = new ImageIcon("img/TextBuddyIcon.png");
         frame.setIconImage(icon.getImage());
         // JPanel panel = new JPanel();
@@ -53,8 +60,8 @@ public class App implements WindowListener {
         Toolkit tk = Toolkit.getDefaultToolkit();
         Dimension screenSize = tk.getScreenSize();
 
-        FormattingToolBar toolBar = new FormattingToolBar(tabList);
-        topMenu = new MenuToolBar(tabList, toolBar);
+        formattingToolBar = new FormattingToolBar(tabList);
+        topMenu = new MenuToolBar(tabList, formattingToolBar);
         tabList.addChangeListener(topMenu);
         
         topMenu.loadOptions();
@@ -63,7 +70,7 @@ public class App implements WindowListener {
         topPanel.setLayout(new BorderLayout());
 
         topPanel.add(topMenu, BorderLayout.NORTH);
-        topPanel.add(toolBar, BorderLayout.SOUTH);
+        topPanel.add(formattingToolBar, BorderLayout.SOUTH);
 
         frame.add(topPanel, BorderLayout.NORTH);
         frame.add(tabList);
@@ -87,9 +94,23 @@ public class App implements WindowListener {
     public static void main(String[] args) {
 
         FlatLaf.registerCustomDefaultsSource( "themes" );
-        FlatLightLaf.setup();
+        loadLight();
 
         new App().init(args);
+    }
+
+    public static void loadDark() {
+        FlatDarkLaf.setup();
+        isDarkMode = true;
+        if(frame != null) SwingUtilities.updateComponentTreeUI(frame);
+        if(formattingToolBar != null) formattingToolBar.updateToolbar();
+    }
+
+    public static void loadLight() {
+        FlatLightLaf.setup();
+        isDarkMode = false;
+        if(frame != null) SwingUtilities.updateComponentTreeUI(frame);
+        if(formattingToolBar != null) formattingToolBar.updateToolbar();
     }
 
     /**
