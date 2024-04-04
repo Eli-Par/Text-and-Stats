@@ -84,6 +84,16 @@ public class EditorPanel extends JPanel implements DocumentListener{
         try {
             editorKit.read(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8), document, 0);
         }
+        catch(FileNotFoundException exception) {
+            try {
+                PrintWriter pw = new PrintWriter(file);
+                pw.print("");
+                pw.close();
+            }
+            catch(Exception exception2) {
+                exception2.printStackTrace();
+            }
+        }
         catch(Exception exception) {
             exception.printStackTrace();
         }
