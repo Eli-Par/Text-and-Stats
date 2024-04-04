@@ -322,23 +322,30 @@ public class EditorPanel extends JPanel implements DocumentListener{
 
     public void replaceAll(String find, String replace){
 
-        if(Objects.equals(find, "")) return;
-        if(Objects.equals(replace, "")) return;
+        if (find.isEmpty())
+            return;
 
         // get the text and replace all occurrences of find
         String content = getPlainText();
+        int selstart = textPane.getSelectionStart();
+        int selend = textPane.getSelectionEnd();
 
-        int i = content.indexOf(find);
+        if (selstart == selend) {
+            selstart = 0;
+            selend = content.length();
+        }
+
+        int i = content.indexOf(find, selstart, selend);
         while(i != -1) {
             try {
                 document.replace(i, find.length(), replace, formatter.getConsistentFormat(document, i, i + find.length()));
             }
             catch(BadLocationException exception) {
-
+                exception.printStackTrace();
             }
 
             content = getPlainText();
-            i = content.indexOf(find, i+1);
+            i = content.indexOf(find, i + replace.length(), selend);
         }
     }
 
