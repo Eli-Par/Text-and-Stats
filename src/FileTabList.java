@@ -87,8 +87,9 @@ public class FileTabList extends JPanel implements MouseListener{
     public void saveAll() throws IOException {
 
         for (Component panel : tabbedPane.getComponents()) {
-            TabPanel tPanel = (TabPanel) panel;
-            tPanel.save();
+            if(panel instanceof TabPanel tPanel) {
+                tPanel.save();
+            }
         }
 
     }
