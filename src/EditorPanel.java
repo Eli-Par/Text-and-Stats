@@ -54,7 +54,7 @@ public class EditorPanel extends JPanel implements DocumentListener{
 
         updateFormat(file); //Sets the fileFormat based on the inputted file
 
-        System.out.println(">" + fileFormat);
+        //@PRINT System.out.println(">" + fileFormat);
 
         this.tab = tab;
         path = file;
@@ -91,20 +91,20 @@ public class EditorPanel extends JPanel implements DocumentListener{
                 pw.close();
             }
             catch(Exception exception2) {
-                exception2.printStackTrace();
+                //@PRINT exception2.printStackTrace();
             }
         }
         catch(Exception exception) {
-            exception.printStackTrace();
+            //@PRINT exception.printStackTrace();
         }
 
         //Remove the ending character since an extra newline is added
-        if(editorKit instanceof RTFEditorKit) {
+        if(editorKit instanceof RTFEditorKit && document.getLength() > 0) {
             try {
                 document.replace(document.getLength() - 1, 1, "", null);
             }
             catch(Exception exception) {
-                exception.printStackTrace();
+                //@PRINT exception.printStackTrace();
             }
         }
 
@@ -172,7 +172,7 @@ public class EditorPanel extends JPanel implements DocumentListener{
             editorKit.write(new FileOutputStream(path), document, 0, document.getLength());
         }
         catch(BadLocationException exception) {
-            System.out.println(exception.getStackTrace());
+            //@PRINT System.out.println(exception.getStackTrace());
         }
 
         if(!saved) {
@@ -217,7 +217,7 @@ public class EditorPanel extends JPanel implements DocumentListener{
             try {
                 save();
             } catch (IOException e) {
-                e.printStackTrace();
+                //@PRINT e.printStackTrace();
             }
         } else if (saved) {
             tab.notSavedIndicator();
@@ -271,7 +271,7 @@ public class EditorPanel extends JPanel implements DocumentListener{
             try{
                 h.addHighlight(i, i+text.length(), painter);
             } catch (BadLocationException e) {
-                e.printStackTrace();
+                //@PRINT e.printStackTrace();
             }
             i = content.indexOf(text, i+1);
         }
@@ -307,7 +307,7 @@ public class EditorPanel extends JPanel implements DocumentListener{
             first = false;
 
         }catch (BadLocationException e){
-            e.printStackTrace();
+            //@PRINT e.printStackTrace();
         }
     }
 
@@ -325,7 +325,7 @@ public class EditorPanel extends JPanel implements DocumentListener{
                 Highlighter h = textPane.getHighlighter();
                 h.removeAllHighlights();
             }catch (BadLocationException e) {
-                e.printStackTrace();
+                //@PRINT e.printStackTrace();
             }
         }
     }
@@ -351,7 +351,7 @@ public class EditorPanel extends JPanel implements DocumentListener{
                 document.replace(i, find.length(), replace, formatter.getConsistentFormat(document, i, i + find.length()));
             }
             catch(BadLocationException exception) {
-                exception.printStackTrace();
+                //@PRINT exception.printStackTrace();
             }
 
             content = getPlainText();
@@ -364,7 +364,7 @@ public class EditorPanel extends JPanel implements DocumentListener{
         try{
             if(undoer.canUndo()) undoer.undo();
         }catch(CannotUndoException e) {
-            e.printStackTrace();
+            //@PRINT e.printStackTrace();
         }
     }
 
@@ -372,7 +372,7 @@ public class EditorPanel extends JPanel implements DocumentListener{
         try{
             if(undoer.canRedo()) undoer.redo();
         }catch(CannotRedoException e){
-            e.printStackTrace();
+            //@PRINT e.printStackTrace();
         }
     }
 

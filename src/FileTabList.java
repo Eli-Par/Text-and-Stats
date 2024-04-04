@@ -67,7 +67,7 @@ public class FileTabList extends JPanel implements MouseListener{
                 try {
                     tPanel.save();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    //@PRINT e.printStackTrace();
                 }
 
             }

@@ -528,7 +528,7 @@ public class MenuToolBar extends JMenuBar implements ChangeListener {
         try {
             tabList.save();
         } catch (IOException ex) {
-            ex.printStackTrace();
+            //@PRINT ex.printStackTrace();
         }
 
     }
@@ -538,7 +538,7 @@ public class MenuToolBar extends JMenuBar implements ChangeListener {
         try {
             tabList.saveAll();
         } catch (IOException ex) {
-            ex.printStackTrace();
+            //@PRINT ex.printStackTrace();
         }
 
     }
@@ -586,7 +586,7 @@ public class MenuToolBar extends JMenuBar implements ChangeListener {
             try {
                 ed.save();
             } catch (IOException ex) {
-                ex.printStackTrace();
+                //@PRINT ex.printStackTrace();
             }
 
         }
@@ -613,7 +613,7 @@ public class MenuToolBar extends JMenuBar implements ChangeListener {
                 try {
                     new FileOutputStream(file).close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    //@PRINT e.printStackTrace();
                 }
             }
 
