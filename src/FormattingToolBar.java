@@ -213,6 +213,8 @@ public class FormattingToolBar extends JPanel implements ChangeListener, CaretLi
         fontFamilyBox.setFocusable(false);
         fontSizeBox.setFocusable(false);
 
+        leftAlignButton.setSelected(true);
+
         updateToolbar();
     }
 
@@ -285,10 +287,9 @@ public class FormattingToolBar extends JPanel implements ChangeListener, CaretLi
             if(ValidFormattingSet.isFormatValid(fileFormat, StyleConstants.Alignment)) {
                 int align = editorPanel.getFormatter().getAlignment();
                 if(align == -1) {
-                    System.out.println("None");
-                    leftAlignButton.setSelected(false);
-                    centreAlignButton.setSelected(false);
-                    rightAlignButton.setSelected(false);
+                    // leftAlignButton.setSelected(false);
+                    // centreAlignButton.setSelected(false);
+                    // rightAlignButton.setSelected(false);
                 }
                 else if(align == StyleConstants.ALIGN_LEFT) {
                     leftAlignButton.setSelected(true);

@@ -443,7 +443,7 @@ public class DocumentFormatter {
             for(int i = startIndex; i < endIndex; i++) {
                 if(document.getParagraphElement(i).getAttributes().getAttribute(StyleConstants.Alignment) instanceof Integer currAlign) {
                     if(!currAlign.equals(align)) {
-                        System.out.println("Different align");
+                        //@PRINT System.out.println("Different align");
                         return -1;
                     }
                 }

@@ -86,7 +86,7 @@ public class TabPanel extends JPanel {
     public void textChanged() {
         //Parsing can go here
         if(getEditor() == null) {
-            System.out.println("No editor found");
+            //@PRINT System.out.println("No editor found");
             return;
         }
         parser.parse(getEditor().getPlainText());

@@ -55,7 +55,7 @@ public class App implements WindowListener {
             scanner.close();
 
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            //@PRINT e.printStackTrace();
         }
 
     }
@@ -75,7 +75,7 @@ public class App implements WindowListener {
             out.close();
 
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            //@PRINT e.printStackTrace();
         }
 
     }

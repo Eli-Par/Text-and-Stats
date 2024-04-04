@@ -337,14 +337,14 @@ class TextParserThread extends Thread {
                     break;
                 }
                 else if(matchSize == 0) { //Check that there isn't a problem with the match
-                    System.err.println("Matcher " + matcher.getTokenType() + " matched 0 chars at " + startIndex);
+                    //@PRINT System.err.println("Matcher " + matcher.getTokenType() + " matched 0 chars at " + startIndex);
                 }
             }
 
             //If no match was found, output an unmatched err without crashing and go to the next character
             //This ensures it is possible to debug without a bizzare input causing an exception
             if(!matchFound) {
-                if(startIndex < input.length()) System.err.println("Unmatched input: '" + input.charAt(startIndex) + "' value: " + ((int)input.charAt(startIndex)) + " at index: " + startIndex);
+                //@PRINT if(startIndex < input.length()) System.err.println("Unmatched input: '" + input.charAt(startIndex) + "' value: " + ((int)input.charAt(startIndex)) + " at index: " + startIndex);
                 startIndex++;
             }
             
