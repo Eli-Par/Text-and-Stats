@@ -335,8 +335,8 @@ public class EditorPanel extends JPanel implements DocumentListener{
             selend = content.length();
         }
 
-        int i = content.indexOf(find, selstart, selend);
-        while(i != -1) {
+        int i = content.indexOf(find, selstart);
+        while(i != -1 && i + find.length() <= selend) {
             try {
                 document.replace(i, find.length(), replace, formatter.getConsistentFormat(document, i, i + find.length()));
             }
@@ -345,7 +345,8 @@ public class EditorPanel extends JPanel implements DocumentListener{
             }
 
             content = getPlainText();
-            i = content.indexOf(find, i + replace.length(), selend);
+            i = content.indexOf(find, i + replace.length());
+            selend += replace.length() - find.length();
         }
     }
 

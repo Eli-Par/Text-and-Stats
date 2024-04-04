@@ -52,8 +52,8 @@ public class MenuToolBar extends JMenuBar implements ChangeListener {
         themeButtonGroup.add(darkModeButton);
         themeButtonGroup.add(lightModeButton);
 
-        JMenuItem moveLeft = new JMenuItem("Move Tab Left");
-        JMenuItem moveRight = new JMenuItem("Move Tab Right");
+        // JMenuItem moveLeft = new JMenuItem("Move Tab Left");
+        // JMenuItem moveRight = new JMenuItem("Move Tab Right");
 
         JMenuItem find = new JMenuItem("Find");
         JMenuItem findAndReplace = new JMenuItem("Find and Replace");
