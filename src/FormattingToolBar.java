@@ -270,9 +270,9 @@ public class FormattingToolBar extends JPanel implements ChangeListener, CaretLi
 
             if(ValidFormattingSet.isFormatValid(fileFormat, StyleConstants.FontFamily)) {
                 String fontName = editorPanel.getFormatter().getSelectedFontFamily();
-                //System.out.println("> " + fontName);
+                //System.out.println("> " + fontName + " " + (fontName == null));
                 internalFamilyChange = true;
-                if(fontName != null) fontFamilyBox.setSelectedItem(fontName);
+                if(fontName != null && !fontName.equals("null")) fontFamilyBox.setSelectedItem(fontName);
                 else fontFamilyBox.setSelectedItem("---");
             }
 
@@ -328,6 +328,7 @@ public class FormattingToolBar extends JPanel implements ChangeListener, CaretLi
     public void fontFamilyChange(ActionEvent event) {
         if(internalFamilyChange) {
             internalFamilyChange = false;
+            //System.out.println("Change ignored: internal");
             return;
         }
 

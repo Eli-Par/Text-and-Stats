@@ -37,22 +37,47 @@ public class DocumentFormatter {
             int wordStart = textPane.getCaretPosition();
             int wordEnd = wordStart + 1;
 
-            while(wordStart > 0 && !Character.isWhitespace(textPane.getText().charAt(wordStart - 1))) {
-                wordStart--;
+            if(wordStart >= panel.getPlainText().length() && Character.isWhitespace(panel.getPlainText().charAt(wordStart - 1))) {
+                wordStart = panel.getPlainText().length() - 1;
+                wordEnd = panel.getPlainText().length();
+                //System.out.println("Case 1");
             }
+            else if(wordStart > 0 && Character.isWhitespace(panel.getPlainText().charAt(wordStart - 1))) {
+                wordStart--;
+                wordEnd = wordStart + 1;
+                //System.out.println("Case 2");
+            }
+            else {
+                if(wordStart >= panel.getPlainText().length()) {
+                    wordStart--;
+                    wordEnd--;
+                    //System.out.println("Case 3");
+                }
+                else if(Character.isWhitespace(panel.getPlainText().charAt(wordStart))) {
+                    wordStart--;
+                    wordEnd--;
+                    //System.out.println("Case 4 " + wordStart + " <> " + panel.getPlainText().length());
+                }
 
-            while(wordEnd < textPane.getText().length() && !Character.isWhitespace(textPane.getText().charAt(wordEnd))) {
-                wordEnd++;
+                while(wordStart > 0 && !Character.isWhitespace(panel.getPlainText().charAt(wordStart - 1))) {
+                    wordStart--;
+                }
+
+                while(wordEnd < panel.getPlainText().length() && !Character.isWhitespace(panel.getPlainText().charAt(wordEnd))) {
+                    wordEnd++;
+                }
             }
 
             startIndex = wordStart;
             endIndex = wordEnd;
         }
 
-        boolean setFormat = !isSelectionFormatted(attributeKey);
+        boolean setFormat = !isSelectionFormatted(attributeKey, startIndex, endIndex);
         SimpleAttributeSet style = new SimpleAttributeSet();
         style.addAttribute(attributeKey, setFormat);
         document.setCharacterAttributes(startIndex, endIndex - startIndex, style, false);
+
+        wiggleCaret();
 
         panel.signalEdit();
     }
@@ -73,6 +98,10 @@ public class DocumentFormatter {
             return false;
         }
 
+        return isSelectionFormatted(attributeKey, startIndex, endIndex);
+    }
+
+    private boolean isSelectionFormatted(Object attributeKey, int startIndex, int endIndex) {
         int formatCount = 0;
 
         for(int i = startIndex; i < endIndex; i++) {
@@ -98,12 +127,31 @@ public class DocumentFormatter {
             int wordStart = textPane.getCaretPosition();
             int wordEnd = wordStart + 1;
 
-            while(wordStart > 0 && !Character.isWhitespace(textPane.getText().charAt(wordStart - 1))) {
-                wordStart--;
+            if(wordStart >= panel.getPlainText().length() && Character.isWhitespace(panel.getPlainText().charAt(wordStart - 1))) {
+                wordStart = panel.getPlainText().length() - 1;
+                wordEnd = panel.getPlainText().length();
             }
+            else if(wordStart > 0 && Character.isWhitespace(panel.getPlainText().charAt(wordStart - 1))) {
+                wordStart--;
+                wordEnd = wordStart + 1;
+            }
+            else {
+                if(wordStart >= panel.getPlainText().length()) {
+                    wordStart--;
+                    wordEnd--;
+                }
+                else if(Character.isWhitespace(panel.getPlainText().charAt(wordStart))) {
+                    wordStart--;
+                    wordEnd--;
+                }
 
-            while(wordEnd < textPane.getText().length() && !Character.isWhitespace(textPane.getText().charAt(wordEnd))) {
-                wordEnd++;
+                while(wordStart > 0 && !Character.isWhitespace(panel.getPlainText().charAt(wordStart - 1))) {
+                    wordStart--;
+                }
+
+                while(wordEnd < panel.getPlainText().length() && !Character.isWhitespace(panel.getPlainText().charAt(wordEnd))) {
+                    wordEnd++;
+                }
             }
 
             startIndex = wordStart;
@@ -114,6 +162,8 @@ public class DocumentFormatter {
         format.addAttribute(StyleConstants.FontSize, size);
 
         document.setCharacterAttributes(startIndex, endIndex - startIndex, format, false);
+
+        wiggleCaret();
 
         panel.signalEdit();
     }
@@ -162,12 +212,33 @@ public class DocumentFormatter {
             int wordStart = textPane.getCaretPosition();
             int wordEnd = wordStart + 1;
 
-            while(wordStart > 0 && !Character.isWhitespace(textPane.getText().charAt(wordStart - 2))) {
-                wordStart--;
+            if(wordStart >= panel.getPlainText().length() && Character.isWhitespace(panel.getPlainText().charAt(wordStart - 1))) {
+                wordStart = panel.getPlainText().length() - 1;
+                wordEnd = panel.getPlainText().length();
             }
+            else if(wordStart > 0 && Character.isWhitespace(panel.getPlainText().charAt(wordStart - 1))) {
+                wordStart--;
+                wordEnd = wordStart + 1;
+            }
+            else {
+                if(wordStart >= panel.getPlainText().length()) {
+                    wordStart--;
+                    wordEnd--;
+                    
+                }
+                else if(Character.isWhitespace(panel.getPlainText().charAt(wordStart))) {
+                    wordStart--;
+                    wordEnd--;
+                    
+                }
 
-            while(wordEnd < textPane.getText().length() && !Character.isWhitespace(textPane.getText().charAt(wordEnd))) {
-                wordEnd++;
+                while(wordStart > 0 && !Character.isWhitespace(panel.getPlainText().charAt(wordStart - 1))) {
+                    wordStart--;
+                }
+
+                while(wordEnd < panel.getPlainText().length() && !Character.isWhitespace(panel.getPlainText().charAt(wordEnd))) {
+                    wordEnd++;
+                }
             }
 
             startIndex = wordStart;
@@ -178,6 +249,8 @@ public class DocumentFormatter {
         format.addAttribute(StyleConstants.FontFamily, family);
 
         document.setCharacterAttributes(startIndex, endIndex - startIndex, format, false);
+
+        wiggleCaret();
 
         panel.signalEdit();
     }
@@ -226,12 +299,35 @@ public class DocumentFormatter {
             int wordStart = textPane.getCaretPosition();
             int wordEnd = wordStart + 1;
 
-            while(wordStart > 0 && !Character.isWhitespace(textPane.getText().charAt(wordStart - 1))) {
-                wordStart--;
+            if(wordStart >= panel.getPlainText().length() && Character.isWhitespace(panel.getPlainText().charAt(wordStart - 1))) {
+                wordStart = panel.getPlainText().length() - 1;
+                wordEnd = panel.getPlainText().length();
+                
             }
+            else if(wordStart > 0 && Character.isWhitespace(panel.getPlainText().charAt(wordStart - 1))) {
+                wordStart--;
+                wordEnd = wordStart + 1;
+                
+            }
+            else {
+                if(wordStart >= panel.getPlainText().length()) {
+                    wordStart--;
+                    wordEnd--;
+                    
+                }
+                else if(Character.isWhitespace(panel.getPlainText().charAt(wordStart))) {
+                    wordStart--;
+                    wordEnd--;
+                    
+                }
 
-            while(wordEnd < textPane.getText().length() && !Character.isWhitespace(textPane.getText().charAt(wordEnd))) {
-                wordEnd++;
+                while(wordStart > 0 && !Character.isWhitespace(panel.getPlainText().charAt(wordStart - 1))) {
+                    wordStart--;
+                }
+
+                while(wordEnd < panel.getPlainText().length() && !Character.isWhitespace(panel.getPlainText().charAt(wordEnd))) {
+                    wordEnd++;
+                }
             }
 
             startIndex = wordStart;
@@ -242,6 +338,8 @@ public class DocumentFormatter {
         format.addAttribute(StyleConstants.Foreground, color);
 
         document.setCharacterAttributes(startIndex, endIndex - startIndex, format, false);
+
+        wiggleCaret();
 
         panel.signalEdit();
     }
@@ -260,12 +358,35 @@ public class DocumentFormatter {
             int wordStart = textPane.getCaretPosition();
             int wordEnd = wordStart + 1;
 
-            while(wordStart > 0 && !Character.isWhitespace(textPane.getText().charAt(wordStart - 1))) {
-                wordStart--;
+            if(wordStart >= panel.getPlainText().length() && Character.isWhitespace(panel.getPlainText().charAt(wordStart - 1))) {
+                wordStart = panel.getPlainText().length() - 1;
+                wordEnd = panel.getPlainText().length();
+                
             }
+            else if(wordStart > 0 && Character.isWhitespace(panel.getPlainText().charAt(wordStart - 1))) {
+                wordStart--;
+                wordEnd = wordStart + 1;
+                
+            }
+            else {
+                if(wordStart >= panel.getPlainText().length()) {
+                    wordStart--;
+                    wordEnd--;
+                    
+                }
+                else if(Character.isWhitespace(panel.getPlainText().charAt(wordStart))) {
+                    wordStart--;
+                    wordEnd--;
+                    
+                }
 
-            while(wordEnd < textPane.getText().length() && !Character.isWhitespace(textPane.getText().charAt(wordEnd))) {
-                wordEnd++;
+                while(wordStart > 0 && !Character.isWhitespace(panel.getPlainText().charAt(wordStart - 1))) {
+                    wordStart--;
+                }
+
+                while(wordEnd < panel.getPlainText().length() && !Character.isWhitespace(panel.getPlainText().charAt(wordEnd))) {
+                    wordEnd++;
+                }
             }
 
             startIndex = wordStart;
@@ -309,6 +430,8 @@ public class DocumentFormatter {
             }
         }
 
+        wiggleCaret();
+
         panel.signalEdit();
     }
 
@@ -326,12 +449,35 @@ public class DocumentFormatter {
             int wordStart = textPane.getCaretPosition();
             int wordEnd = wordStart + 1;
 
-            while(wordStart > 0 && !Character.isWhitespace(textPane.getText().charAt(wordStart - 1))) {
-                wordStart--;
+            if(wordStart >= panel.getPlainText().length() && Character.isWhitespace(panel.getPlainText().charAt(wordStart - 1))) {
+                wordStart = panel.getPlainText().length() - 1;
+                wordEnd = panel.getPlainText().length();
+                
             }
+            else if(wordStart > 0 && Character.isWhitespace(panel.getPlainText().charAt(wordStart - 1))) {
+                wordStart--;
+                wordEnd = wordStart + 1;
+                
+            }
+            else {
+                if(wordStart >= panel.getPlainText().length()) {
+                    wordStart--;
+                    wordEnd--;
+                    
+                }
+                else if(Character.isWhitespace(panel.getPlainText().charAt(wordStart))) {
+                    wordStart--;
+                    wordEnd--;
+                    
+                }
 
-            while(wordEnd < textPane.getText().length() && !Character.isWhitespace(textPane.getText().charAt(wordEnd))) {
-                wordEnd++;
+                while(wordStart > 0 && !Character.isWhitespace(panel.getPlainText().charAt(wordStart - 1))) {
+                    wordStart--;
+                }
+
+                while(wordEnd < panel.getPlainText().length() && !Character.isWhitespace(panel.getPlainText().charAt(wordEnd))) {
+                    wordEnd++;
+                }
             }
 
             startIndex = wordStart;
@@ -375,6 +521,8 @@ public class DocumentFormatter {
                 document.setCharacterAttributes(i, 1, format, false);
             }
         }
+
+        wiggleCaret();
 
         panel.signalEdit();
     }
@@ -453,6 +601,22 @@ public class DocumentFormatter {
         }
         else {
             return -1;
+        }
+    }
+
+    private void wiggleCaret() {
+
+        if(textPane.getSelectionStart() != textPane.getSelectionEnd()) {
+            return;
+        }
+
+        if(textPane.getCaretPosition() > 0) {
+            textPane.setCaretPosition(textPane.getCaretPosition()-1);
+            textPane.setCaretPosition(textPane.getCaretPosition()+1);
+        }
+        else {
+            textPane.setCaretPosition(textPane.getCaretPosition()+1);
+            textPane.setCaretPosition(textPane.getCaretPosition()-1);
         }
     }
 
