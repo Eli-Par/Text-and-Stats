@@ -29,6 +29,10 @@ public class DocumentFormatter {
             return;
         }
 
+        if(panel.getPlainText().length() == 0) {
+            return;
+        }
+
         int startIndex = textPane.getSelectionStart();
         int endIndex = textPane.getSelectionEnd();
 
@@ -119,6 +123,10 @@ public class DocumentFormatter {
             return;
         }
 
+        if(panel.getPlainText().length() == 0) {
+            return;
+        }
+
         int startIndex = textPane.getSelectionStart();
         int endIndex = textPane.getSelectionEnd();
 
@@ -201,6 +209,10 @@ public class DocumentFormatter {
     public void setSelectedFontFamily(String family) {
         //Check that the formatting is valid for this file type
         if(!ValidFormattingSet.isFormatValid(fileFormat, StyleConstants.FontFamily)) {
+            return;
+        }
+
+        if(panel.getPlainText().length() == 0) {
             return;
         }
 
@@ -291,6 +303,10 @@ public class DocumentFormatter {
             return;
         }
 
+        if(panel.getPlainText().length() == 0) {
+            return;
+        }
+
         int startIndex = textPane.getSelectionStart();
         int endIndex = textPane.getSelectionEnd();
 
@@ -347,6 +363,10 @@ public class DocumentFormatter {
     public void increaseFontSize() {
         //Check that the formatting is valid for this file type
         if(!ValidFormattingSet.isFormatValid(fileFormat, StyleConstants.FontSize)) {
+            return;
+        }
+
+        if(panel.getPlainText().length() == 0) {
             return;
         }
 
@@ -438,6 +458,10 @@ public class DocumentFormatter {
     public void decreaseFontSize() {
         //Check that the formatting is valid for this file type
         if(!ValidFormattingSet.isFormatValid(fileFormat, StyleConstants.FontSize)) {
+            return;
+        }
+
+        if(panel.getPlainText().length() == 0) {
             return;
         }
 
