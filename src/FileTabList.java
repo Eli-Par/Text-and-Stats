@@ -76,8 +76,12 @@ public class FileTabList extends JPanel implements MouseListener{
     }
 
     public void save(int index) throws IOException {
-        TabPanel t = (TabPanel) tabbedPane.getComponentAt(index);
-        t.save();
+        if(index != -1 && tabbedPane.getComponentAt(index) instanceof TabPanel t) {
+            t.save();
+        }   
+        else {
+            JOptionPane.showMessageDialog(this, "Could not find a file to save. Do you have a file open?", "Couldn't save file!", JOptionPane.WARNING_MESSAGE);
+        }     
     }
 
     public void save() throws IOException {
