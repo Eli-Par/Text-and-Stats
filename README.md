@@ -6,3 +6,23 @@ Traditional text editors provide basic functionalities like typing, editing, and
 ## Installation
 Download the jar file from [here](https://github.com/Eli-Par/Text-and-Stats/releases/tag/releases).
 The current release requires Java 17 or later to run.
+
+## Keyboard Shortcuts
+| Keys | Use |
+| ---- | --- |
+| Ctrl+N | New File |
+| Ctrl+O | Open File |
+| Ctrl+S | Save File |
+| Ctrl+Shift+S | Save All File |
+| Ctrl+F | Find |
+| Ctrl+R | Replace All |
+| Ctrl+Z | Undo |
+| Ctrl+Y | Redo |
+| Ctrl+Numpad + | Zoom In Plain Text |
+| Ctrl+Numpad - | Zoom Out Plain Text |
+| Ctrl+0 | Reset Plain Text Zoom |
+| Ctrl+Left Arrow | Move Tab Left |
+| Ctrl+Right Arrow | Move Tab Right |
+| Ctrl+B | Bold |
+| Ctrl+I | Italic |
+| Ctrl+U | Underline |
