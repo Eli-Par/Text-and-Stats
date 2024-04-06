@@ -84,7 +84,7 @@ public class App implements WindowListener {
 
         frame = new JFrame(TITLE);
         frame.setMinimumSize(new Dimension(775, 300));
-        ImageIcon icon = new ImageIcon("img/TextBuddyIcon.png");
+        ImageIcon icon = new ImageIcon(getClass().getClassLoader().getResource("img/TextBuddyIcon.png"));
         frame.setIconImage(icon.getImage());
         // JPanel panel = new JPanel();
 

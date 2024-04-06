@@ -11,6 +11,8 @@ class TextParserThread extends Thread {
 
     private TextParser parser;
 
+    private static ArrayList<String> abbreviations = null;
+
     private ParseToken.Type[] convertToWordTypes = {ParseToken.Type.WORD, ParseToken.Type.NUMBER, ParseToken.Type.SYMBOL, ParseToken.Type.EMAIL, ParseToken.Type.URL, ParseToken.Type.ACRONYM, ParseToken.Type.ABBREVIATION};
     //private ParseToken.Type[] validEndingWordTypes = {ParseToken.Type.WORD, ParseToken.Type.EMAIL, ParseToken.Type.URL, ParseToken.Type.ACRONYM, ParseToken.Type.ABBREVIATION};
 
@@ -207,13 +209,19 @@ class TextParserThread extends Thread {
 
     //Returns an array list of abbreviation strings
     private ArrayList<String> loadAbbreviations() {
+        if(TextParserThread.abbreviations != null) {
+            return abbreviations;
+        }
+
         //Load the file and put each line without whitespace into the array list
-        try(Scanner fsc = new Scanner(new File("src//parsing//abbreviations.txt"))) {
+        try(Scanner fsc = new Scanner(new File(getClass().getClassLoader().getResource("parsing/abbreviations.txt").getPath().replaceAll("%20", " ")))) {
+            //System.out.println(new File("src//parsing//abbreviations.txt"));
             ArrayList<String> abbreviations = new ArrayList<>();
             while(fsc.hasNextLine()) {
                 String abbrev = fsc.nextLine().trim();
                 if(!abbrev.isBlank()) abbreviations.add(abbrev);
             }
+            TextParserThread.abbreviations = abbreviations;
             return abbreviations;
         }
         catch(FileNotFoundException exception) {
