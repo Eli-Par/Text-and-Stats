@@ -4,9 +4,9 @@ Traditional text editors provide basic functionalities like typing, editing, and
 
 
 ## Installation
-If you are a windows user, or you have a way to run exe files, then you can download an executable version of the program [here](https://github.com/Eli-Par/Text-and-Stats/releases/tag/releases). Using this version is preferred since it doesn't require java and allows for setting text buddy as the program to open different files.
+If you are a windows user, or you have a way to run exe files, then you can download an executable version of the program [here](https://github.com/Eli-Par/Text-and-Stats/releases/tag/releases-v1.0.1). Using this version is preferred since it doesn't require java and allows for setting text buddy as the program to open different files.
 
-Alternatively, you can download the jar file from [here](https://github.com/Eli-Par/Text-and-Stats/releases/tag/releases).
+Alternatively, you can download the jar file from [here](https://github.com/Eli-Par/Text-and-Stats/releases/tag/releases-v1.0.1).
 The current release requires Java 17 or later to run.
 
 ## Keyboard Shortcuts
