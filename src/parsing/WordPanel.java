@@ -54,6 +54,7 @@ public class WordPanel extends JPanel{
         
         bg = new BarGraph();
         bg.setPreferredSize(new Dimension(450, 400));
+        bg.setMinimumSize(new Dimension(400, 400));
         gbc.gridx = 2;
         gbc.gridy = 0;
         gbc.weightx = 0.5;
@@ -110,5 +111,9 @@ public class WordPanel extends JPanel{
         int numLines = (int)((double)sp.getHeight() / (fontMetrics.getHeight() * 1.1));
 
         return numLines;
+    }
+
+    public void clearSearchBar() {
+        searchField.setText("");
     }
 }

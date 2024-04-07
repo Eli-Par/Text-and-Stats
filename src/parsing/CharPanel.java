@@ -36,6 +36,7 @@ public class CharPanel extends JPanel{
 
         bg = new BarGraph();
         bg.setPreferredSize(new Dimension(450, 400));
+        bg.setMinimumSize(new Dimension(350, 400));
         gbc.gridx = 2;
         gbc.gridy = 0;
         gbc.weightx = 0.5;

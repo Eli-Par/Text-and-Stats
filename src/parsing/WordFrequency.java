@@ -153,7 +153,9 @@ public class WordFrequency extends ParseObserver <String, String>{
 
     @Override
     public void parseStarted() {
+        panel.setDefaultFrequencyText("Processing the text. Please wait a moment.");
         panel.setFrequencies("Processing the text. Please wait a moment.");
+        panel.clearSearchBar();
     }
 }
 
