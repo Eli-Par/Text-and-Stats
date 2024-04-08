@@ -2,6 +2,8 @@
 
 Traditional text editors provide basic functionalities like typing, editing, and formatting. However, Text Buddy enhances the user experience and productivity by incorporating statistical analysis tools within our text editor while still having the main text editor functionalities and features. It addresses the lack of integrated statistical analysis tools in conventional text editors. While users can compose and format text, they often lack insights into the characteristics of their writing. On the other hand, Text buddy enables users to see repeated sentences along with repeated words in order for users to better revise their text and be able to see patterns of redundancy or overuse and fix this in order for their writing to be more impactful. This is an example of one of the many problems that statistical text analysis allows users to fix to better improve their writing.
 
+**Supported file formats are txt and rtf.**
+
 
 ## Installation
 If you are a windows user, or you have a way to run exe files, then you can download an executable version of the program [here](https://github.com/Eli-Par/Text-and-Stats/releases/tag/releases-v1.0.1). Using this version is preferred since it doesn't require java and allows for setting text buddy as the program to open different files.
